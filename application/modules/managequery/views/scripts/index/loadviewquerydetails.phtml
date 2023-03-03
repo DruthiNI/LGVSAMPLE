@@ -1,0 +1,147 @@
+<?php 
+$this->userObj = new Manageuser_Model_Manageuser();
+  $date = new Zend_Date();
+?>
+ <link rel="stylesheet" href="<?=PUBLICURL?>dist/css/tcal.css">
+ <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+ <script src="<?=PUBLICURL?>dist/js/tcal.js"></script>
+         <div class="box">
+       <div class="CloseBtn"> <section class="content-header"> <h1> View Query Details : <span style="cursor:pointer;font-weight:bold;color:#f36712;float: right;" onclick="CloseViewDetails()">Close</span></h1></section>
+        <hr></div>
+        
+             <!-- /.box-header -->
+            <div class="box-body">
+        <form action="" name="viewDetailsForm" id="viewDetailsForm" method="post">
+        <input type="hidden" name="assign_id" id="assign_id" value="<?php echo $this->QueryInfo['assign_id'];?>">
+        <input type="hidden" name="query_id" id="query_id" value="<?php echo $this->QueryInfo['id'];?>">
+         <div class="col-xs-6 padding"><strong>Name : </strong> <?php echo $this->QueryInfo['name'];?> </div>
+        <div class="col-xs-6 padding"><strong>Email ID :</strong> <?php echo $this->QueryInfo['email_id'];?> </div>
+        <div class="col-xs-6 padding"><strong>Alternate Email ID : </strong><?php echo $this->QueryInfo['alt_email_id'];?> </div>
+        <div class="col-xs-6 padding"><strong>Contact No. :</strong> <?php echo $this->QueryInfo['phone'];?> </div>
+        <div class="col-xs-6 padding"><strong>Alternate Contact No. :</strong> <?php echo $this->QueryInfo['alt_contact_no'];?> </div>
+        <div class="col-xs-6 padding"><strong>Date :</strong> <?php echo date("d/m/Y",strtotime($this->QueryInfo['date']));?> </div>
+        <div class="col-xs-6 padding"><strong>Location : </strong> <?php echo $this->QueryInfo['location'];?> </div>
+        <div class="col-xs-6 padding"><strong>Complete Address :</strong> <?php echo $this->QueryInfo['complete_address'];?> </div>
+        <div class="col-xs-6 padding"><strong>Company Name : </strong><?php echo $this->QueryInfo['company_name'];?> </div>
+        <div class="col-xs-6 padding"><strong>Designation :</strong> <?php echo $this->QueryInfo['designation'];?> </div>
+        <div class="col-xs-6 padding"><strong>Topic/Area of Study :</strong> <?php echo $this->QueryInfo['area_of_study'];?> </div>
+        <div class="col-xs-6 padding"><strong>Website :</strong> <?php if($this->QueryInfo['website']=="others"){ echo $this->QueryInfo['other_website'];} else {
+									echo $this->QueryInfo['website'];
+								}?> </div>
+        <div class="col-xs-6 padding"><strong>Requirement : </strong> <?php if($this->QueryInfo['requirement']=="Other"){ echo $this->QueryInfo['other_requirement'];} else {
+									echo $this->QueryInfo['requirement'];
+								}?> </div>
+        <div class="col-xs-6 padding"><strong>Allocated To :</strong>  <?php echo $this->QueryInfo['username'];?> </div>
+        <div class="col-xs-6 padding"><strong>Priority : </strong><?php echo $this->QueryInfo['priority'];?></div>
+        <div class="col-xs-6 padding"><strong>Word Count :</strong> <?php echo $this->QueryInfo['word_count'];?> </div>
+        <div class="col-xs-6 padding"><strong>Deadline :</strong> <?php echo $this->QueryInfo['deadline'];?> </div>
+        <div class="col-xs-6 padding"><strong>Academic Level :</strong> <?php echo $this->QueryInfo['academic_level'];?>  </div>
+        <div class="col-xs-6 padding"><strong>Approx Value of Lead : </strong> <?php echo $this->QueryInfo['approx_value'];?> </div>
+        <div class="col-xs-6 padding"><strong>Remarks :</strong>  <?php echo $this->QueryInfo['remarks'];?> </div>
+        <div class="col-xs-6 padding"><strong>Flag Mark : </strong><?php if($this->QueryInfo['flag_mark']=="on"){ ?> 
+								<img src="<?=PUBLICURL?>images/flag_mark_red.png" width="24" height="24">
+								<?php }?> </div>
+        <div class="col-xs-6 padding"><strong>Follow up Date :</strong> <?php echo date("d/m/Y",$this->QueryInfo['follow_up_date']);?>  </div>
+        <div class="col-xs-6 padding"><strong>Status :</strong> <select name="update_status1" id="update_status1" class="form-control" style="width:200px;">
+                   <?php
+                   foreach($this->updateStatus as $statusData)
+				   {
+				   ?>
+                   <option value="<?=$statusData['id']?>" <?php if($statusData['id']==$this->QueryInfo['update_status']){ ?> selected="selected" <?php }?>><?=$statusData['status_name']?></option>
+                   <?php }?>
+                   </select> </div>
+        <div class="col-xs-6 padding"><strong>Comments :</strong> 
+        
+       <!-- /////////////////////////////////////////-->
+        <!--<div class="box-tools pull-right">
+                <div class="has-feedback">
+                  <input type="text" name="searchdate" value="<?php echo $this->searchdate;?>" class="form-control input-sm tcal bx-input" placeholder="Search Comment">
+                 <span onclick="searchFun()" class="glyphicon glyphicon-search form-control-feedback myiocnbx"></span> 
+                </div>
+              </div>-->
+               
+              <div style="clear:both;"></div>
+                   <ul style="margin-left:-30px; min-height:100px; max-height:500px;overflow:auto;" class="timeline" id="appendComments">
+                 <?php 
+                 foreach($this->CommentInfo as $Comments)
+				 { ?>
+				   <li><div class="timeline-item">
+                <span class="time"><i class="fa fa-clock-o"></i> <?php echo date("d M Y h:i A",$Comments['date']);?></span>
+
+                <h3 class="timeline-header no-border"><a><?php echo $Comments['name'];?> : </a> <?php echo $Comments['comments'];?></h3>
+              </div></li>	 
+			   <?php }
+				 ?>
+                 </ul> 
+                  <textarea rows="3" name="comments" id="comments" style="width:100%;"></textarea>
+                   <input type="button" name="updateBtn"  style="float:right;"class="btn btn-primary" value="Submit" onclick="return UpdateComents();">
+        <div style="color:#090; font-weight:bold;" id="succ_mess"></div>
+       <!-- //////////////////////////////////////////////-->
+         </div>
+        
+               
+             </form>
+             </div>
+             </div>
+             
+  <style>
+ .has-feedback .form-control {
+    height: 34px;
+}
+
+ .myiocnbx {
+    position: absolute;
+    top: 0;
+    border: 1px solid #ccc;
+	cursor:pointer;     
+    padding: 0px;
+}
+
+.padding{ padding:10px;}
+ </style>
+ 
+<script type="text/javascript">
+function searchFun()
+{
+
+}
+ 
+function UpdateComents()
+{
+ var url = "<?=SITEURL?>/managequery/index/commentsubmit"; // the script where you handle the form input.
+     $.ajax({
+           type: "POST",
+           url: url,
+           data: $("#viewDetailsForm").serialize(), // serializes the form's elements.
+           success: function(data)
+           {
+			   if(data==1)
+			   {
+ 			   var update_status=$("#update_status1 option:selected").text();
+			   var assign_id=$("#assign_id").val();
+ 				$("#change_status_name"+assign_id).html(update_status);
+				
+				if($("#update_status1").val()==7)
+			   { 
+  				$('#deleteRow_'+assign_id).remove();   
+			   }
+				
+				 if($("#update_status1").val()!=1)
+			   {  
+  				$('#removequery_'+assign_id).remove();   
+			   }
+			   
+			   if($("#comments").val()!="")
+			   {
+				$("#appendComments").append('<li><div class="timeline-item"><span class="time"><i class="fa fa-clock-o"></i> <?php echo date("d M Y h:i A",time());?></span><h3 class="timeline-header no-border"><a><?=$this->userInfo->name?> : </a>'+$("#comments").val()+'</h3></div></li>');   
+			   }
+			   $("#comments").val("");
+			   
+			   $("#succ_mess").html('Record updated successfully.');
+            
+			   
+			   }
+			}
+         });	
+}
+</script>

@@ -1,0 +1,64 @@
+<?php $date = new Zend_Date();
+$this->userObj = new Manageuser_Model_Manageuser();
+ 
+ //echo "<pre>";
+ //count($this->tatScore);
+ ?>
+ <?php 
+ if($this->userInfo->user_type=='Lead Generator'){
+ 
+ $sumscore = 0;
+ echo '<label>Total Score : </label>';
+ foreach($this->tatScore as $totalscore){?>
+<div id="totalscoredv" style="font-size: 17px;">
+<?php
+$sumscore+= $totalscore['total_score'];
+?>
+<?php
+}
+ echo $sumscore;
+ }
+?>
+</div>
+<table id="example1" class="table table-bordered table-striped table-responsive">
+              <thead>
+                 <tr>
+  				 <th>User Name</th>
+				 <th>No. of Lead</th>
+				 
+                 <th>Lead Addition Score</th>
+                 <th>Lead Approved Score</th>
+                 <th>Total Score</th>
+                 <!--<th>Average Score</th>-->
+            
+                  
+  				 </tr>
+                 </thead>
+                       <tbody>  
+                          <?php $i=1;
+                          foreach($this->tatScore as $score)
+						  {
+							  $min=round($score['total_minute']/$score['total_rows'],2);
+							  $totalQuery=$this->userObj->getTatUserQuery($score['user_id']);
+							  $leadapprovedscore=$this->userObj->getLeadaaprovedscore($score['user_id']);
+							  $LeadApprovedcnt=count($leadapprovedscore);
+						  ?>
+                                <tr>
+ 								<td><?=$score['username']?></td>
+								<td><a href="<?=SITEURL?>managequery/index/leadsummary/userid/<?php echo $score['user_id'];?>" target="_blank"><?=count($totalQuery)?></a></td>
+                                
+								<td><?=count($totalQuery) * 5;?></td>
+                                <td><?php echo $LeadApprovedcnt * 10;?></td>
+                                <td><?=$score['total_score'];?></td>
+                                <!--<td><?php //echo round(($score['total_score']/$score['total_rows']),2)?></td>-->
+  							</tr>
+                         <?php $i++; }?>
+                  </tbody>
+              </table>
+
+
+<script>
+  $(document).ready(function() {
+    $("#example1").DataTable();
+   });
+</script>

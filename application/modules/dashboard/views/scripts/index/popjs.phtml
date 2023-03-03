@@ -1,0 +1,960 @@
+ 
+<!-- datepicker -->
+<!--<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+<script src="<?=PUBLICURL?>bootstrap/js/bootstrap.min.js"></script>-->
+ 
+<script src="<?=PUBLICURL?>plugins/timepicker/bootstrap-timepicker.min.js"></script>
+<script src="<?=PUBLICURL?>plugins/datepicker/bootstrap-datepicker.js"></script>
+ <script src="<?=PUBLICURL?>plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
+ <script src="<?=PUBLICURL?>plugins/ckeditor/ckeditor.js"></script>
+ <script src="<?=PUBLICURL?>dist/js/lightbox.min.js"></script>
+
+ <script type="text/javascript">
+ 
+ function UpdateComents()
+{	 
+  
+var totalTag=<?=count($arrTag)?>;
+var currentStatus=<?=$this->QueryInfo['update_status']?>;
+console.log("totalTag=",totalTag);
+console.log("currentStatus=",currentStatus);
+
+
+
+/*if(totalTag < 2 && currentStatus > 1)
+{
+	alert("Please select at least 2 tag.");
+	return false;
+}*/
+if($("#update_status1").val()==7 && $("#remainder_date").val()=="")
+{
+alert("Please select remainder date");
+document.getElementById("remainder_date").focus();
+return false;
+}
+else if($("#GetProfileName").text()=="")
+{
+alert("Please update query profile");
+return false;	
+}
+
+<?php  /*if($this->QueryInfo['update_status']!=1){?>
+else if($("#old_status").val()!=$("#update_status1").val() && document.viewDetailsForm.send_mail_type1.checked==false)
+{
+alert("Please check email template");
+return false;
+}
+<?php }*/ ?>
+<?php  if($this->QueryInfo['update_status']==1)
+{
+	?>
+else if($("#update_status1").val()==1)
+{
+alert("Please change query status");
+document.getElementById("update_status1").focus();
+return false;	
+}
+/*else if($("#update_status1").val()!=2 && $("#update_status1").val()!=6)
+{
+alert("Please change query status");
+document.getElementById("update_status1").focus();
+return false;	
+}*/
+else if($("#comments").val()=="")
+{
+alert("Please enter comments");
+document.getElementById("comments").focus();
+$('#externalCommentsDiv').show();
+$('#emailCommentsDiv').hide();
+
+return false;	
+}
+ /*else if(document.viewDetailsForm.send_mail_type2.checked==false && document.viewDetailsForm.send_mail_type4.checked==false && document.viewDetailsForm.send_mail_type5.checked==false)
+ {
+	alert("Contact made type atleast 2 check and approve");
+return false;	
+ }  */
+/*else if($("#approveStatus1").val()==0)
+{
+alert("Please approve mail template");
+return false;	
+}	
+*/
+<?php }   ?>
+<?php  if($this->QueryInfo['update_status']!=1)
+{?>
+else if($("#comments").val()=="")
+{
+alert("Please enter comments");
+document.getElementById("comments").focus();
+$('#externalCommentsDiv').show();
+$('#emailCommentsDiv').hide();
+
+return false;	
+}
+/*else if($("#update_status1").val()==6 && document.viewDetailsForm.send_mail_type1.checked==false)
+{
+alert("Please check email template");
+return false;	
+}*/
+<?php }?>
+else if(document.viewDetailsForm.send_mail_type1.checked==true && $("#approveStatus1").val()==0)
+{
+alert("Please approve email template");
+return false;	
+}
+
+else	
+{
+    //alert('hi');
+   
+    
+ var url = "<?=SITEURL?>managequery/index/commentsubmit"; // the script where you handle the form input.
+ $("#viewDetailsForm").submit((function(e) {
+ 	$('#submitBtnC1').attr('disabled',true);
+ 	
+	 $("#submitBtn2").show();
+	 $("#submitBtn1").hide();
+ 		e.preventDefault();
+ 		$.ajax({
+        	url: url,
+			type: "POST",
+			data:  new FormData(this),
+			contentType: false,
+    	    cache: false,
+			processData:false,
+			success: function(data){
+			if(data==1)
+			   {
+ 			   var update_status=$("#update_status1 option:selected").text();
+			   var assign_id=$("#assign_id").val();
+ 				$("#change_status_name"+assign_id).html(update_status);
+				
+				if($("#update_status1").val()==7)
+			   { 
+  				$('#deleteRow_'+assign_id).remove();   
+			   }
+				
+				 if($("#update_status1").val()!=1)
+			   {  
+  				$('#removequery_'+assign_id).remove();   
+			   }
+			   
+			   if($("#comments").val()!="")
+			   {
+				//$("#appendComments").append('<div class="timeline-item"><div class="message-time"><a><?=$this->userInfo->name?></a>: <i class="fa fa-clock-o"></i> <?php echo date("d M Y h:i A",time());?></div><div class="custom-message">'+$("#comments").val()+'</div></div>');   
+			   }
+			   
+			   $("#comments").val("");
+			   $('.wysihtml5-sandbox').contents().find('.wysihtml5-editor').html('');
+			   getOnlyDashboardData();
+			   
+			   $("#succ_mess").html('<div class="alert alert-success alert-dismissible"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button><i class="icon fa fa-check"></i> Comments submitted successfully.</div>');
+			   <?php  //if(count($this->CommentInfo) == 0){?>
+			   OpenQueryDetailsPopUp(assign_id);
+			   <?php //} else { ?>
+               getAutoComments();
+			   <?php //}?>
+            $("#submitBtn1").show();
+	       $("#submitBtn2").hide();
+			   $("#succ_mess").fadeOut(10000); 
+			   }	 
+		    },
+		  	error: function(){} 	        
+	   });
+	})); 
+ 
+}		 
+}
+
+function CheckStatusRemainder(val)
+{ 
+	if(val==7)
+	{
+	$("#remainder_div").show();	
+	}
+	else
+	{
+		$("#remainder_date").val('');
+		$("#remainder_div").hide();	
+	}
+}
+$(".datepicker").datepicker({
+   startDate: new Date(),
+      showInputs: false,
+      todayHighlight: true
+    });
+	
+  $(function () {
+	  //CKEDITOR.replace('temp_body1');
+    $('.textarea1').wysihtml5();
+    $('.textarea').wysihtml5();
+    $('.mail_signature').wysihtml5();
+	$('[data-toggle="tooltip"]').tooltip();
+	//getActivityHistory();
+ 	//getAutoComments();
+
+
+//////////////////////Maltiple file add///////////////////////
+  var max_fields_limit      = 10; //set limit for maximum input fields
+    var x = 1; //initialize counter for text box
+    $('#add_more_button').click(function(e){ //click event on add more fields button having class add_more_button
+        e.preventDefault();
+        if(x < max_fields_limit){ //check conditions
+            x++; //counter increment
+			var html="";
+		 
+	html+='<div class="form-group"><div class="col-md-10"><input type="file" class="form-control" name="comments_file[]" id="comments_file'+x+'"/></div>';
+	html+='<div class="col-md-2" id="remove_field"><i style="font-size:20px;padding-top:3px;cursor:pointer;" class="fa fa-minus-circle"></i></div></div>';
+			
+    $('#attachment_file').append(html); //add input field
+        }
+    });
+
+
+$('#attachment_file').on("click","#remove_field", function(e){ //user click on remove text links
+        e.preventDefault(); $(this).parent('div').remove(); x--;
+    })
+/////////////////////////////////////////////////////////////////////////////////
+ $('.switch_profile').focus(function() {
+        prev_val = $(this).val();
+    }).change(function() {
+        $(this).blur() // Firefox fix as suggested by AgDude
+        //var success = confirm('Are you sure you want to change the profile?');
+		if($(this).val()=="")
+		{
+		alert("Please select valid profile");	
+		$(this).val(prev_val);
+            return false;
+		}
+        else if(confirm('Are you sure you want to change the profile?') &&  $(this).val()!="")
+        {
+            var current_profile=$('option:selected', $(this)).text()
+			var current_profile_id=$(this).val();
+            $.ajax({
+                url: '<?=SITEURL?>managequery/index/update-query-profile/assign_id/<?=$this->QueryInfo['assign_id']?>/profile_id/'+$(this).val()+"/oldProfile/"+prev_val+'/current_profile/'+current_profile,
+                type: 'POST',
+                async: false,
+                beforeSend: function()
+                {
+                 },
+                success: function (data) {
+                    if(data==1)
+                    {
+                        $("#ShowProfileDiv").show();
+                        $("#EditProfileDiv").hide();
+						
+ 						 var putname=current_profile;
+                         $("#GetProfileName").html(putname);
+						 OpenQueryDetailsPopUp(<?=$this->QueryInfo['assign_id']?>);
+                    }
+                },
+            });
+        }
+        else
+        {
+            $(this).val(prev_val);
+            return false;
+        }
+    }); 
+	 
+/////////////////////////////////////////////////////////////////////////////////	
+
+/////////////////////////////////////////////////////////////////////////////////
+ $('.switch_priority').focus(function() {
+        prev_val = $(this).val();
+    }).change(function() {
+        $(this).blur() // Firefox fix as suggested by AgDude
+        //var success = confirm('Are you sure you want to change the priority?');
+		 
+        if(confirm('Are you sure you want to change the priority?') &&  $(this).val()!="")
+        {
+            var current_priority=$('option:selected', $(this)).text()
+			var current_priority_id=$(this).val();
+            $.ajax({
+                url: '<?=SITEURL?>managequery/index/update-query-priority/query_id/<?=$this->QueryInfo['id']?>/assign_id/<?=$this->QueryInfo['assign_id']?>/priority_id/'+$(this).val()+"/oldPriority/"+prev_val+'/current_priority/'+current_priority,
+                type: 'POST',
+                async: false,
+                beforeSend: function()
+                {
+                 },
+                success: function (data) {
+                    if(data==1)
+                    {
+                        $("#ShowPriorityDiv").show();
+                        $("#EditPriorityDiv").hide();
+						
+ 						 var putname=current_priority;
+                         $("#GetPriorityName").html(putname);
+						 
+						 OpenQueryDetailsPopUp(<?=$this->QueryInfo['assign_id']?>);
+                    }
+                },
+            });
+        }
+        else
+        {
+            $(this).val(prev_val);
+            return false;
+        }
+    }); 
+	 
+/////////////////////////////////////////////////////////////////////////////////	
+calculateTatTimer();
+	setInterval(() => {
+		calculateTatTimer();
+        }, 1000);
+  <?php if($this->noti_id){ ?>
+	 $("#ClickToAutoQuote").click();
+  <?php 
+  }
+  
+  if($template_name!="")
+  { ?>
+	//$("#toggleMailTemp").html('<?=$template_name?>');  
+  <?php }
+  ?>
+ 
+  });
+  
+ function calculateTatTimer()
+ {
+var currentDate = moment().format('MMMM Do YYYY');
+var clock = moment().format('h:mm:ss A');
+
+var date1 = new Date($("#created_date_time").val());
+var date2 = new Date();
+var diff = date2.getTime() - date1.getTime();
+//console.log(diff);
+var msec = diff;
+var hh = Math.floor(msec / 1000 / 60 / 60);
+msec -= hh * 1000 * 60 * 60;
+var mm = Math.floor(msec / 1000 / 60);
+msec -= mm * 1000 * 60;
+var ss = Math.floor(msec / 1000);
+msec -= ss * 1000;
+ 
+ var difference_ms = date2 - date1;
+  //take out milliseconds
+  difference_ms = difference_ms/1000;
+  var seconds = Math.floor(difference_ms % 60);
+  difference_ms = difference_ms/60; 
+  var minutes = Math.floor(difference_ms % 60);
+  difference_ms = difference_ms/60; 
+  var hours = Math.floor(difference_ms % 24);  
+  var days = Math.floor(difference_ms/24);
+
+
+if(days > 0)
+{
+var AttTakentime="Total : "+days+" days, "+hours+" hour, "+minutes+" minutes, "+seconds+" Seconds";
+}
+else if(hours > 0)
+{
+var AttTakentime="Total : "+hours+" hour, "+minutes+" minutes, "+seconds+" Seconds";	
+}
+else
+{
+var AttTakentime="Total : "+minutes+" minutes, "+seconds+" Seconds";	
+}
+
+$("#totalHours").val(hh);
+$("#totalMinutes").val(mm);
+
+$("#demotime").html(AttTakentime);		
+    	 
+ }
+ function ClickAndCheckMailType(type)
+ { 
+ var totalTag=<?=count($arrTag)?>;
+var currentStatus=<?=$this->QueryInfo['update_status']?>;
+/*if(totalTag < 2 && currentStatus > 1)
+{
+	alert("Please select at least 2 tag.");
+	$('#send_mail_type'+type).attr("checked", false);
+	return false;
+}*/
+
+	 if($('#send_mail_type'+type).is(":checked"))   
+	 {
+        $("#send_mail_type"+type+"Div").show();
+	 }
+    else
+	{
+        $("#send_mail_type"+type+"Div").hide(); 
+	}
+	 
+	 
+ }
+ function ApproveTemplate(type)
+	 {
+ 
+if(type==4 || type==5)
+{
+temp_body= $("#temp_body"+type).val();
+//exclude  start and end white-space
+temp_body = temp_body.replace(/(^\s*)|(\s*$)/gi,"");
+//convert 2 or more spaces to 1  
+temp_body = temp_body.replace(/[ ]{2,}/gi," ");
+// exclude newline with a start spacing  
+temp_body = temp_body.replace(/\n /,"\n");	
+temp_body_words=temp_body.split(' ').length;
+
+
+
+
+}	
+		 
+	var scheduleemailoption= $('input[name="schedule_email_option"]:checked').val();
+	 /*alert(scheduleemailoption);
+	 if(scheduleemailoption == "Send Later")
+	  {
+	  		if($("#schedule_email_time").val()=="")
+	  		{
+	  			alert("Please select time");
+				document.getElementById("schedule_email_time").focus();
+       			return false;
+	  		}
+				
+	  }
+	 */
+	  if($("#mail_subject").val()=="" && type==1)
+	  {
+		alert("Please enter email subject");
+		document.getElementById("mail_subject").focus();
+       return false;		
+	  }
+	  else if($("#mail_from_email").val()=="" && type==1)
+	  {
+		alert("Please enter from email id");
+		document.getElementById("mail_from_email").focus();
+       return false;		
+	  }
+	  else if($("#temp_body"+type).val()=="")
+	  {
+		alert("Please enter template content");
+		document.getElementById("temp_body"+type).focus();
+       return false;		
+	  }
+	  else if((type==4 || type==5) && temp_body_words < 10)
+		{
+		alert("Please enter minimum 10 words for template content");
+		document.getElementById("temp_body"+type).focus();
+		return false;	
+		}
+	  else if($("#mail_signature").val()=="" && type==1)
+	  {
+		alert("Please enter mail signature");
+		document.getElementById("mail_signature").focus();
+       return false;		
+	  }
+	  else
+	  {
+		var approveCounter=$("#approveCounter").val();
+		var approveCounter=parseInt(approveCounter)+1;
+		
+		$("#approveCounter").val(approveCounter);
+	  $("#TempShow"+type).hide();	 
+	  $("#TempHide"+type).show();
+	  $("#approveStatus"+type).val(1);  
+	  }
+  }
+ 
+ function SwitchProfileFun()
+ {
+$("#ShowProfileDiv").hide();
+$("#EditProfileDiv").show();
+ }
+ 
+  function SwitchTagFun()
+ {
+$("#ShowTagDiv").hide();
+$("#EditTagDiv").show();
+
+ $(".select2").select2();
+
+ }
+ 
+  function SwitchPriorityFun()
+ {
+$("#ShowPriorityDiv").hide();
+$("#EditPriorityDiv").show();
+ }
+ 
+ function SaveTags()
+ {
+$.ajax({
+	type: "POST",
+	url: "<?=SITEURL?>managequery/index/update-query-tags",
+	data: 'assign_qid=<?=$this->QueryInfo['assign_id']?>&query_id=<?=$this->QueryInfo['id']?>&tags='+encodeURIComponent($("#switch_tag").val()),
+	success: function(result) {
+	 $("#ShowTagDiv").show();
+     $("#EditTagDiv").hide();
+     $("#GetTagName").html(result);	
+
+OpenQueryDetailsPopUp(<?=$this->QueryInfo['assign_id']?>);
+
+	 
+	}
+	});	 
+ }
+ function getAutoComments(archive_no=0)
+{   console.log(archive_no);
+	$.ajax({
+	type: "POST",
+	url: "<?=SITEURL?>dashboard/index/getquerycomments",
+	data: 'assign_qid=<?=$this->QueryInfo['assign_id']?>&archive_no='+archive_no,
+	 beforeSend: function()
+	{
+	$("#appendComments").css("opacity",0.5);	 
+	},
+	success: function(result) {
+	$("#appendComments").css("opacity",1);
+	$("#appendComments").html(result);
+	getArchiveTab();
+	 $("#archiveList"+archive_no).addClass("active");
+	if($('#myModal2').is(':visible')==true)
+     { $("#dashboardDataFilterBtn").css("display","none");
+	    /* setTimeout(function(){
+					getAutoComments();
+				}, 10000);
+				*/
+	}
+	else
+	{
+	$("#dashboardDataFilterBtn").css("display","block");	
+	}
+				
+	}
+	});	
+  
+}   
+function getArchiveComments(archive_no)
+{
+	getAutoComments(archive_no);
+}
+function getArchiveTab()
+{
+$.ajax({
+url: '<?=SITEURL?>dashboard/index/getcommentsarchivetabs',
+type: 'get',
+data: "assign_id=<?=$this->QueryInfo['assign_id']?>",
+async: false,
+beforeSend: function()
+{
+},
+success: function (data) {
+ $("#CommentsTabs").html(data);
+},
+});		
+}
+function saveCommentsArchive(assign_id)
+{
+if (confirm("Do you want to save archive?") == true) {
+   $.ajax({
+url: '<?=SITEURL?>dashboard/index/save-comments-archive',
+type: 'get',
+data: "assign_id="+assign_id,
+async: false,
+beforeSend: function()
+{
+},
+success: function (data) {
+ //$("#CommentsTabs").html(data);
+ getAutoComments();
+},
+});
+} 	
+		
+}
+function getActivityHistory()
+{
+	$.ajax({
+	type: "POST",
+	url: "<?=SITEURL?>dashboard/index/get-activity-history",
+	data: 'assign_id=<?=$this->QueryInfo['assign_id']?>',
+	dataType:'json',
+	success: function(response) {
+	var html="";
+	 
+	 $.each(response.activity,function(i,obj) 
+	{
+    html+='<div style="padding:8px;">';
+	html+='<span><a href="javascript:" class="red-text">'+obj.user_name+'</a> ';
+	html+='<span style="color: #000;">'+obj.message+'</span>';
+	html+='<span style="margin-left:20px;color: #000;" class="date-milestone">'+obj.action_date+'</span>';
+	html+='</div>';
+
+		  });
+  
+		  if(response.activity.length > 0)
+		  {
+			$("#activityHistoryArea").show();  
+		  }
+		  else
+		  {
+			  $("#activityHistoryArea").hide();
+		  }
+	 
+	$("#activityHistoryData").html(html);
+	 
+	},
+   error: function( error )
+   {
+     alert( error );
+   }
+	});	
+}
+
+ 
+ 
+ function showChatHistory()
+ {  
+  	
+ <?php  if($this->quoteInfo['id']){ ?>
+ $.ajax({
+		type : 'POST',
+		url : '<?=SITEURL?>managequote/index/getquotechat',
+		data : "quote_id=<?=$this->quoteInfo['id']?>",
+		cache:false,
+		beforeSend: function()
+		{
+			 
+		},
+		success: function(response)
+		{
+		$("#chat_content").html(response);
+		
+		
+ 
+ 
+		}
+	  });
+	  
+	 showAdminQuoteDetails();
+ <?php  }?>					 
+ }
+ 
+ 
+ function showAdminQuoteDetails()
+ {
+ $.ajax({
+		type : 'POST',
+		url : '<?=SITEURL?>managequote/index/admin-quote-details',
+		data : "quote_id=<?=$this->quoteInfo['id']?>",
+		cache:false,
+		beforeSend: function()
+		{
+			$("#adminQuoteDetails").html('<div style="text-align:center;"> <img style="height:100px;" src="<?=PUBLICURL?>images/pre-loader-new.gif"></div>');
+		},
+		success: function(response)
+		{
+		$("#adminQuoteDetails").html(response);
+		 
+		}
+	  });	 
+ }
+ 
+ function ShowUserPriceQuote()
+ {
+ $.ajax({
+		type : 'POST',
+		url : '<?=SITEURL?>pricequote/index/user-price-quote',
+		data : "ref_id=<?=$this->QueryInfo['assign_id']?>",
+		cache:false,
+		beforeSend: function()
+		{
+			$("#tab_GeneratePrice").html('<div style="text-align:center;"> <img style="height:100px;" src="<?=PUBLICURL?>images/pre-loader-new.gif"></div>');
+		},
+		success: function(response)
+		{
+		
+		$("#tab_GeneratePrice").html(response);
+		 
+		}
+	  });	 
+ }
+ function ShowAttachedFiles()
+ {
+ $.ajax({
+		type : 'POST',
+		url : '<?=SITEURL?>managequery/index/show-attached-files',
+		data : "ref_id=<?=$this->QueryInfo['assign_id']?>",
+		cache:false,
+		beforeSend: function()
+		{
+			$("#tab_AttachedFiles").html('<div style="text-align:center;"> <img style="height:100px;" src="<?=PUBLICURL?>images/pre-loader-new.gif"></div>');
+		},
+		success: function(response)
+		{
+		
+		$("#tab_AttachedFiles").html(response);
+		 
+		}
+	  });	 
+ }
+ function ShowCommentsAttachedFiles()
+ {
+ $.ajax({
+		type : 'POST',
+		url : '<?=SITEURL?>managequery/index/show-attached-files',
+		data : "ref_id=<?=$this->QueryInfo['assign_id']?>",
+		cache:false,
+		beforeSend: function()
+		{
+			$("#tab_AttachedFiles").html('<div style="text-align:center;"> <img style="height:100px;" src="<?=PUBLICURL?>images/pre-loader-new.gif"></div>');
+		},
+		success: function(response)
+		{
+		
+		$("#tab_AttachedFiles").html(response);
+		 
+		}
+	  });	 
+ }
+  function ShowInternalComments()
+ {
+ $.ajax({
+		type : 'POST',
+		url : '<?=SITEURL?>dashboard/index/show-internalComments',
+		data : "ref_id=<?=$this->QueryInfo['assign_id']?>",
+		cache:false,
+		beforeSend: function()
+		{
+			$("#tab_InternalComments").html('<div style="text-align:center;"> <img style="height:100px;" src="<?=PUBLICURL?>images/pre-loader-new.gif"></div>');
+		},
+		success: function(response)
+		{
+		
+		$("#tab_InternalComments").html(response);
+		 
+		}
+	  });	 
+ }
+ function changeMailTemplateContent(id)
+ {
+ $.ajax({
+		type : 'POST',
+		url : '<?=SITEURL?>template/index/get-template-info',
+		data : "table=tbl_email_template&id="+id,
+		cache:false,
+		dataType: 'json',
+		beforeSend: function()
+		{
+		 
+		},
+		success: function(response)
+		{ 
+		 $("#toggleMailTemp").html(response.template_name);
+		 $("#mail_subject").val(response.mail_subject);
+	$('.wysihtml5-sandbox').contents().find(' .textarea1 ').html(response.mail_body);
+		}
+	  });	 
+ }
+ 
+ function EditTemplateContent(type)
+ {
+      $("#TempShow"+type).show();	 
+	  $("#TempHide"+type).hide();
+	  $("#approveStatus"+type).val(0);  
+ }
+ 
+ function showFollowupSection()
+ {
+$("#followUpSection").slideToggle();	
+
+ 	$.ajax({
+	type: "POST",
+	url: "<?=SITEURL?>dashboard/index/get-followup-history",
+	data: 'assign_id=<?=$this->QueryInfo['assign_id']?>',
+	success: function(response) { 
+		  
+		  $("#followupSumData").html(response);
+		   
+	 
+	},
+   error: function( error )
+   {
+     alert( error );
+   }
+	});	
+
+ 
+ }
+ 
+ function showEmailCCBCC(type)
+ {
+	if(type=='cc') 
+	{
+	$("#ccMailDiv").slideToggle();
+	}
+	
+	if(type=='bcc') 
+	{
+	$("#bccMailDiv").slideToggle();
+	}
+	
+ }
+ 
+ function checkEscalationMark(checkvalue)
+ {
+	if(checkvalue==true)
+	{
+    var escalation_mark=1;
+	var mess="Escalation marked has been successfully.";
+	}
+	else
+	{
+	var escalation_mark=0;
+    var mess="Escalation unmark has been successfully.";	
+	}	
+
+ 	$.ajax({
+	type: "POST",
+	url: "<?=SITEURL?>managequery/index/update-escalation-status",
+	data: 'assign_id=<?=$this->QueryInfo['assign_id']?>&escalation_mark='+escalation_mark,
+	success: function(response) { 
+	
+	if(response)
+	{
+	 alert(mess);
+ 	}
+	     
+	},
+   error: function( error )
+   {
+     alert( error );
+   }
+	});
+ }
+</script>
+
+<script>
+ function ChangeFolloupDate(fl_id)
+ {
+$("#show_flday_div"+fl_id).hide();
+$("#edit_flday_div"+fl_id).show();	 
+ }
+ 
+  function SaveFollowupDate(fl_id)
+ {
+ var edit_followup_day = $("#edit_followup_day"+fl_id).val();
+ if(edit_followup_day=="")
+ {
+	alert("Please select followup date"); 
+	return false;
+ }
+ else
+ {
+ $.ajax({
+                url: '<?=SITEURL?>followupsetting/index/update-followup-date',
+                type: 'POST',
+				data: "fl_id="+fl_id+"&followup_day="+edit_followup_day+"&assign_id=<?=$this->QueryInfo['assign_id']?>",
+                async: false,
+                beforeSend: function()
+                {
+                },
+                success: function (data) {
+
+                    if(data)
+                    { 
+				        $("#show_flday_div"+fl_id).html(data+' <span onclick="ChangeFolloupDate('+fl_id+')" style="font-size: 15px; margin-left: 10px; cursor:pointer;" class="fa fa-edit"></span>');
+                        $("#show_flday_div"+fl_id).show();
+                        $("#edit_flday_div"+fl_id).hide();
+						 
+                    }
+                },
+            });	
+ }			
+ }
+ 
+function AddExternalComments()
+{
+$("#externalCommentsDiv").slideToggle();	
+$("#emailCommentsDiv").slideToggle();	
+} 
+function UpdateOnlyComents()
+{
+if($("#comments").val()=="")
+{
+alert("Please enter comment.");	
+return false;
+}
+else
+{
+ var url = "<?=SITEURL?>managequery/index/onlycommentsubmit"; // the script where you handle the form input.
+ $.ajax({
+        	url: url,
+			type: "POST",
+			data:  $('#viewDetailsForm').serialize(),
+			beforeSend: function()
+			{
+			$("#submitBtnC2").show();
+			$("#submitBtnC1").hide();
+			},
+			success: function(data){
+			$("#submitBtnC2").hide();
+	        $("#submitBtnC1").show();
+			$("#comments").val('');
+			$("#succ_mess").html('<div class="alert alert-success alert-dismissible"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button><i class="icon fa fa-check"></i> Comments submitted successfully.</div>');
+			$("#succ_mess").fadeOut(10000);
+            getAutoComments();			
+		    },
+		  	error: function(){} 	        
+	   });
+ 
+}
+ 	
+}
+
+function getCopyContent(element)
+{
+  var $temp = $("<input>");
+  $("body").append($temp);
+  $temp.val($(element).text()).select();
+  document.execCommand("copy");
+  $temp.remove();	
+}
+
+  function ShowCampaginComments()
+ {
+ $.ajax({
+		type : 'POST',
+		url : '<?=SITEURL?>managequery/index/show-campaign-comments',
+		data : "ref_id=<?=$this->QueryInfo['assign_id']?>",
+		cache:false,
+		beforeSend: function()
+		{
+			$("#tab_CampaginComments").html('<div style="text-align:center;"> <img style="height:100px;" src="<?=PUBLICURL?>images/pre-loader-new.gif"></div>');
+		},
+		success: function(response)
+		{
+		
+		$("#tab_CampaginComments").html(response);
+		 
+		}
+	  });	 
+ }
+  function ShowLeadAssign()
+ {
+ $.ajax({
+		type : 'POST',
+		url : '<?=SITEURL?>managequery/index/show-lead-assign',
+		data : "ref_id=<?=$this->QueryInfo['assign_id']?>",
+		cache:false,
+		beforeSend: function()
+		{
+			$("#tab_LeadAssign").html('<div style="text-align:center;"> <img style="height:100px;" src="<?=PUBLICURL?>images/pre-loader-new.gif"></div>');
+		},
+		success: function(response)
+		{
+		
+		$("#tab_LeadAssign").html(response);
+		 
+		}
+	  });	 
+ }
+ 
+ 
+ 
+</script>

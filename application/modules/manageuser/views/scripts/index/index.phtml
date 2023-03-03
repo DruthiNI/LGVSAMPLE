@@ -1,0 +1,213 @@
+ <?php $date = new Zend_Date();?>
+  <title>Admin | Dashboard</title>
+ <form name="form1" method="post" action="">
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>User List</h1>
+       <div class="breadcrumb">
+      
+	  <?php  if(isset($this->userInfo->id) and $this->userInfo->user_type=='admin'){   ?>
+	  <input class="btn btn-primary btn-sm btn-flat" type="button" value="Delete"  onclick="javascript:delRecord();" >
+      <input class="btn btn-primary btn-sm btn-flat" type="button" value="Export"  onclick="javascript:ExportRecord();" >
+      <a class="btn btn-primary btn-sm btn-flat" href="<?=SITEURL?>manageuser/adduser">Add User</a>
+	  <?php }?>
+      </div>
+    </section>
+      <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+           <div class="box">
+            <!-- /.box-header -->
+            <div class="box-body">  
+			  <table id="example1" class="table table-bordered table-striped table-responsive">
+              <thead>
+                 <tr>
+                 <th><input name=" 2" type="checkbox" onclick="checkAll(document.form1.check,this)" /></th>
+ 				 <th>Sr. No.</th>
+				 <th>Name</th>
+				 <th>Username</th>
+                 <th>Password</th>
+                 <th>Email ID</th>
+                 <th>User Type</th>
+                 <!--<th>Order</th>-->
+                 <th>Status</th>
+                 <th>Created Date</th>
+                 <th>View Leads</th>
+                 <th>Action</th>
+  				 </tr>
+                 </thead>
+                       <tbody>  
+                          <?php $i=1;
+                          foreach($this->userArr as $users)
+						  {
+						  ?>
+                                <tr>
+                                <td><input id="check" name="checkid[]" type="checkbox" value="<?php echo $users['id'];?>"  /></td>
+                                <td><?=$i;?></td>
+								<td><?php echo $users['name'];?></td>
+								<td><?php echo $users['username'];?></td>
+                                <td><?php echo $users['password'];?></td>
+                                <td><?php echo $users['email_id'];?></td>
+                                <td><?php echo $users['user_type'];?></td>
+                                <!--<td><?php //echo $users['set_order'];?></td>-->
+ 								<td>
+                                <?php if($users['status']==1){?>
+                                <a href="<?php echo SITEURL?>manageuser/?userid=<?php echo $users['id'];?>&status=0">Active</a>
+                              <?php } else {?>
+                              <a href="<?php echo SITEURL?>manageuser/?userid=<?php echo $users['id'];?>&status=1">Inactive</a>
+                                <?php }?>
+                                </td>
+								<td><?php  echo date("d/m/Y",$users['created_on']); 
+ 								?></td>
+                                  <td> <a href="<?php echo SITEURL?>managequery/index/userquery/userid/<?php echo $users['id'];?>"><img src="<?=PUBLICURL?>images/view-details.png"></a></td>
+                                <td>
+                                <a href="<?php echo SITEURL?>manageuser/index/edituser/userid/<?php echo $users['id'];?>"><img src="<?=PUBLICURL?>images/edit.gif"></a>
+                                 </td>
+  							</tr>
+                         <?php $i++; }?>
+                  </tbody>
+              </table>
+			  
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+ 
+  </div>
+     </form>
+  <script type="text/javascript">
+
+function checkAll(checkname, exby) {
+  for (i = 0; i < checkname.length; i++)
+  checkname[i].checked = exby.checked? true:false
+ }
+ 
+function SendMail(int_dogid)
+{    
+       var formobj=document.form1;
+	if(check_mul(formobj))
+	{
+	
+	if($("#template_id").val()!="")
+	{
+	  if(confirm("Are you sure you want to send mail!"))
+	   {
+		var formobj=document.form1;
+		formobj.action="sendmail.php?Action=sendmail";
+		formobj.submit();
+	  }
+	}
+	else
+	{
+	alert("Please select template");
+	document.getElementById("template_id").focus();	
+	return false;
+	}
+	}
+}
+
+function delRecord(int_dogid)
+{    
+    var formobj=document.form1;
+	if(check_mul(formobj))
+	{
+	if(confirm("Are you sure you want to delete record!"))
+	{
+		var formobj=document.form1;
+		formobj.action="?Action=Delete";
+		formobj.submit();
+	} 
+	}
+}
+
+function ExportRecord(int_dogid)
+{    
+    var formobj=document.form1;
+	if(check_mul(formobj))
+	{
+	if(confirm("Are you sure you want to export record!"))
+	{
+		var formobj=document.form1;
+		formobj.action="<?=SITEURL?>manageuser/index/export";
+		formobj.submit();
+	} 
+	}
+}
+
+function check_one(formObj)
+{
+	count=0;
+	for (var i=0;i < formObj.length;i++) 
+    {
+		fldObj = formObj.elements[i];
+		if (fldObj.type == 'checkbox')
+		{
+			if(fldObj.checked == true)
+			{
+				count=count+1;
+			}
+		}
+    }
+	if(count>1)
+	{
+		alert("please select only one record");
+		return false;
+	}
+	if(count==0)
+	{
+		alert("Please select a record");
+		return false;
+	}
+	return true;
+}
+
+function check_mul(formObj)
+{
+	count=0;
+	for (var i=0;i < formObj.length;i++) 
+    {
+		fldObj = formObj.elements[i];
+		if (fldObj.type == 'checkbox')
+		{
+			if(fldObj.checked == true)
+			{
+				count=count+1;
+			}
+		}
+    }
+	if(count==0)
+	{
+		alert("Please select a record");
+		return false;
+	}
+	return true;
+}
+
+ 
+ function ValidateSearch()
+ {
+ if(($("#from_date").val()!="" || $("#to_date").val()!="") && ($("#from_date").val()=="" || $("#to_date").val()=="")) 
+ {
+	alert("Please select both From date and To date.") 
+	return false;
+ }
+ }
+</script>
+
+<script>
+  $(document).ready(function() {
+    $("#example1").DataTable({
+order: [],
+columnDefs: [ { orderable: false, targets: [0] } ],
+iDisplayLength: 10
+});
+   });
+</script>

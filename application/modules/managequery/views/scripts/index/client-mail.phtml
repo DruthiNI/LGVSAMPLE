@@ -1,0 +1,368 @@
+<?php  $date = new Zend_Date();
+$this->userObj = new Manageuser_Model_Manageuser();
+$this->QueryDashboardObj = new Dashboard_Model_Managequery();
+?>
+ 
+ 
+ <form name="form1" id="form1" method="post" action="">
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+  
+    <section class="content-header">
+      <h1>
+        Query History
+       </h1>
+        
+
+   </section>
+ 
+   <!-- Main content -->
+    <section class="content">
+     
+ 
+      <div class="row">
+         <div class="col-md-8">
+          <div class="box box-primary">
+             <?php
+         if(isset($this->userInfo->id) and ($this->userInfo->user_type=='admin' or $this->userInfo->user_type=='sub-admin')){ 
+		?>	  
+       <input class="btn btn-primary btn-sm btn-flat" type="button" value="Delete"  onclick="javascript:delRecord();" >
+		 <?php }?>
+		 
+		 <input class="btn btn-primary btn-sm btn-flat" type="button" value="Mark as unread"  onclick="javascript:MarkUnread();" >
+		 
+		 <input class="btn btn-primary btn-sm btn-flat" type="button" value="Mark as read"  onclick="javascript:MarkRead();" >
+		 
+		 <div class="pull-right">
+		 <div class="row">
+		 
+		 <div class="col-md-6">
+		 <div id="dashboardDataFilterBtn">
+		 <input type="hidden" id="conversion_date_summary" name="date_filter">
+		  <div class="input-group">
+		  <button type="button" class="btn btn-default pull-right" id="daterange-btn">
+			<span>
+			  <i class="fa fa-calendar"></i> Date range filter
+			</span>
+			<i class="fa fa-caret-down"></i>
+		  </button>
+		  </div>
+		 </div>
+		 </div>
+		 <div class="col-md-6">
+		 <select name="from_email_id" id="from_email_id" class="form-control select2" onchange="SearchMail()">
+		  <option value="">Select To Email</option>
+		  <?php foreach($this->profileData as $emails){?>
+		  <option value="<?=$emails['website_email']?>"><?=$emails['website_email']?></option>
+		  <?php } ?>
+		 </select>
+		 </div>
+		 </div>
+		 
+		 </div>
+		 <div class="clearfix"></div>
+            <!-- /.box-header -->
+            <div class="box-body no-padding">
+            
+              <div class="table-responsive mailbox-messages" id="LoadMailContentList">
+		
+                  
+
+			   <!-- /.table -->
+              </div>
+              <!-- /.mail-box-messages -->
+            </div>
+            <!-- /.box-body -->
+            
+		  
+		  </div>
+          <!-- /. box -->
+        </div>
+		
+		 <div class="col-md-4">
+           <div class="box box-primary" id="loadViewClientMail">
+		  <div style="padding:100px;">No conversations selected</div>
+		   </div>
+        </div>
+        
+        <div class="col-xs-12 scroll-div" id="SecondDiv"></div>
+        
+        
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+ 
+  </div>
+     </form>
+<!-- End Container -->
+
+<!-- Footer -->
+
+  <script type="text/javascript">
+
+function checkAll(checkname, exby) {
+  for (i = 0; i < checkname.length; i++)
+  checkname[i].checked = exby.checked? true:false
+ }
+ 
+function SendMail(int_dogid)
+{    
+       var formobj=document.form1;
+	if(check_mul(formobj))
+	{
+	
+	if($("#template_id").val()!="")
+	{
+	  if(confirm("Are you sure you want to send mail!"))
+	   {
+		var formobj=document.form1;
+		formobj.action="sendmail.php?Action=sendmail";
+		formobj.submit();
+	  }
+	}
+	else
+	{
+	alert("Please select template");
+	document.getElementById("template_id").focus();	
+	return false;
+	}
+	}
+}
+
+function delRecord(int_dogid)
+{    
+    var formobj=document.form1;
+	if(check_mul(formobj))
+	{
+	if(confirm("Are you sure you want to delete record!"))
+	{
+		var formobj=document.form1;
+		formobj.action="?Action=Delete";
+		formobj.submit();
+	} 
+	}
+}
+
+function MarkUnread(int_dogid)
+{
+ var formobj=document.form1;
+	if(check_mul(formobj))
+	{
+	 MarkUnreadAndRead('unread');
+	}	
+}
+function MarkRead(int_dogid)
+{
+ var formobj=document.form1;
+	if(check_mul(formobj))
+	{
+	 MarkUnreadAndRead('read');
+	}	
+}
+ 
+
+function check_one(formObj)
+{
+	count=0;
+	for (var i=0;i < formObj.length;i++) 
+    {
+		fldObj = formObj.elements[i];
+		if (fldObj.type == 'checkbox')
+		{
+			if(fldObj.checked == true)
+			{
+				count=count+1;
+			}
+		}
+    }
+	if(count>1)
+	{
+		alert("please select only one record");
+		return false;
+	}
+	if(count==0)
+	{
+		alert("Please select a record");
+		return false;
+	}
+	return true;
+}
+
+function check_mul(formObj)
+{
+	count=0;
+	for (var i=0;i < formObj.length;i++) 
+    {
+		fldObj = formObj.elements[i];
+		if (fldObj.type == 'checkbox')
+		{
+			if(fldObj.checked == true)
+			{
+				count=count+1;
+			}
+		}
+    }
+	if(count==0)
+	{
+		alert("Please select a record");
+		return false;
+	}
+	return true;
+}
+
+function MarkUnreadAndRead(type)
+ {
+ var all_location_id = document.querySelectorAll('input[name="checkid[]"]:checked');
+
+var aIds = [];
+for(var x = 0, l = all_location_id.length; x < l;  x++)
+{ 
+  // alert(all_location_id[x].value);
+  mail_id=all_location_id[x].value;
+   aIds.push(all_location_id[x].value);
+  if(type=='unread')
+  {
+	  $('.SubjectDiv'+mail_id).css('font-weight','bold'); 
+  }
+  else
+  {
+	$('.SubjectDiv'+mail_id).css('font-weight','normal'); 
+  }
+  
+}
+
+ 	
+	$.ajax({
+    type : 'POST',
+    url : '<?php echo SITEURL?>managequery/index/readunread-clientmail',
+    data :"mail_id="+aIds+"&type="+type,
+	cache:false,
+	beforeSend: function()
+	{
+ 	
+ 
+ 	},
+	success: function(response)
+	{
+     
+	  $('.ClientTotalUnraed').html(response);
+	}
+  });	 
+ }
+ 
+</script>
+
+
+
+<script>
+ $(document).ready(function() {
+	 $('[data-toggle="tooltip"]').tooltip();
+	 $('#filter_date').daterangepicker();
+	 $('#daterange-btn span').html('<i class="fa fa-calendar"></i> <?=date("M d, Y", strtotime("-1 week"))?> - <?=date("M d, Y", time())?>');
+	//$('#filter_date').daterangepicker(); 
+	$("#conversion_date_summary").val('<?=date("m/d/Y", strtotime("-1 week"))?> - <?=date("m/d/Y", time())?>');
+	$("#filter_date").val('<?=date("m/d/Y", strtotime("-1 week"))?> - <?=date("m/d/Y", time())?>');
+	
+	   $('#daterange-btn').daterangepicker(
+      {
+        ranges   : {
+          'Today'       : [moment(), moment()],
+          'Yesterday'   : [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+          'Last 7 Days' : [moment().subtract(6, 'days'), moment()],
+          'Last 15 Days' : [moment().subtract(14, 'days'), moment()],
+          'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+          'This Month'  : [moment().startOf('month'), moment().endOf('month')],
+          'Last Month'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        },
+        startDate: moment().subtract(6, 'days'),
+        endDate  : moment()
+      },
+      function (start, end) {
+        $('#daterange-btn span').html('<i class="fa fa-calendar"></i> '+start.format('MMM D, YYYY') + ' - ' + end.format('MMM D, YYYY'));	
+		$("#conversion_date_summary").val(start.format('MM/DD/YYYY')+' - '+end.format('MM/DD/YYYY'));
+		$("#filter_date").val(start.format('MM/DD/YYYY')+' - '+end.format('MM/DD/YYYY'));
+		SearchMail();
+      }
+    );
+	 SearchMail();
+}); 
+  /*$(document).ready(function() {
+ SearchMail();
+   });
+   */
+   
+function clicktoViewDetails(mail_id)
+{
+$.ajax({
+    type : 'POST',
+    url : '<?php echo SITEURL?>managequery/index/client-mail-details',
+    data :"mail_id="+mail_id,
+	cache:false,
+	beforeSend: function()
+	{
+	$("#loadViewClientMail").html('<div style="text-align:center;"> <img style="height:150px;" src="<?=PUBLICURL?>images/pre-loader-new.gif"></div>');	
+ 
+ 	},
+	success: function(response)
+	{
+	 $("#loadViewClientMail").html(response);
+	  
+	  $('.SubjectDiv'+mail_id).css('font-weight','normal');
+	  
+	  $('html, body').animate({
+scrollTop: $('#loadViewClientMail').offset().top
+}, 1000);
+	  
+	}
+  });  
+}
+ 
+function MergeClientsMail(ref_id,mail_id)
+{
+$.ajax({
+    type : 'POST',
+    url : '<?php echo SITEURL?>managequery/index/merge-client-mail',
+    data :"ref_id="+ref_id+"&mail_id="+mail_id,
+	cache:false,
+	beforeSend: function()
+	{
+	 
+	},
+	success: function(response)
+	{
+	 $("#loadViewClientMail").html('<div style="padding:30px;">Mail has been merged successfully to <a href="javascript:" style="text-decoration: underline;" onclick="OpenQueryDetailsPopUp('+ref_id+');">Ref. Id : '+ref_id+'</a>.</div>'); 
+	 $("#Delete"+mail_id).remove();
+	}
+  });
+}
+
+ function SearchMail()
+ {
+ 
+ 		$.ajax({
+    type : 'POST',
+    url : '<?php echo SITEURL?>managequery/index/loadclientmail',
+    data : $('#form1').serialize() +"&searchBtn=1",
+	cache:false,
+	beforeSend: function()
+	{
+	$("#LoadMailContentList").html('<div style="text-align:center;"> <img style="height:150px;" src="<?=PUBLICURL?>images/pre-loader-new.gif"></div>');
+	},
+	success: function(response)
+	{
+$("#LoadMailContentList").html(response);	
+	}
+	
+	
+});
+		
+	 
+ }
+ 
+  
+ 
+ 
+</script>
+

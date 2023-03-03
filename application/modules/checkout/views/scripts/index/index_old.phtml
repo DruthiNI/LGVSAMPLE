@@ -1,0 +1,394 @@
+<?php
+ $m_totalPrice=$this->MilestoneInfo['milestone_price']; 
+if($this->serviceInfo['discount_type']==1)
+{
+$DiscountedPrice=($m_totalPrice-($m_totalPrice*$this->serviceInfo['discount_value'])/100);
+}
+else if($this->serviceInfo['discount_type']==2)
+{
+$DiscountedPrice=($m_totalPrice-($this->serviceInfo['discount_value'])/count($this->MilestoneData));	
+}
+else
+{
+$DiscountedPrice=$m_totalPrice;
+}
+
+if($this->serviceInfo['payment_website']=='Fivevidya')
+{
+$logo_url='https://www.fivevidya.com/images/logo.png';	
+$domain='fivevidya.com';
+$action_url="https://www.editingproofreading.in/fivevidya/secured-payment.php";
+}
+else if($this->serviceInfo['payment_website']=='Emarketz')
+{
+$logo_url='https://www.emarketz.net/img/logo.png';		
+$domain='emarketz.net';
+$action_url="";
+}
+else if($this->serviceInfo['payment_website']=='Chankya Research')
+{
+$logo_url='https://www.chanakyaresearch.com/images/logo.png';
+$domain='chanakyaresearch.com';	
+$action_url="https://www.chanakyaresearch.com/payment/checkout.php";
+}
+else if($this->serviceInfo['payment_website']=='Chankya Instamojo')
+{
+$logo_url='https://www.chanakyaresearch.com/images/logo.png';
+$domain='chanakyaresearch.com';	
+$action_url="https://www.chanakyaresearch.com/payment/checkout.php";
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<title>Order Summary</title>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+    <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> 
+ 
+    <link href="<?=PUBLICURL?>fivevidya/css/bootstrap.css" rel="stylesheet">
+    <link href="<?=PUBLICURL?>fivevidya/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" media="all" href="<?=PUBLICURL?>fivevidya/css/testimonial.css">
+ 
+ 
+  </head><style>
+.cartLinkCart.lw-button-primary {
+    font-size: 25px;
+    display: block;
+    cursor: pointer;
+    border: none;
+    text-align: center;
+    text-decoration: none;
+    background-color: #84BF42;
+    color: #fff;
+    line-height: normal;
+    border-radius: 4px;
+    padding: 14px 20px;
+    margin: 15px 0;
+    background: -webkit-linear-gradient(#9dd55f,#5e9420);
+    background: linear-gradient(#9dd55f,#5e9420);
+  /*  box-shadow: 0px 0px 10px #84BF42; */
+	    width: 100%;
+}
+.cartLinkCart.lw-button-primary:hover {
+    background: #7cc727;
+}
+.checkoutbtn{
+position:relative;
+}
+.checkouticon {
+    position: absolute;
+    font-size: 30px;
+    left: 57px;
+    top: 14px;
+}
+</style>
+
+  <body>
+ 
+    <div class="container">
+    
+    
+        
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    <div class="row">
+   
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+    <div class="row">
+    <div class="logo"><a href="<?='http://www.'.$domain?>"><img src="<?=$logo_url?>" alt="fivevidya"/></a></div>
+    <div class="row">
+    </div>
+    
+    </div>
+    
+  </div>
+  
+  <div class="col-lg-7 col-md-7 col-sm-7 col-xs-12">
+     
+    
+  </div>
+  
+  </div>
+  </div>
+  
+  
+     
+ <!-- Static navbar -->
+      
+
+
+       <!-- banner-section start -->
+      
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <div class="row loadMainDiv">
+     <form action="<?=SITEURL?>checkout/index/checkout-form" class="coupon-code-form form-full-width v-rhythm-condensed">
+
+ 
+      <h3>Order Summary: Check your Order Detail below : <strong><?=$this->serviceInfo['ref_id']?></strong></h3>
+    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12 left-cont box-mid">
+        <div class="row">
+          <div class="well">
+          		<div style="display:none;" class="discounthead"> <?=$this->serviceInfo['discount_value']?>% off the base price of <i class="fa fa-inr" aria-hidden="true"></i><span id="duscounted_price_div"></span> for the first  months with coupon code <?=$this->serviceInfo['coupon_code']?>.</div>
+               <?=$this->serviceInfo['order_summary']?>
+			    <div>
+				 
+				<br/>
+				<?=$this->serviceInfo['service_name']?>
+ 				 
+				</div>
+				<p>
+			   <?php
+			   if($this->serviceInfo['document_file'])
+			   {
+				 $userfile_extn = explode(".", strtolower($this->serviceInfo['document_file']));
+                   $extension = end($userfile_extn);
+if($extension=='pdf')
+{
+$icon='pdf-o';	
+}	
+else if($extension=='doc' or $extension=='docx')
+{
+$icon='word-o';	
+}	
+else
+{
+$icon='excel-o';	
+}
+
+if($this->serviceInfo['document_file']!="" and $this->serviceInfo['file_title_name']!="")
+{
+			   ?>
+			   <div style="font-weight:bold;color: #4a4a4a; font-size:20px;">
+			   <a href="<?=SITEURL?><?=$this->serviceInfo['document_file']?>" class="btn btn-success" style="border-radius:3px;">
+			   <i class="fa fa-file-<?=$icon?>" aria-hidden="true"></i> <?=$this->serviceInfo['file_title_name']?>
+			   <i class="fa fa-cloud-download" aria-hidden="true" style="margin: -7px -13px -7px 12px;padding:6px 12px;background: #2c3e50;line-height: 1.7;border-radius:0 3px 3px 0;"></i>
+			   </a>
+			   </div>
+<?php } }?>
+</p>
+			   <!-- <i class="fa fa-file-pdf-o" style="font-size:36px"></i>PDF
+			  <i class="fa fa-file-word-o" style="font-size:36px"></i>Words--> 
+			  
+           </div>
+       
+
+
+	   </div>
+    </div>
+<div class="col-sm-4 checkoutsidebar">
+
+   
+   
+    <div class="cart-side-scroll">
+        <div class="price-scroll">
+            <div class="price-line-item-container">
+                <div class="priceItem price-item-subtotal">
+            
+			<table border="1" cellpadding="5"  cellspacing="0" style="border: solid 1px;border-color: #cbcbcb;padding: 10px;font-size:16px "  id="milestoneData">
+			<tr>
+			<th> &nbsp; Sr. No.</th>
+			<th> &nbsp; Milestone Price</th>
+			<!--<th> &nbsp; Discounted Price</th>-->
+			<th> &nbsp; Status </th>
+			</tr>
+			
+			<?php $i=1; 
+          
+			foreach($this->MilestoneData as $Milestoneval)
+			{
+			
+			?>
+			<tr>
+			<td> &nbsp; <?=$i?></td>
+			<td> &nbsp; <?="INR ".$Milestoneval['milestone_price']?></td>
+			<!--<td> &nbsp; INR <?php echo $Milestoneval['milestone_price']-($Milestoneval['milestone_price']*$this->serviceInfo['discount_value']/100);?></td>  -->
+			<td> <?php if($Milestoneval['status']==1){echo "Paid" ;}else{echo "Pending";} ?>
+			</td>
+			</tr>
+			<?php $i++;}?>
+			</table>
+				
+					
+					<div class="tag">Total</div>
+               		 <span class="price-item-value" id="m_totalPrice"><i class="fa fa-inr" aria-hidden="true"></i> <?=$m_totalPrice?></span> 
+					 <div id="show_disconted_price" style="display:none;">
+					  <span class="price-item-value" id="deductedAmount"><i class="fa fa-inr" aria-hidden="true"></i> - <?=($m_totalPrice-$DiscountedPrice)?></span>
+					  <span style="margin-left: 20px;background-color: #cccccc;padding: 5px;font-size: 18px;"><?=$this->serviceInfo['coupon_code']?></span>
+					  
+					  <hr>
+					 
+					  <span class="price-item-value" id="DiscountedPrice"><i class="fa fa-inr" aria-hidden="true"></i> <?php
+					 echo $DiscountedPrice;
+					  ?></span>
+					  </div>
+					 
+                </div>
+            
+			<input type="hidden" name="id" value="<?=$this->serviceInfo['id']?>">
+			
+			<?php if($this->serviceInfo['discount_type']==1 or $this->serviceInfo['discount_type']==2){?>
+                <div class="coupon-input-container" id="hide_coupon_div">
+                <label>Coupon Code</label>
+				<input type="hidden" name="amount" id="amount" value="<?=$m_totalPrice?>">
+				<input type="hidden" name="discount_value" id="discount_value" value="<?=$this->serviceInfo['discount_value']?>">
+				<input type="hidden" name="coupon_code" id="coupon_code" value="<?=$this->serviceInfo['coupon_code']?>">
+				
+                 <input type="text" value="<?=$this->serviceInfo['coupon_code']?>" name="enter_code" id="enter_code" onkeypress="RemoveError()" placeholder="Enter Your Code">
+				
+                <button type="button" class="apply-coupon-action ladda-button" data-style="expand-left" data-spinner-size="20"  onclick="return ValidateCoupon()">
+                Apply
+                </button>
+				<div class="error" id="CodeError"></div>
+                 </div>
+			<?php } else { ?> <input type="hidden" name="amount" id="amount" value="<?=$m_totalPrice?>"> <?php }?>
+            
+            <div class="checkoutbtn">            
+            <input class="cartLinkCart lw-button-primary lw_button_check_out ladda-button" value="Checkout" type="submit"> <i class="fa fa-chevron-circle-right checkouticon" aria-hidden="true"></i>
+            </div>
+		
+			
+            </div>
+        
+        </div>
+    </div>  
+    
+    
+</div>
+ 
+ </form>
+
+<!--Footer-->
+<div class="col-lg-12 col-md-12 col-sm-12 footer">
+<div class="row">
+<div class="fot-txt">© 2015 <a class="main-color" href="<?='http://www.'.$domain?>"><?=ucfirst($domain)?></a> All rights reserved </div>
+<div class="fot-txt2"><?=ucfirst($domain)?> is a team of academic authors and experts engaged in providing research solutions</div>
+ 
+    <div class="logo-fot"><a href="<?='http://www.'.$domain?>"><img src="<?=$logo_url?>" alt="fivevidya"/></a></div>
+</div>
+</div>
+ 
+    <script src="<?=PUBLICURL?>fivevidya/js/jquery.js"></script>
+    <script src="<?=PUBLICURL?>fivevidya/js/bootstrap.min.js"></script>
+    <script>
+  jQuery(document).ready(function($){
+    $('#reload').click(function(){
+    var d = new Date();	
+    $('#captcha_img').attr('src', 'Captcha/captcha_simple.php?' + d.getTime());
+     
+    });
+	
+    });
+	
+function ValidateCoupon()
+{ 
+if($("#enter_code").val()=="")	
+{
+$("#enter_code").css('border-color','red');
+$("#CodeError").html('Please enetr coupon code');
+return false;
+}
+ if($("#enter_code").val()!=$("#coupon_code").val())	
+{
+$("#enter_code").css('border-color','red');
+$("#CodeError").html('Sorry, that coupon is invalid or expired.');
+return false;	
+} 
+else
+{
+	var total_price=$("#amount").val();
+	var discount_value=<?=$this->serviceInfo['discount_value']?>;
+	var discount_type=<?=$this->serviceInfo['discount_type']?>;
+	var totalMilestone=<?=count($this->MilestoneData)?>;
+	 
+	if(discount_type==1)
+	{
+	var  finel_price=(total_price-(total_price*discount_value)/100);
+	}
+	else
+	{
+	var  finel_price=(total_price-(discount_value)/totalMilestone);	
+	}
+  
+     $("#duscounted_price_div").html(finel_price);
+	 $("#amount").val(finel_price);
+	 
+	 $("#show_disconted_price").show();
+	$("#hide_coupon_div").hide();
+$(".discounthead").show();
+$("#enter_code").css('border-color','');
+$("#CodeError").html('');	
+}
+}
+
+
+
+function RemoveError()
+{
+$("#enter_code").css('border-color','');
+$("#CodeError").html('');	
+}
+ 
+    </script>
+ 
+      </div>
+      </div>
+      
+
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+<style>
+
+input[type="checkbox"] {
+    display:none;
+}
+
+input[type="checkbox"] + label {
+    
+}
+
+input[type="checkbox"] + label span {
+    display:inline-block;
+    width:19px;
+    height:19px;
+    margin:-2px 10px 0 0;
+    vertical-align:middle;
+    background:url(<?=PUBLICURL?>fivevidya/images/check_radio_sheet.png) left top no-repeat;
+    cursor:pointer;
+}
+
+input[type="checkbox"]:checked + label span {
+    background:url(<?=PUBLICURL?>fivevidya/images/check_radio_sheet.png) -19px top no-repeat;
+}
+
+input[type="radio"] {
+    display:none;
+}
+
+input[type="radio"] + label {
+     font-family:Arial, sans-serif;
+}
+
+input[type="radio"] + label span {
+    display:inline-block;
+    width:19px;
+    height:19px;
+    margin:-2px 10px 0 0;
+    vertical-align:middle;
+    background:url(<?=PUBLICURL?>fivevidya/images/check_radio_sheet.png) -38px top no-repeat;
+    cursor:pointer;
+}
+
+input[type="radio"]:checked + label span {
+    background:url(<?=PUBLICURL?>fivevidya/images/check_radio_sheet.png) -57px top no-repeat;
+}
+</style>
+  </body>
+</html>

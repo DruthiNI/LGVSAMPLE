@@ -1,0 +1,82 @@
+  <?php
+$quoteObj = new Managequote_Model_Managequote();
+ ?>
+  
+<table id="example1" class="table table-bordered table-striped table-responsive">
+              <thead>
+                 <tr class="headings">
+                 <th><input name=" 2" type="checkbox" onclick="checkAll(document.form1.check,this)" /></th>
+ 				 <th>Sr. No.</th>
+                          <th>Ref. ID</th>
+						  <?php if($this->userInfo->user_type!='Lead Validator'){?>
+                          <th>Username</th>
+						  <?php } ?>
+                          <th>Client Name</th>
+						  <th>Email</th>
+ 						   <th>Status </th>
+						  <th>Created Date </th>
+                          <th>Action</th>
+  				 </tr>
+                 </thead>
+                       <tbody>  
+                          <?php $i=1; 
+                          foreach($this->allQuoteData as $QuoteData)
+						  {
+						  $fetchTaskAssign=$quoteObj->CheckAssignTask($QuoteData['id']);
+ 						  ?>
+                          <tr>
+                           <td><input id="check" name="checkid[]" type="checkbox" value="<?php echo $QuoteData['id'];?>"  /></td>
+                           <td><?=$i?></td>
+                           <td><?=$QuoteData['ref_id']?></td>
+						   <?php if($this->userInfo->user_type!='Lead Validator'){?>
+                           <td align="center"><?=$QuoteData['name']?></td>
+						   <?php }?>
+						   <td align="center"><?=$QuoteData['client_name']?></td>
+						   <td align="center"><?=$QuoteData['client_email']?></td>
+  						    <td><?php
+							if($fetchTaskAssign['id'])
+							{
+							   if($fetchTaskAssign['status']==1)
+			                    {
+								 echo '<span style="color: green;">Qoute submitted by '.$fetchTaskAssign['name'].'</span>';   
+							    }
+								else
+								{
+								 echo 'Assigned to '.$fetchTaskAssign['name'];	
+								 echo "<br><span style='color:red;'>Pending</span>"; 
+								}							   
+							}
+							else
+							{
+								echo "<span style='color:red;'>Pending</span>"; 
+							}
+ 
+							
+						  ?></td>
+						   <td><?php echo $date = date("d M Y",$QuoteData['created_date']);?></td>
+                           <td><a class="label label-info" onclick="OpenQueryDetailsPopUp(<?=$QuoteData['ref_id'];?>)" href="javascript:">
+						   View Details</a>
+						   </td>
+  						</tr>
+                         <?php $i++; }?>
+                  </tbody>
+              </table>
+			  
+			  
+			  <script>
+  $(function () {
+    
+	  /*$('#filter_date').daterangepicker();*/
+    $("#example1").DataTable();
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": true
+    });
+ 
+ 
+  });
+</script>

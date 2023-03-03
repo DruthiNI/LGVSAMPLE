@@ -1,0 +1,377 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        Add New User
+       </h1>
+       
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <!-- left column -->
+        <div class="col-md-12">
+          <!-- general form elements -->
+          <div class="box box-primary">
+         <div align="center" style="color:#C00;"> <?=$this->errors;?></div>
+             <!-- form start -->
+            <form role="form" action="" method="post" id="user_form" name="user_form">
+              <div class="box-body">
+                <div class="row form-group">
+				  <div class="col-sm-4">
+				  <label for="exampleInputEmail1">Name<span class="error">*</span></label>
+                  <input type="text" name="name" id="name" class="form-control" value="<?php echo $this->params['name'];?>" />
+				  <div id="nameError" class="error"></div>
+				  </div>
+				  <div class="col-sm-4">
+				  <label for="exampleInputPassword1">Username<span class="error">*</span></label>
+                  <input type="text" name="username" id="username" class="form-control" value="<?php echo $this->params['username'];?>" />
+				  <div id="usernameError" class="error"></div>
+				  </div>
+				  <div class="col-sm-4">
+				  <label for="exampleInputPassword1">Password<span class="error">*</span></label>
+                   <input type="password" name="password" id="password" class="form-control" value="" />
+				   <div id="passwordError" class="error"></div>
+				  </div>                  
+                 </div>
+				 
+				 <div class="row form-group">
+				  <div class="col-sm-3">
+				  <label for="exampleInputPassword1">Confirm Password<span class="error">*</span></label>
+                   <input type="password" name="cpassword" id="cpassword" class="form-control" value="" />
+				   <div id="cpasswordError" class="error"></div>
+				  </div>
+				  <div class="col-sm-3">
+				  <label for="exampleInputPassword1">Email ID<span class="error">*</span></label>
+                  <input type="text" name="email_id" id="email_id" value="<?php echo $this->params['email_id'];?>" class="form-control" />
+				  <div id="email_idError" class="error"></div>
+				  </div>
+				  <div class="col-sm-3">
+				  <label for="exampleInputPassword1">Mobile No.<span class="error">*</span></label>
+                  <input type="text" name="mobile_no" id="mobile_no" value="<?php echo $this->params['mobile_no'];?>" class="form-control" />
+				  <div id="mobile_noError" class="error"></div>
+				  </div>
+
+                  <div class="col-sm-3">
+                  <label for="exampleInputPassword1">User Type<span class="error">*</span></label>
+                  <select name="user_type" id="user_type" class="form-control" onchange="changeUserType()">
+				  <option value="">Select User Type</option>
+				  <option value="sub-admin" <?=($this->params['user_type']=='sub-admin')?"selected":""?>>Sub Admin</option>
+				  <option value="Lead Validator" <?=($this->params['user_type']=='Lead Validator')?"selected":""?>>Lead Validator</option>
+				  <option value="Lead Generator" <?=($this->params['user_type']=='Lead Generator')?"selected":""?>>Lead Generator</option>
+				  </select>
+				  <div id="user_typeError" class="error"></div>
+                  </div>
+                  
+                 </div>
+				 
+				 <div class="row form-group">
+				 <div class="col-sm-4">
+				 <div class="form-group">
+                  <label for="exampleInputPassword1">Select Team</label>
+                  <select name="team_id[]" id="team_id" multiple class="form-control select2" data-placeholder="Select a Team">
+				  <option value="">Select Team</option>
+					 <?php
+					foreach($this->teamsArr as $team)
+					{ 
+					?>
+					<option value="<?php echo $team['id'];?>" <?=($this->params['team_id']==$team['id'])?"selected":""?>><?php echo $team['team_name'];?></option> 	
+					<?php }
+					?>                               
+					</select>
+					<div id="team_idError" class="error"></div>
+                  </div>
+				 </div>
+				 
+				 
+				 <div class="col-sm-4">
+				 <div class="form-group">
+                  <label for="exampleInputPassword1">Category</label>
+				  <div class="row">
+                  <div class="col-sm-6">
+				  <input type="radio" name="category" id="category1" class="flat-red" value="PhD" >
+				  <label for="category1">LG</label>
+				  </div>
+				  </div>
+				  <div id="categoryError" class="error"></div>
+                   </div>
+				 </div>
+				 <!--<div class="col-sm-2">
+				 <div class="form-group">
+                  <label for="exampleInputPassword1">Order</label>
+				   <select name="set_order" id="set_order" class="form-control" required="required">
+					<option value="">Select Order</option>
+					<?php
+					/*
+					for($i=1; $i<=50; $i++)
+					{ 
+					?>
+					<option value="<?=$i?>"> <?=$i?></option>
+					<?php }
+					*/
+					?>
+					</select>
+							  <div id="set_orderError" class="error"></div>
+							   </div>
+							 </div>-->
+							 
+					 <!--<div class="col-sm-2" id="campagnDiv" style="display:none;">
+				 <div class="form-group">
+                  <label for="exampleInputPassword1">Campaign Type</label>
+				   <select name="campaign_type" id="campaign_type" class="form-control">
+					<option value="">Campaign Type</option>
+					<option value="Email-Whatsapp"> Email/ Whatsapp</option>
+					<option value="Calling"> Calling </option>
+					<option value="Both"> Both </option>
+					</select>
+				  <div id="campaign_typeError" class="error"></div>
+				   </div>
+				 </div>-->
+				 
+				 <div class="col-sm-12">
+				   
+				  
+				  
+				   <div class="form-group" style="display:none;" id="profileDiv">
+				      <table class="table table-bordered table-responsive">
+        
+        
+         <tr>
+          <td>
+           <label for="exampleInputPassword1">Profile Name<span class="error">*</span></label>
+           <input type="text" name="profile_name[]" id="profile_name1" class="form-control" value="" placeholder="Profile Name"/>
+		   <div id="profile_name1Error" class="error"></div>
+          </td>
+        <td>
+        <label for="exampleInputPassword1">Website<span class="error">*</span></label>
+        <select name="website[]" id="website1" class="form-control">
+		<option value="">Select Website</option>
+		<?php
+		foreach($this->WebsiteData as $website)
+		{ 
+		?>
+        <option value="<?=$website['id']?>"><?=$website['website']?></option>
+		<?php }?>
+        </select>
+		 <div id="website1Error" class="error"></div>
+        </td>
+		<td>
+        <label for="exampleInputPassword1">Website Email ID<span class="error">*</span></label>
+		 <input type="text" name="website_email[]" id="website_email1" class="form-control" value="" placeholder="Website Email"/>
+         <div id="website_email1Error" class="error"></div>
+        </td>
+		<td style="width:400px;">
+        <label for="exampleInputPassword1">Signature<span class="error">*</span></label>
+		 <textarea style="height:70px;" name="signature[]" id="signature1" class="form-control textarea" value="" placeholder="Signature"></textarea>
+		 <div id="signature1Error" class="error"></div>
+        </td>
+            <!--<td style="padding:25px 0 0 10px; font-weight: 700; font-size:20px;">
+          <a style="cursor:pointer;" onclick="addMore();"> + </a>
+           </td>-->
+         </tr>
+         <input type="hidden" id="addcounter" value="1">
+       
+        </table>
+        <table id="add_followup" class="table table-bordered table-responsive"></table>
+				   </div>
+				 </div>
+                 </div>
+				 <div class="row form-group" style="display:none;">
+				 <div class="col-sm-4">
+				  <input type="checkbox" name="whatsaap_notification" id="whatsaap_notification" class="flat-red" >
+				  <label for="exampleInputPassword1">WhatsApp Notification</label>
+				  </div>
+				  <div class="col-sm-4">
+				  <input type="checkbox" name="sms_notify" id="sms_notify" class="flat-red" >
+				  <label for="exampleInputPassword1">SMS/Email Notification</label>
+				  </div>
+				  <div class="col-sm-4">
+				  <input type="checkbox" name="download_option" id="download_option" class="flat-red" >
+				  <label for="exampleInputPassword1">Download Option</label>
+				  </div>
+				  <div class="col-sm-4">				  
+				  </div>                  
+                 </div>
+                
+				<div class="row form-group">
+				<div class="col-sm-12">
+				<div class="box-footer">
+                <input type="submit" name="submitBtn" id="submitBtn" class="btn btn-primary" onclick="return SubmitUser()" value="Submit" />
+				&nbsp;&nbsp;&nbsp;
+				<input type="button" class="btn bg-maroon" onclick="parent.location='<?=SITEURL?>manageuser'" value="Cancel">
+				
+              </div>
+				</div>
+				</div>
+				
+              </div>
+              <!-- /.box-body -->
+
+            </form>
+          </div>
+          <!-- /.box -->
+
+       
+
+        </div>
+        <!--/.col (left) -->
+        <!-- right column -->
+         
+        <!--/.col (right) -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+  </div>
+ 
+ <script type="text/javascript">
+function SubmitUser()
+{
+ var error="";
+if(document.user_form.name.value=="")
+{
+$("#nameError").html("Please enter name");
+error=1;	
+}	
+if(document.user_form.username.value=="")
+{
+$("#usernameError").html("Please enter username");
+error=1;	
+}	
+if(document.user_form.password.value=="")
+{
+$("#passwordError").html("Please enter password");
+error=1;	
+}
+if(document.user_form.cpassword.value=="")
+{
+$("#cpasswordError").html("Please enter confirm password");
+error=1;	
+}
+if(document.user_form.email_id.value=="")
+{
+$("#email_idError").html("Please enter email id");
+error=1;	
+}
+if(document.user_form.mobile_no.value=="")
+{
+$("#mobile_noError").html("Please enter mobile no.");
+error=1;	
+}
+if(document.user_form.user_type.value=="")
+{
+$("#user_typeError").html("Please select user type");
+error=1;	
+}
+if(document.user_form.team_id.value=="")
+{
+$("#team_idError").html("Please select team");
+error=1;	
+}
+if(document.user_form.category1.checked==false && document.user_form.category2.checked==false)
+{
+$("#categoryError").html("Please select category");
+error=1;	
+}
+if(document.user_form.user_type.value=="user")
+{
+if($("#profile_name1").val()=="")
+{
+$("#profile_name1Error").html("Please enter profile name");
+error=1;	
+}
+if($("#website1").val()=="")
+{
+$("#website1Error").html("Please select website");
+error=1;	
+}
+if($("#website_email1").val()=="")
+{
+$("#website_email1Error").html("Please enter website email");
+error=1;	
+}
+if($("#signature1").val()=="")
+{
+$("#signature1Error").html("Please enter signature");
+error=1;	
+}
+}
+
+
+if(error==1)
+{
+return false;
+}
+else
+{
+	return true;
+}
+
+ }
+ 
+  function addMore()
+ {
+var counter=$("#addcounter").val();
+counter++;
+ var html='<tr id="foloowupspace'+counter+'">';
+	    html+='<td><label for="exampleInputPassword1">Profile Name<span class="error">*</span></label><input type="text" name="profile_name[]" required="required" id="profile_name'+counter+'" class="form-control" value="" placeholder="Profile Name" /></td>';
+		html+='<td><label for="exampleInputPassword1">Website<span class="error">*</span></label><select name="website[]" id="website'+counter+'" class="form-control"><option value="">Select Website</option>';
+		<?php
+		foreach($this->WebsiteData as $website)
+		{ 
+		?>
+		html+='<option value="<?=$website['id']?>"><?=$website['website']?></option>';
+		<?php } ?>
+		html+='</select></td>';
+		
+		html+='<td><label for="exampleInputPassword1">Website Email ID<span class="error">*</span></label><input type="text" name="website_email[]" required="required" id="website_email'+counter+'" class="form-control" value="" placeholder="Website Email" /></td>';
+		
+		html+='<td><label for="exampleInputPassword1">Signature<span class="error">*</span></label><textarea name="signature[]" required="required" id="signature'+counter+'" class="form-control" placeholder="Signature" ></textarea></td>';
+		
+		html+='<td style="padding:25px 0 0 10px; font-weight: 700; font-size:20px;"><a style="cursor:pointer;" onclick="removeFolowup('+counter+');"> - </a></td>';
+ 		html+='</tr>';
+		
+		if(counter < 7)
+		{
+	$("#addcounter").val(counter);
+	 
+	$( "#add_followup" ).append(html);	 
+		}
+   }
+
+ function removeFolowup(counterid)
+{
+	
+$("#foloowupspace"+counterid).remove();
+var counter=$("#addcounter").val();
+counter--;
+$("#addcounter").val(counter);
+}
+
+function changeUserType()
+{
+if($("#user_type").val()=='Lead Validator')
+{
+$("#profileDiv").show();	
+}
+else
+{
+$("#profileDiv").hide();
+}
+
+if($("#user_type").val()=='Campaign Manager')
+{
+$("#campagnDiv").show();	
+}
+else
+{
+$("#campagnDiv").hide();
+}
+
+}
+
+  $(function () {
+    $('.textarea').wysihtml5();
+  });
+</script>

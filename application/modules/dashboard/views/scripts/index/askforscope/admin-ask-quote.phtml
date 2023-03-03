@@ -1,0 +1,63 @@
+<div class="box-body" id="activityHistoryArea">
+              <div class="box-group" id="accordion">
+                <div class="">
+                  <div class="box-header with-border">
+                    <h2 class="box-title">
+                      <a> Ask for Scope</a>
+                    </h2>
+                  </div>
+                  <div id="askforScope">
+				  <?php if($this->quoteInfo['id']){
+					 ?>
+					  <div class="box-body"> 
+					 <div id="adminQuoteDetails"></div>
+				<div class="clearfix"></div>
+				
+				<?php include("chat-box-area.phtml");?>
+				
+					
+
+					 </div>
+					  
+				<?php  } ?>		 
+				 
+				 </div>
+                </div>
+				 
+			 </div>
+            </div>
+			
+ 
+ 
+<script>
+$(document).ready(function(){
+ $("#sibmitchatforuser").click(function() {
+		 if($("#message").val()=="")
+		 {
+		 $("#message").css("border-color","red");	 
+		 }
+		 else{
+	 	$.ajax({
+		type : 'POST',
+		url : '<?=SITEURL?>managequote/index/submituserchat',
+		data : $('#submitchat').serialize(),
+		cache:false,
+		beforeSend: function()
+		{
+			$("#chatLoadBtn").html('<input type="button" disabled class="btn btn-warning btn-flat" style="margin-top:-10px;" value="Loading...">');
+		},
+		success: function(response)
+		{
+		$("#chat_content").html(response);
+		$("#message").css("border-color","");
+        $("#message").val("");
+		
+		$("#chatLoadBtn").html('<input type="button" name="sibmitchatforuser" id="sibmitchatforuser" value="Send" class="btn btn-warning btn-flat" style="margin-top:-10px;">');
+		
+		}
+	  }); 
+		 }
+	  
+	});
+	  })
+</script>

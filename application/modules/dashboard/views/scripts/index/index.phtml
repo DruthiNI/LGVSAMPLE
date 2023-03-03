@@ -1,0 +1,376 @@
+<?php
+$module = Zend_Controller_Front::getInstance()->getRequest()->getModuleName();
+$Controller= Zend_Controller_Front::getInstance()->getRequest()->getControllerName();
+$action=Zend_Controller_Front::getInstance()->getRequest()->getActionName();
+$readmail=$_REQUEST['readmail'];
+$ClientTotalUnraed= $this->notUnread['ClientTotalUnraed'];
+ ?>
+ 
+ 
+ <div id="dashboardDataFilterBtn" style="float:right;margin-right:20%;margin-top:-42px;z-index:99999;position:relative;">
+ <input type="hidden" id="conversion_date_summary">
+  <div class="input-group">
+  <button type="button" class="btn btn-default pull-right" id="daterange-btn">
+	<span>
+	  <i class="fa fa-calendar"></i> Date range filter
+	</span>
+	<i class="fa fa-caret-down"></i>
+  </button>
+  </div>
+ </div>
+ 
+		<!-- Button trigger modal -->
+
+ 
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+   <!-- Main content -->
+    <section class="content">
+     <form role="form" action="" method="post" id="search_form" name="search_form">
+ 
+       <table class="table table-bordered table-striped table-responsive">
+       <tr>
+       <td><section class="content-header" style="padding-top: 2px;">
+      <h1> Dashboard </h1>
+     </section></td>
+       
+       <td class="selectTeam" width="200" style="display:<?=($this->userInfo->user_type!='Lead Validator')?"block":"none"?>; float: left;">
+	   <select name="teamid" id="teamid" class="form-control select2" onchange="changeTeam()">
+           <option value="">Select Team</option>
+           <?php
+           foreach($this->teamsArr as $teams)
+		   {
+		   ?>
+           <option value="<?php echo $teams['id'];?>"><?php echo ucwords($teams['team_name']);?></option>
+           <?php }?>
+           </select>
+       </td>
+   
+	   
+	   <?php //if($this->userInfo->user_type!='Lead Validator'){?>
+       <td width="200px" style="display:<?=($this->userInfo->user_type!='Lead Validator')?"block":"none"?>;float: left;margin-left:20px;" ><select name="userid" id="userid" class="form-control select2" style="width: 163px !important;">
+           <option value="">Select user</option>
+           <?php
+           foreach($this->userArr as $users)
+		   {
+		   ?>
+           <option value="<?php echo $users['id'];?>" <?php if($this->userid==$users['id']){ ?> selected="selected" <?php }?>><?php echo ucwords($users['name']);?></option>
+           <?php }?>
+           </select>
+       </td>
+       <?php //}?>
+	   
+	   
+       <td> 
+	   <select name="date_type" id="date_type" class="form-control" style="display:none;">
+           <option value="ass_qr.update_status_date">Shifted Date</option>
+           <option value="ass_qr.assign_date">Assign Date</option>
+           
+           </select>
+	   <input type="text" style="display:none;" name="filter_date" id="filter_date" class="form-control pull-right"  placeholder="From Date - To Date" > 
+        </td>
+       
+        <td width="13%"> <input type="text" value="<?php echo $this->search_keywords;?>" name="search_keywords" id="search_keywords" class="form-control" placeholder="Enter Keywords Name or email or phone">
+       </td>
+        <td width="13%"><input type="text" class="form-control" name="ref_id" placeholder="Enter Ref. Id"></td>
+        <td width="13%"><select name="website" id="website" class="form-control select2">
+           <option value="">Select Website</option>
+          <?php
+                 foreach($this->WebsiteData as $Website)
+				 { ?>
+					<option value="<?php echo $Website['id'];?>"><?php echo $Website['website'];?></option> 
+ 				<?php  }
+				 ?>
+            </select>
+       </td>
+       <td width="13%"><select name="category" id="category" class="form-control select2">
+           <option value="">Select Category</option>
+          <?php
+                 foreach($this->CategoryData as $Category)
+				 { ?>
+					<option value="<?php echo $Category['id'];?>"><?php echo $Category['name'];?></option> 
+ 				<?php  }
+				 ?>
+            </select>
+       </td>
+      
+	   
+	    
+        
+		
+		<!-- <td width="13%"><select name="tags[]" id="tags" multiple class="form-control select2" data-placeholder="Select Tags">
+           <option value="">Select Tags</option>
+          <?php
+                 /*foreach($this->tagsArr as $tag)
+				 { ?>
+					<option value="<?=$tag['id'];?>"><?=$tag['tag_name'];?></option>
+                    
+				<?php  }
+				*/
+				 ?>
+            </select>
+       </td> -->
+		 
+		
+        <td> <input type="button" name="searchBtn" id="searchBtn" class="btn btn-primary" value="Search" onclick="return ValidateSearchForm();">
+       </td>
+       </tr>
+       </table>
+       </form>
+	      
+	   
+       <div style="clear:both;padding:5px;"></div>
+        
+       <div class="row" id="load_query" style="min-height:200px;">
+       <div style="text-align:center;"> <img style="height:150px;" src="<?=PUBLICURL?>images/pre-loader-new.gif"></div>
+ 
+      </div>
+      <!-- /.row -->
+     </section>
+    <!-- /.content -->
+  </div>
+ 
+  
+ <script type="text/javascript">
+ function QueryDataLoad()
+{  
+ 
+ ////////////////////////////////////////
+  		$.ajax({
+    type : 'POST',
+    url : '<?php echo SITEURL?>dashboard/index/loadingdashboard',
+    data : $('#search_form').serialize() +"&searchBtn=1",
+	cache:false,
+	beforeSend: function()
+	{
+		$("#load_query").html('<div style="text-align:center;"> <img style="height:150px;" src="<?=PUBLICURL?>images/pre-loader-new.gif"></div>');
+ 	},
+	success: function(response)
+	{
+	setTimeout(function() { $("#Regloader").fadeOut(100); 
+			 $("#load_query").html(response);
+			}, 100);	
+	}
+  });
+  	////////////////////////////////////////	
+	
+	
+}
+ function ValidateSearchForm()
+ {   
+	if($("#fromdate").val()!="" && $("#todate").val()=="")
+	{
+	 alert("Please select to date");
+	 document.getElementById("todate").focus();
+	 return false;	
+	} 
+	
+	else if($("#fromdate").val()=="" && $("#todate").val()!="")
+	{
+	 alert("Please select from date");
+	 document.getElementById("fromdate").focus();
+	 return false;	
+	} 	 
+ 	else
+	{
+	////////////////////////////////////////
+  		$.ajax({
+    type : 'POST',
+    url : '<?php echo SITEURL?>dashboard/index/loadingdashboard',
+    data : $('#search_form').serialize() +"&searchBtn=1",
+	cache:false,
+	beforeSend: function()
+	{
+	$("#load_query").html('<div style="text-align:center;"> <img style="height:150px;" src="<?=PUBLICURL?>images/pre-loader-new.gif"></div>');
+	},
+	success: function(response)
+	{
+	 setTimeout(function() { $("#Regloader").fadeOut(500); 
+			 $("#load_query").html(response);
+			}, 1000); 
+	}
+  });
+  	////////////////////////////////////////	
+	}
+  }
+  
+
+  $(document).ready(function() {
+	  $('[data-toggle="tooltip"]').tooltip();
+     //QueryDataLoad();
+	 $('#filter_date').daterangepicker();
+     clickMainSearchFunction('<?=date("m/d/Y", strtotime("-1 week"))?> - <?=date("m/d/Y", time())?>');
+	 $('#daterange-btn span').html('<i class="fa fa-calendar"></i> <?=date("M d, Y", strtotime("-1 week"))?> - <?=date("M d, Y", time())?>');
+	//$('#filter_date').daterangepicker(); 
+	$("#conversion_date_summary").val('<?=date("m/d/Y", strtotime("-1 week"))?> - <?=date("m/d/Y", time())?>');
+	$("#filter_date").val('<?=date("m/d/Y", strtotime("-1 week"))?> - <?=date("m/d/Y", time())?>');
+	
+	   $('#daterange-btn').daterangepicker(
+      {
+        ranges   : {
+          'Today'       : [moment(), moment()],
+          'Yesterday'   : [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+          'Last 7 Days' : [moment().subtract(6, 'days'), moment()],
+          'Last 15 Days' : [moment().subtract(14, 'days'), moment()],
+          'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+          'This Month'  : [moment().startOf('month'), moment().endOf('month')],
+          'Last Month'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        },
+        startDate: moment().subtract(6, 'days'),
+        endDate  : moment()
+      },
+      function (start, end) {
+        $('#daterange-btn span').html('<i class="fa fa-calendar"></i> '+start.format('MMM D, YYYY') + ' - ' + end.format('MMM D, YYYY'));
+		//clickMainSearchFunction(start.format('MM/DD/YYYY')+' - '+end.format('MM/DD/YYYY'));
+		
+		$("#conversion_date_summary").val(start.format('MM/DD/YYYY')+' - '+end.format('MM/DD/YYYY'));
+		$("#filter_date").val(start.format('MM/DD/YYYY')+' - '+end.format('MM/DD/YYYY'));
+      }
+    )
+  
+	
+	
+	<?php 
+	if($module=='dashboard' and $Controller=='Index' and $action=='index')
+{
+	?>
+	setInterval(() => {
+	clickMainSearchFunctionAutoTimer($("#conversion_date_summary").val());
+	}, 100000);
+	
+<?php }?>
+<?php if($readmail=='yes' and $ClientTotalUnraed > 0 and $this->userInfo->user_type=='Lead Validator'){?>
+if(!alert('You have <?=$ClientTotalUnraed?> emails unread in your mailbox. Please check and resolve.')) 
+document.location = 'https://lgv.regentapps.com/managequery/client-mail';
+<?php } ?>
+}); 
+ 
+ 
+ 
+function getOnlyDashboardData()
+{   
+$.ajax({
+    type : 'POST',
+    url : '<?php echo SITEURL?>dashboard/index/loadingdashboard',
+    data : $('#search_form').serialize() +"&searchBtn=1",
+	cache:false,
+	beforeSend: function()
+	{
+		$("#load_query").html('<div style="text-align:center;"> <img style="height:150px;" src="<?=PUBLICURL?>images/pre-loader-new.gif"></div>');
+	},
+	success: function(response)
+	{
+	 $("#load_query").html(response);
+	}
+  });	
+} 
+ 
+function getShowconversionSummaryData()
+{   
+
+if($("#filter_date").val())
+{
+formData=$('#search_form').serialize() +"&searchBtn=1&main_filter_date=";
+}
+else
+{
+formData=$('#search_form').serialize() +"&searchBtn=1&main_filter_date="+$("#conversion_date_summary").val();	
+} 
+
+$.ajax({
+    type : 'POST',
+    url : '<?php echo SITEURL?>dashboard/index/dashboard-conversion-summary',
+    data : formData,
+	cache:false,
+	beforeSend: function()
+	{
+	$("#showConversionSummaryDiv").html('<div style="text-align:center;"> <img style="height:150px;" src="<?=PUBLICURL?>images/pre-loader-new.gif"></div>');
+	},
+	success: function(response)
+	{
+	  $("#showConversionSummaryDiv").html(response);
+	}
+  });	
+} 
+
+ function ClickDateFilterShow()
+ {
+	 $("#openDateFilterDiv").show();
+ }
+  function ClickDateFilterHide()
+ { 
+	 $("#openDateFilterDiv").hide();
+ }
+ function ClickdayFilter()
+ {
+	if(document.first_filter_form.control_10.checked==true)
+	{
+    $("#filterCustomDate").show();	
+	}
+	else
+	{
+		$("#filterCustomDate").hide();
+		$("#filterDateError").html("");
+	}
+ }
+function clickMainSearchFunction(filter_date)
+{
+$.ajax({
+    type : 'POST',
+    url : '<?php echo SITEURL?>dashboard/index/loadingdashboard',
+    data :"filter_date="+filter_date+"&searchBtn=1",
+	cache:false,
+	beforeSend: function()
+	{
+	$("#load_query").html('<div style="text-align:center;"> <img style="height:150px;" src="<?=PUBLICURL?>images/pre-loader-new.gif"></div>');
+	},
+	success: function(response)
+	{
+	 setTimeout(function() { $("#Regloader").fadeOut(500); 
+			 
+			 $("#load_query").html(response);
+			}, 1000); 
+	}
+  });
+ 
+}
+function clickMainSearchFunctionAutoTimer(filter_date)
+{
+$.ajax({
+    type : 'POST',
+    url : '<?php echo SITEURL?>dashboard/index/loadingdashboard',
+    data : $('#search_form').serialize() +"&searchBtn=1",
+	cache:false,
+	beforeSend: function()
+	{
+	 
+	},
+	success: function(response)
+	{
+	 $("#load_query").html(response); 
+	}
+  });	
+}
+
+  function changeTeam()
+{
+var team_id=$("#teamid").val();
+$.ajax({
+    type : 'POST',
+    url : '<?php echo SITEURL?>manageuser/index/teamuser',
+    data : "team_id="+team_id,
+	cache:false,
+	beforeSend: function()
+	{
+    $("#userid").html('<option value="">Loading...</option>');
+	},
+	success: function(response)
+	{
+    $("#userid").html(response);
+
+	}
+  });	
+}
+
+ </script>
+ 

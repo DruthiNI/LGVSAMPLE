@@ -1,0 +1,138 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Register User</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <!-- Bootstrap 3.3.5 -->
+  <link rel="stylesheet" href="<?=PUBLICURL?>bootstrap/css/bootstrap.min.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="<?=PUBLICURL?>dist/css/AdminLTE.min.css">
+  <!-- iCheck -->
+  <link rel="stylesheet" href="<?=PUBLICURL?>plugins/iCheck/square/blue.css">
+
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+</head>
+<body class="hold-transition register-page">
+<div class="register-box">
+  <div class="register-logo">
+     Register User
+  </div>
+
+  <div class="register-box-body">
+    <p class="login-box-msg"><?php echo ($this->successmessage)?$this->successmessage:'';?></p>
+
+    <form action="" method="post" id="user_form" name="user_form">
+      <div class="form-group has-feedback">
+       <input type="text" name="name" id="name" class="form-control" value="<?php echo $this->params['name'];?>" placeholder="Name" />
+        <span class="glyphicon glyphicon-user form-control-feedback"></span>
+      </div>
+       <div class="form-group has-feedback">
+       <input type="text" name="username" id="username" class="form-control" value="<?php echo $this->params['username'];?>" placeholder="Username" />
+        <span class="glyphicon glyphicon-user form-control-feedback"></span>
+      </div>
+       <div class="form-group has-feedback">
+      <input type="text" name="email_id" id="email_id" value="<?php echo $this->params['email_id'];?>" class="form-control" placeholder="Email" />
+         <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+      </div>
+      <div class="form-group has-feedback">
+      <input type="password" name="password" id="password" class="form-control" value="" placeholder="Password" />
+         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+      </div>
+      <div class="form-group has-feedback">
+      <input type="password" name="cpassword" id="cpassword" class="form-control" value="" placeholder="Retype password" />
+         <span class="glyphicon glyphicon-log-in form-control-feedback"></span>
+      </div>
+      <div class="form-group has-feedback">
+     <input type="text" name="mobile_no" id="mobile_no" value="<?php echo $this->params['mobile_no'];?>" class="form-control" placeholder="Mobile" />
+           <span class="glyphicon glyphicon-log-in form-control-feedback"></span>
+      </div>
+      <div class="row">
+         <div class="col-xs-4">
+        <input type="submit" name="submitBtn" id="submitBtn" class="btn btn-primary btn-block btn-flat" value="Register" />
+         </div>
+       </div>
+    </form>
+
+     
+
+    <a href="<?php echo SITEURL;?>login" class="text-center">I already have a membership</a>
+  </div>
+  <!-- /.form-box -->
+</div>
+<!-- /.register-box -->
+  <script src="<?=PUBLICURL?>bootstrap/js/jquery.js"></script>
+<script src="<?=PUBLICURL?>bootstrap/js/jquery.validate.js"></script>
+
+<!-- jQuery 2.1.4 -->
+ <!-- Bootstrap 3.3.5 -->
+<script src="<?=PUBLICURL?>bootstrap/js/bootstrap.min.js"></script>
+<!-- iCheck -->
+<script src="<?=PUBLICURL?>plugins/iCheck/icheck.min.js"></script>
+ <script type="text/javascript">
+$(document).ready(function() {
+     var Validator = jQuery('#user_form').validate({
+         rules: {
+ 	        name: "required",
+			username: "required",
+			password: "required",
+			cpassword: "required",
+			
+			 password: {
+                        required: true,
+         },
+        cpassword: {
+                        required: true,
+                         equalTo: "#password"
+        },
+ 			email_id: {
+                 required: true,
+                 email: true
+    },
+	mobile_no: {
+                 required: true,
+				 digits: true,
+                 minlength: 10
+				 
+    }
+          },
+		  
+ 		messages: {
+ 			name: " Please enter name",
+			username: " Please enter username",
+			password: " Please enter password",
+			cpassword: " Please enter confirm password same as password",
+			email_id: {
+            required: "Please enter email ID",
+            email: "Your email ID must be in the format of name@domain.com"
+             },
+			mobile_no: {
+            required: "Please enter valid mobile no.",
+			minlength: "Please enter at least 10 digits.",
+              }
+  			
+ 		}
+		 
+     });
+	 
+	 
+	 
+	 
+	 
+ });
+ 
+</script>
+</body>
+</html>

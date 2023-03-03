@@ -1,0 +1,260 @@
+<?php
+$chatObj = new Managequote_Model_Chat();
+$quoteObj = new Managequote_Model_Managequote();
+$chatDetail=$chatObj->FetchQuoteChat($this->ViewQuoteData['id']);
+$AssignDetails=$quoteObj->CheckAssignTask($this->ViewQuoteData['id']);
+ 
+?> 
+ <title>Admin | Dashboard</title>
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>View Query Details</h1>
+     
+    </section>
+      <!-- Main content -->
+    <section class="content">
+      <div class="row">
+         
+           <div class="box">
+            <!-- /.box-header -->
+            <div class="box-body">  
+			<div class="col-md-7">
+          <div class="">
+            <div class="box-header with-border">
+              <h3 class="box-title">Query Details</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+            <table width="100%" class="table table-hover table-striped">
+                  <tbody>
+                  <tr>
+                    <td width="40%">Ref. No.</td>
+                    <td width="60%"><?=$this->ViewQuoteData['ref_id']?></td>
+				  </tr>
+				  <tr>
+                    <td width="40%">Client Name</td>
+                    <td width="60%"><?=$this->ViewQuoteData['client_name']?></td>
+				  </tr>
+                   <tr>
+                    <td width="40%">Client Email</td>
+                    <td width="60%"><?=$this->ViewQuoteData['client_email']?></td>
+				  </tr>
+				  <tr>
+                    <td width="40%">Service Required</td>
+                    <td width="60%"><?=$this->ViewQuoteData['service_name']?></td>
+				  </tr>
+				  <!--<tr>
+                    <td width="40%">Deadline </td>
+                    <td width="60%"><?=$this->ViewQuoteData['deadline_date']?></td>
+				  </tr>-->
+				  <tr>
+                    <td width="40%">Currency </td>
+                    <td width="60%"><?=$this->ViewQuoteData['currency']?></td>
+				  </tr>
+				  <tr>
+                    <td width="40%">Comments </td>
+                    <td width="60%"><?=$this->ViewQuoteData['comments']?></td>
+				  </tr>
+				  
+				  <?php if($this->ViewQuoteData['relevant_file']){?>
+				  <tr>
+                    <td width="40%">Relevant File </td>
+                    <td width="60%">
+					<?php 
+					  $relevant_fileArr=json_decode($this->ViewQuoteData['relevant_file']);
+					foreach($relevant_fileArr as $files)
+					{ ?>
+						<a href="<?=PUBLICURL.'QuotationFolder/'.$files->file_path?>" download><?=$files->filename?></a><br>
+				 <?php }
+				   
+					  ?>
+					</td>
+				  </tr>
+				  <?php }?>
+				  
+				 
+				   <tr>
+                    <td width="40%">Created Date </td>
+                    <td width="60%"><?=date("d M Y",$this->ViewQuoteData['created_date'])?></td>
+				  </tr>
+				  <tr>
+                    <td width="40%">Status </td>
+                    <td width="60%"><?=($this->ViewQuoteData['status']==1)?"Submitted":"Pending"?></td>
+				  </tr>
+				  
+				  
+				  
+				   
+                  </tbody>
+                </table>
+			
+			
+			</div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+        </div>
+			
+			
+			
+			
+			<!--///////////////////////////////////////////////-->
+			<div class="col-md-5">
+			
+		 	<?php  
+              if($AssignDetails['id'])
+				{
+				 if($AssignDetails['status']==1 or $AssignDetails['status']==2)
+				 { 
+				 include("price-submitted-status.php"); 
+				 }
+				 else
+				 {
+				 include("consultant-assign-pending-status.php"); 
+				 } 
+			   }
+			   
+			 
+			   
+			?>
+			
+          <!-- DIRECT CHAT WARNING -->
+          <div class="box box-warning">
+            <div class="box-header">
+              <h3 class="box-title">Chat</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <!-- Conversations are loaded here -->
+              <div class="direct-chat-messages" id="chat_content">
+			  <?php $show=1;
+			  foreach($chatDetail as $chatVal){
+				  
+				if($chatVal['date'] < $AssignDetails['assigned_date'])
+			   {
+				  $show=0;
+			   }
+			    else if($AssignDetails['user_submitted_date']!="" and $AssignDetails['user_submitted_date'] < $chatVal['date'])
+			   {
+				  $show=0; 
+			   }
+			   else
+			   {
+				  $show=1; 
+			   }
+				 
+				  ?>
+			  
+			  <?php if($chatVal['sender_id']==$this->userInfo->id){
+				   
+				  ?>
+			   <div class="direct-chat-msg right">
+                  <div class="direct-chat-info clearfix">
+                    <span class="direct-chat-name pull-right"><?=ucwords($chatVal['name'])?> </span>
+                    <span class="direct-chat-timestamp pull-left"><?=date('d M Y H:i A', $chatVal['date'])?></span>
+                  </div>
+                  <div class="direct-chat-text"><?=$chatVal['message']?></div>
+                </div>
+			  <?php } else {
+				   
+				  if($show)
+				  {
+				  ?>
+                <div class="direct-chat-msg">
+                  <div class="direct-chat-info clearfix">
+                    <span class="direct-chat-name pull-left"><?=ucwords($chatVal['name'])?></span>
+                    <span class="direct-chat-timestamp pull-right"><?=date('d M Y H:i A', $chatVal['date'])?></span>
+                  </div>
+                  <div class="direct-chat-text"><?=$chatVal['message']?></div>
+                </div>
+			  <?php } 
+			  }?>
+                 
+			  <?php }?>
+                <!-- /.direct-chat-msg -->
+              </div>
+              <!--/.direct-chat-messages-->
+
+             
+            </div>
+            <!-- /.box-body -->
+			<?php
+			if($AssignDetails['status']==0)
+				 {
+			?>
+			<form class="form-horizontal" id="submitchat" name="submitchat" method="POST" >
+            <div class="box-footer">
+           
+                <div class="input-group" style="width:100%;">
+                  <input type="text" name="message" id="message" style="height:34px;" placeholder="Type Message ..." class="form-control">
+                   <input type="hidden" name="quote_ids" value="<?php echo $this->ViewQuoteData['id'];?>" id="quote_ids">
+                   <input type="hidden" name="ref_id" value="<?=$this->ViewQuoteData['ref_id'];?>" id="ref_id">
+                      <span class="input-group-btn">
+					  <input type="button" name="sibmitchatforuser" id="sibmitchatforuser" value="Send" class="btn btn-warning btn-flat">
+                       <!-- <button type="submit" class="btn btn-warning btn-flat">Send</button>-->
+                      </span>
+                </div>
+              
+            </div>
+			</form>
+		 <?php }?>
+            <!-- /.box-footer-->
+          </div>
+          <!--/.direct-chat -->
+        </div>
+			
+			<!--/////////////////////////////////////////////---->
+			
+			
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+         
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+ 
+  </div>
+  
+  
+ 
+
+<script>
+ 
+
+ $(function () {
+
+ 	 $("#sibmitchatforuser").click(function() {
+		 if($("#message").val()=="")
+		 {
+		 $("#message").css("border-color","red");	 
+		 }
+		 else{
+	 	$.ajax({
+		type : 'POST',
+		url : '<?=SITEURL?>consultant/index/submituserchat',
+		data : $('#submitchat').serialize(),
+		cache:false,
+		beforeSend: function()
+		{
+		},
+		success: function(response)
+		{
+		$("#chat_content").html(response);
+		$("#message").css("border-color","");
+        $("#message").val("");
+		}
+	  }); 
+		 }
+	  
+	});
+
+});
+</script>
+ 
+  
+  

@@ -1,0 +1,67 @@
+ <form action="" class="form-horizontal" name="reqQuoteForm" id="reqQuoteForm" method="post">
+				   <input type="hidden" name="ref_id" value="<?=$this->QueryInfo['assign_id'];?>">
+                    <div class="box-body"> 
+					<div class="form-group">
+                  <label for="inputEmail3" class="col-sm-4 control-label">Ref No.</label>
+                  <div class="col-sm-8"><?=$this->QueryInfo['assign_id'];?></div>
+                </div>
+				<div class="clearfix"></div>
+				<div class="form-group" style="display:none;">
+                  <label for="deadline_date" class="col-sm-4 control-label">Preferred Deadline</label>
+                  <div class="col-sm-8">
+                    <input class="form-control datepicker" name="deadline_date" id="deadline_date" placeholder="Please select date">
+              <span id="deadline_dateError" class="error"></span>					
+                  </div>
+                </div>
+				<div class="clearfix"></div>
+				<div class="form-group">
+                  <label for="deadline_date" class="col-sm-4 control-label">Currency</label>
+                  <div class="col-sm-8">
+                   <select name="currency" id="currency" class="form-control">
+					<option value="" label="Please Select Currency">Please Select Currency</option>
+					<option value="INR" label="INR">INR</option>
+					<option value="USD" label="USD">USD</option>
+					<option value="GBP" label="GBP">GBP</option>
+					<option value="MYR" label="MYR">MYR</option>
+					<option value="EURO" label="EURO">EURO</option>
+					<option value="Other" label="Other">Other</option>
+					</select>
+					<span id="currencyError" class="error"></span>
+                  </div>
+                </div>
+				<div class="clearfix"></div>
+				<div class="form-group">
+                  <label for="quote_comments" class="col-sm-4 control-label">Comments</label>
+                  <div class="col-sm-8">
+                    <textarea class="form-control" name="quote_comments" id="quote_comments" placeholder="Comments"></textarea>
+					<span id="quote_commentsError" class="error"></span>
+                  </div>
+                </div>
+				<div class="clearfix"></div>
+				<div class="form-group">
+				<label for="exampleInputPassword1">Relevant File</label>
+                 <div class="row" id="attachment_fileAsk">
+				 
+				 <div class="form-group">
+					<div class="col-md-10"><input type="file" class="form-control" name="quote_upload_file[]" id="quote_upload_file1"/></div>
+					<div class="col-md-2" id="add_more_buttonAsk">
+					<i style="font-size:20px;padding-top:3px;cursor:pointer;" class="fa fa-plus-circle"></i></div>
+              
+
+				 </div>
+		 
+				 </div>
+				</div>
+				
+				<div class="clearfix"></div>
+				<div class="form-group pull-right">
+				<input id="AsksubmitBtn1" type="submit" name="updateBtn" class="btn btn-primary" value="Submit" onclick="return SubmitQuote();">
+				
+				<input id="AsksubmitBtn2" style="display:none;" type="button" disabled class="btn btn-info" value="Please Wait...">
+				
+				 
+                 </div>	
+					</div>
+                 
+</form>
+				

@@ -1,0 +1,86 @@
+<?php
+$this->QueryObj = new Managequery_Model_Managequery();
+$this->userObj = new Manageuser_Model_Manageuser();
+ $date = new Zend_Date();
+?>
+
+<div class="table-responsive">
+              <table id="example1" class="table table-bordered table-striped">
+              <thead>
+                  <tr>
+                            <th><input name=" 2" type="checkbox" onclick="checkAll(document.form1.check,this)" /></th>
+								 <th>Ref. No.</th> 
+                                <th>Name</th>
+								<th>Email ID</th>
+                               
+                                <th>Website</th>
+                                <th>Allocated User</th>
+                                <th>Created Date</th>
+                                <th>Contact No.</th>
+                               <!-- <th>Action</th>-->
+  							</tr>
+                       </thead>
+                       <tbody>  
+                      <?php $i=1;
+                          foreach($this->queryArr as $Query)
+						  { 
+						  ?>
+                            <tr>
+                             <td><input id="check" name="checkid[]" type="checkbox" value="<?php echo $Query['id'];?>"  /></td>
+                                <td><?php echo $Query['id'];?></td> 
+                                <td><?php echo $Query['name'];?></td>
+								<td><?php echo $Query['email_id'];?></td>
+                                <td><?php if($Query['website_name']=="others"){ echo $Query['other_website'];} else {
+									echo $Query['website_name'];
+								}?></td>
+  							    <td><?php 
+								$userinfo= $this->QueryObj->FetchQueryAllocatedUser($Query['id']);
+								$j=1;
+								foreach($userinfo as $user)
+								{ ?>
+								<a href="<?php echo SITEURL;?>managequery/index/userquery/userid/<?php echo $user['user_id'];?>"><?php echo $user['username'];?></a>
+                                 <?php 
+								 if(count($userinfo) > $j)
+								 {
+								  echo ",  ";	 
+								 }
+								 $j++;
+								}
+								 ?></td>
+                                <td><?php echo   date("d/m/Y",$Query['created_on']);?></td>
+                                <td><?php echo $Query['phone'];?></td>
+                               <!-- <td>
+           <?php
+            if(isset($this->userInfo->id) and $this->userInfo->user_type!='user'){ 
+		    ?>
+                               <a href="<?php echo SITEURL?>managequery/index/editquery/queryid/<?php echo $Query['id'];?>"><img src="<?=PUBLICURL?>images/edit.gif"></a> 
+                                <?php } else {?>
+                                <a href="<?php echo SITEURL?>managequery/index/editquery/queryid/<?php echo $Query['id'];?>">View Details</a>
+                                <?php }?>
+                                </td>-->
+							</tr>
+                         <?php $i++; }?>
+                 
+                 </tbody>
+              </table>
+              </div>
+              
+   
+<script>
+  $(function () {
+    
+	  /*$('#filter_date').daterangepicker();*/
+    $("#example1").DataTable();
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": true,
+      
+    });
+ 
+ 
+  });
+</script>

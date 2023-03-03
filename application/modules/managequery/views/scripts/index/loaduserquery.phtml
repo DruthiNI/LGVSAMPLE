@@ -1,0 +1,233 @@
+<?php
+$statusObj = new Managequery_Model_Status();
+$campObj = new Managequery_Model_Campaign();
+$this->userObj = new Manageuser_Model_Manageuser();
+$this->tag = new Tags_Model_Tags();
+$this->QueryDashboardObj = new Dashboard_Model_Managequery();
+ /*echo "<pre>";
+ print_r($this->QueryUsers);
+ echo "</pre>";*/
+?>
+<div class="table-responsive">
+              <table id="example1" class="table table-bordered table-striped">
+              <thead>
+                  <tr>
+                   <th><input name="2" type="checkbox" onclick="checkAll(document.form1.check,this)" /></th>
+                                 <th>Ref. No.</th>
+                                 <th>User Name</th>
+                              <th>Email ID</th>
+								 <!--  <th>Email ID</th> -->
+                                 <th>Website</th> 
+                                 <th>Contact No.</th>
+                                 <!-- <th>Tags</th> --> 
+                                 <!--<th>Campaign</th> -->
+								 <?php
+							   if($this->userInfo->user_type!='user')
+			                    {
+							   ?>
+                                 <th>Ownership</th>
+								<?php }?>
+								<th>Category</th>
+                                 <th>Status</th>
+                                 <th>Assign Date</th>
+								 <?php if($this->claime_query==1){?>
+                                 <th>Claimed Action</th>
+								 <?php }?>
+   							</tr>
+                       </thead>
+                       <tbody>  
+                            <?php $i=1;
+							$tagsArr=array();
+                          foreach($this->QueryUsers as $Query)
+						  {   
+						  $statusInfo=$statusObj->FetchStatusName($Query['update_status']);
+						  if($Query['trans_repli_user'] and $Query['transfer_type'])
+						  {
+						  $UserInfo=$this->userObj->getUserId($Query['trans_repli_user']);
+						  $preUser_name=$UserInfo->name;
+						  }
+						  $arrTag=$this->tag->TagNameMatchingId($Query['tags']);
+						  //$campData=$campObj->getCampaignWithQuery($Query['assign_id']);
+						  ?>
+                         <tr id="deleteRow_<?php echo $Query['assign_id'];?>">
+                          <td><input id="check" name="checkid[]" type="checkbox" value="<?php echo $Query['assign_id'];?>"  /></td>
+                                  <td>
+								  
+							 
+                   <?php echo $Query['assign_id'];?> 
+				   
+				   <?php if($this->userInfo->id!=178){?>
+				    <div class="tools">
+				  <?php 
+							   if($this->userInfo->user_type=='Campaign Manager')
+							   {
+								?>
+                              &nbsp;&nbsp;
+					<a style="cursor:pointer;" onclick="OpenQueryCampaignDetailsPopUp(<?php echo $Query['assign_id'];?>);"><img src="<?=PUBLICURL?>images/view-details.png"></a> 
+                           <?php								
+							   }
+							   else
+							   { ?>
+							 &nbsp;&nbsp;
+							 <a href="<?=SITEURL?>managequery/index/editquery/queryid/<?=$Query['assign_id']?>"><img src="<?=PUBLICURL?>images/edit.gif"></a>
+		  
+                    &nbsp;&nbsp;
+					<a style="cursor:pointer;" onclick="OpenQueryDetailsPopUp(<?php echo $Query['assign_id'];?>);"><img src="<?=PUBLICURL?>images/view-details.png"></a>   
+							  <?php }
+							  ?>
+							 
+                     
+                  </div>
+				   <?php }?>
+				   
+				   
+                   
+                
+				 		  
+								  
+								  </td>
+                                  <td><?php echo $Query['user_name'];?></td>
+                                 <td><a href="javascript:void(0)" data-placement="bottom" data-toggle="tooltip" data-original-title="<?=$Query['name'];?>"><?=$Query['email_id']?></a></td>
+								 <!-- <td><?php echo $Query['email_id'];?> </td>-->
+                                  <td><?php if($Query['website_name']=="others")
+								  { 
+								  echo $Query['other_website'];}
+								  else {
+									echo $Query['website_name'];
+								}?></td> 
+                               <td><?php echo $Query['phone'];?></td>
+							   <!-- <td>
+							  <?php 
+							  $tagsArr=array();
+							  foreach($arrTag as $tags)
+									{
+										$tagsArr[]=$tags['tag_name'];
+									}
+                            echo implode(", ",$tagsArr);
+									?>
+							   </td>  -->
+							   <!-- <td>
+							  <?php 
+							  $campArr=array();
+							  foreach($campData as $camp)
+									{
+										$campArr[]=$camp['camp_title'];
+									}
+                            echo implode(", ",$campArr);
+									?>
+							   </td>-->
+							   <?php
+							   if($this->userInfo->user_type!='user')
+			                    {
+							   ?>
+							   <td>  <?php 
+							    
+								   if($Query['transfer_type']==1)
+								   {
+									echo "Transfered";   
+								   }
+								   else if($Query['transfer_type']==2)
+								   {
+									echo "Replicated from ".$Query['trans_repli_user'];
+								   }
+								   else
+								   {
+									echo 'Fresh';   
+								   }
+							 
+							  
+							   ?> 
+							   </td>
+								<?php }?>
+
+								<td><?php
+								$categoryname=$this->QueryDashboardObj->getCategoryName($Query['requirement']);
+								echo $categoryname['name'];?></td>
+							  <?php
+							  if($Query['user_id']=='1'){?>
+							       <td><span id="change_status_name<?php echo $Query['assign_id'];?>">Pending for Allocation</span> </td>
+							 <?php
+							 }else{?>
+							       <td><span id="change_status_name<?php echo $Query['assign_id'];?>"><?php echo $statusInfo['status_name'];?></span> </td>
+							 <?php
+							 }
+							 ?>
+							 
+							  
+							  <td>
+							  <?php 
+							   if($this->userInfo->user_type=='Campaign Manager')
+							   {
+								echo date("d M, Y",$Query['assign_campaign_date']);   
+							   }
+							   else
+							   {
+								echo date("d M, Y",$Query['assign_date']);   
+							   }
+							  ?></td>
+							  <?php if($this->claime_query==1){?>
+                                 <td>
+								 Box Added : <?=($Query['created_on'])?date("d M, Y h:i A",$Query['created_on']):'NA'?><br>
+								 Claimed Date : <?=($Query['claimed_date'])?date("d M, Y h:i A",$Query['claimed_date']):'NA'?>
+								 </td>
+								 <?php }?>
+							   
+								 
+							</tr>
+                         <?php $i++; }?>
+                 
+                 </tbody>
+              </table>
+              </div>
+<style>
+.todo-list>li {
+    border-radius: 0px;
+    padding: 0px;
+    background: none;
+    margin-bottom: 0px;
+    border-left: 0px;
+    color: none;
+}
+</style>
+
+<script>
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+	  /*$('#filter_date').daterangepicker();*/
+	  
+	   $('#example1').DataTable( {
+        
+		
+		<?php
+         if(isset($this->userInfo->id) and ($this->userInfo->user_type=='admin' or $this->userInfo->user_type=='sub-admin')){ 
+		?>
+		dom: 'Bfrtip',
+		lengthMenu: [
+            [ 50, 100, 500,1000, -1 ],
+            [ '50 rows', '100 rows', '500 rows', '1000 rows', 'Show all' ]
+        ],
+		
+		
+        buttons: [
+            {
+                extend: 'excelHtml5',
+                exportOptions: {
+                    columns: ':visible'
+                }
+            },
+		 
+            'colvis',
+			'pageLength'
+        ],
+		<?php }?>
+		order: [],
+columnDefs: [ { orderable: false, targets: [0] } ]
+    } );
+	  
+ 
+    $(".select2").select2();
+ 
+  });
+</script>
+
+ 

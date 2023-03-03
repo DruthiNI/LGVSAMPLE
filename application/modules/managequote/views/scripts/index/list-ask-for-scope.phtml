@@ -1,0 +1,279 @@
+<?php
+$quoteObj = new Managequote_Model_Managequote();
+//echo "<pre>";
+//print_r($this->allQuoteData);die;
+ ?>
+  <title>Admin | Dashboard</title>
+ <form name="form1" id="form1" method="post" action="">
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>All Quote List</h1>
+       <!--<div class="breadcrumb">
+	   <span> <input class="btn btn-primary btn-sm btn-flat" type="button" value="Delete"  onclick="javascript:delRecord();" > &nbsp;</span>
+      <input class="btn btn-primary btn-sm btn-flat" type="button" value="Export"  onclick="javascript:ExportRecord();" >
+      </div>-->
+    </section>
+      <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+           <div class="box">
+		   <table class="table table-bordered table-striped table-responsive">
+
+    			    <tr>
+					 <?php if($this->userInfo->user_type!='Lead Validator'){?>
+                    <td>
+                    <select name="userid" id="userid" class="form-control select2">
+                    <option value="" >Select User</option> 
+					<?php foreach( $this->crmUserData as $username){ ?>
+					<option value="<?=$username->id?>" label="<?=$username->name?>"><?=$username->name?></option>
+					<?php } ?></select></td>
+					<?php }?>
+	<td><input class="form-control pull-right" id="filter_date" name="filter_date" placeholder="From Date - To Date" value="" type="text"/>
+			  </td>
+			   
+           <td><input type="text" name="search_keywords" id="search_keywords" value="" placeholder="Enter Search Keywords" class="form-control"></td>
+			
+	            
+				   
+				   <td>
+                    <select name="status" id="status" class="form-control">
+						<option value="" label="Status">Please Status</option>
+						<option value="Pending">Pending</option>
+						<option value="1">Price Submitted</option>
+ 					</select>
+                   </td>
+<td> 
+					<input type="button" name="searchBtn" id="searchBtn" class="btn btn-primary" value="Search" onclick="return ValidateSearchForm();">
+					</td>
+          
+                      </tr>
+					  <tr>
+					  
+
+                   
+					  </tr>
+               </table>
+            <!-- /.box-header -->
+			 
+            <div class="box-body" id="load_query_quote">  
+			
+			  <table id="example1" class="table table-bordered table-striped table-responsive">
+              <thead>
+                 <tr class="headings">
+                 <th><input name=" 2" type="checkbox" onclick="checkAll(document.form1.check,this)" /></th>
+ 				 <th>Sr. No.</th>
+                          <th>Ref. ID</th>
+						  <?php if($this->userInfo->user_type!='Lead Validator'){?>
+                          <th>Username</th>
+						  <?php } ?>
+                          <th>Client Name</th>
+						  <th>Email</th>
+ 						   <th>Status </th>
+						  <th>Created Date </th>
+                          <th>Action</th>
+  				 </tr>
+                 </thead>
+                       <tbody>  
+                          <?php $i=1; 
+                          foreach($this->allQuoteData as $QuoteData)
+						  {
+						  $fetchTaskAssign=$quoteObj->CheckAssignTask($QuoteData['id']);
+ 						  ?>
+                          <tr>
+                           <td><input id="check" name="checkid[]" type="checkbox" value="<?php echo $QuoteData['id'];?>"  /></td>
+                           <td><?=$i?></td>
+                           <td><?=$QuoteData['ref_id']?></td>
+						   <?php if($this->userInfo->user_type!='Lead Validator'){?>
+                           <td><?=$QuoteData['name']?></td>
+						   <?php }?>
+						   <td><?=$QuoteData['client_name']?></td>
+						   <td><?=$QuoteData['client_email']?></td>
+  						    <td><?php 
+							if($fetchTaskAssign['id'])
+							{
+							   if($fetchTaskAssign['status']==1)
+			                    {
+								 echo '<span style="color: green;">Quote submitted by '.$fetchTaskAssign['name'].'</span>';   
+							    }
+								else if($fetchTaskAssign['status']==2)
+			                    {
+								 echo '<span style="color: green;">Submitted</span>';   
+							    }
+								else
+								{
+								 echo 'Assigned to '.$fetchTaskAssign['name'];	
+								 echo "<br><span style='color:red;'>Pending</span>"; 
+								}							   
+							}
+							else
+							{
+								echo "<span style='color:red;'>Pending</span>"; 
+							}
+ 
+							
+						  ?></td>
+						   <td><?php echo $date = date("d M Y",$QuoteData['created_date']);?></td>
+                           <td><a class="label label-info" onclick="OpenQueryDetailsPopUp(<?=$QuoteData['ref_id'];?>)" href="javascript:">
+						   View Details</a>
+						   </td>
+  						</tr>
+                         <?php $i++; }?>
+                  </tbody>
+              </table>
+			  
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+ 
+  </div>
+     </form>
+  <script type="text/javascript">
+   $(document).ready(function() {
+    //////////////////////////////////////////////////////
+	$(".select2").select2();
+	$('#filter_date').daterangepicker();
+ 	//////////////////////////////////////////////////////
+});
+function checkAll(checkname, exby) {
+  for (i = 0; i < checkname.length; i++)
+  checkname[i].checked = exby.checked? true:false
+ }
+ 
+function SendMail(int_dogid)
+{    
+       var formobj=document.form1;
+	if(check_mul(formobj))
+	{
+	
+	if($("#template_id").val()!="")
+	{
+	  if(confirm("Are you sure you want to send mail!"))
+	   {
+		var formobj=document.form1;
+		formobj.action="sendmail.php?Action=sendmail";
+		formobj.submit();
+	  }
+	}
+	else
+	{
+	alert("Please select template");
+	document.getElementById("template_id").focus();	
+	return false;
+	}
+	}
+}
+
+function delRecord(int_dogid)
+{    
+    var formobj=document.form1;
+	if(check_mul(formobj))
+	{
+	if(confirm("Are you sure you want to delete record!"))
+	{
+		var formobj=document.form1;
+		formobj.action="?Action=Delete";
+		formobj.submit();
+	} 
+	}
+}
+
+function ExportRecord(int_dogid)
+{    
+    var formobj=document.form1;
+	if(check_mul(formobj))
+	{
+	if(confirm("Are you sure you want to export record!"))
+	{
+		var formobj=document.form1;
+		formobj.action="<?=SITEURL?>managequote/index/exportallquote";
+		formobj.submit();
+	} 
+	}
+}
+
+function check_one(formObj)
+{
+	count=0;
+	for (var i=0;i < formObj.length;i++) 
+    {
+		fldObj = formObj.elements[i];
+		if (fldObj.type == 'checkbox')
+		{
+			if(fldObj.checked == true)
+			{
+				count=count+1;
+			}
+		}
+    }
+	if(count>1)
+	{
+		alert("please select only one record");
+		return false;
+	}
+	if(count==0)
+	{
+		alert("Please select a record");
+		return false;
+	}
+	return true;
+}
+
+function check_mul(formObj)
+{
+	count=0;
+	for (var i=0;i < formObj.length;i++) 
+    {
+		fldObj = formObj.elements[i];
+		if (fldObj.type == 'checkbox')
+		{
+			if(fldObj.checked == true)
+			{
+				count=count+1;
+			}
+		}
+    }
+	if(count==0)
+	{
+		alert("Please select a record");
+		return false;
+	}
+	return true;
+}
+
+  
+</script>
+
+<script type="text/javascript">
+ 
+  	////////////////////////////////////////	
+function ValidateSearchForm()
+ { 
+	////////////////////////////////////////
+  	$.ajax({
+    type : 'POST',
+    url : '<?php echo SITEURL?>managequote/index/loadsearchallquote',
+    data : $('#form1').serialize() +"&searchBtn=1",
+	cache:false,
+	beforeSend: function()
+	{
+	$("#load_query_quote").html('<div style="text-align:center;"> <img style="height:150px;" src="<?=PUBLICURL?>images/pre-loader-new.gif"></div>');
+	},
+	success: function(response)
+	{
+	  $("#load_query_quote").html(response);
+	}
+  });
+  	////////////////////////////////////////
+	
+  }
+  
+</script>

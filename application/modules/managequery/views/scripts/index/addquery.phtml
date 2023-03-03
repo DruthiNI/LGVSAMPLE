@@ -1,0 +1,490 @@
+<style>
+.dateFilterClass label {
+    background: #e0e0e0;
+}
+.select2.select2-container.select2-container--default.select2-container--below {
+    width: 100% !important;
+}
+</style>
+<script src="<?=PUBLICURL?>plugins/timepicker/bootstrap-timepicker.min.js"></script>
+<script src="<?=PUBLICURL?>plugins/datepicker/bootstrap-datepicker.js"></script>
+ <script src="<?=PUBLICURL?>plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
+ <script src="<?=PUBLICURL?>plugins/ckeditor/ckeditor.js"></script>
+ <script src="<?=PUBLICURL?>dist/js/lightbox.min.js"></script>
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1> Add New Lead </h1>
+    </section>
+    <!-- Main content -->
+    <section class="content">
+ 
+      <div class="row">
+        <!-- left column -->
+        <div class="col-md-9">
+          <!-- general form elements -->
+          <div class="box box-primary">
+          <div align="center"> <?=$this->errors;?>
+		  <?php if(isset($this->successmessage) and $this->successmessage){ echo $this->successmessage; }?>
+		  
+		  </div>
+             <!-- form start -->
+            
+			<form role="form" action="" method="post" id="query_form" name="query_form" enctype="multipart/form-data" class="pt-3">
+			<input type="hidden" name="entrytype" value="<?=$this->userInfo->category?>">
+			<input type="hidden" name="date" id="date" value="<?=date('m/d/Y')?>" class="form-control tcal" />
+              <div class="box-body">
+			 
+			  
+               
+				
+				  
+				  
+                  <div class="col-sm-3">
+				  <label for="exampleInputEmail1">Client Name<span class="error">*</span></label>
+                  <input type="text" name="name" id="name" class="form-control" value="<?php echo $this->params['name'];?>" />
+                  <span id="nameError" class="error"></span>
+				  </div>
+				  <div class="col-sm-3">
+				  <label for="exampleInputPassword1">Client Email ID<span class="error">*</span></label>
+                  <input type="text" name="email_id" id="email_id" value="<?php echo $this->params['email_id'];?>" class="form-control" onchange="checkExsistClientEmail()" />
+                  <div id="alraedyExsistEmail" style="color:red;"></div>
+                  <span id="email_idError" class="error"></span>
+				  </div>
+				  <div class="col-sm-3">
+				  <label for="exampleInputPassword1">Alternate Email ID</label>
+                  <input type="text" name="alt_email_id" id="alt_email_id" value="<?php echo $this->params['alt_email_id'];?>" class="form-control" />
+				  </div>
+				   <div class="col-sm-3">
+				  <label for="exampleInputPassword1">Contact No.</label>
+                  <input type="text" name="phone" id="phone" value="<?php echo $this->params['phone'];?>" class="form-control" /> 
+				  </div>
+                 
+                 
+    
+				  <div class="col-sm-3">
+				  <label for="exampleInputPassword1">Alternate  Contact No.</label>
+                 <input type="text" name="alt_contact_no" id="alt_contact_no" value="<?php echo $this->params['alt_contact_no'];?>" class="form-control" /> 
+				  </div>
+				  
+				  <div class="col-sm-3">
+				  <label for="exampleInputPassword1">Location</label>
+                  <select name="location" id="location" class="form-control select2"  onchange="changeState()">
+                 <option value="">Please Select</option>
+                 <?php
+                 foreach($this->CountryData as $Country)
+				 { ?>
+					<option value="<?php echo $Country['nicename'];?>" <?php if($Country['nicename'] == 'India'){ ?> selected="selected" <?php }?>><?php echo $Country['nicename'];?></option> 
+				<?php  }
+				 ?>
+                 </select>
+				  </div>
+				  
+				  <div class="col-sm-3 stateslist" style="display:block;">
+				  <label for="exampleInputPassword1">State</label><br/>
+                  <select name="state" id="state" class="form-control select2"  >
+                      <option value="">Select State</option>
+		<?php
+           foreach($this->StateData as $state)
+		   {
+		   ?>
+           <option value="<?php echo $state['state_title'];?>"><?php echo ucwords($state['state_title']);?></option>
+     <?php }?>
+                 </select>
+				  </div>
+				  
+
+				  
+				  <div class="col-sm-3">
+				  <label for="exampleInputPassword1">City</label>
+                 <input type="text" name="city" id="city" value="<?php echo $this->params['city'];?>" class="form-control" /> 
+				  </div>
+				   
+                
+				  
+				  <div class="col-sm-3" style="display:<?=($this->userInfo->category=='PhD')?'none':'block'?>">
+				  <label for="exampleInputPassword1">Client Company</label>
+				  <input type="text" name="company_name" id="company_name" value="<?php echo $this->params['company_name'];?>" class="form-control" /> 
+				  
+				 <span id="company_nameError" class="error"></span>
+				  </div>
+				  
+				
+				  
+				  
+				   <!--<div class="col-sm-3">
+				 <div class="form-group">
+                  <label for="exampleInputPassword1">Select Tags</label>
+                  <select name="tags[]" id="tags" multiple class="form-control select2" data-placeholder="Please select tag">
+				  <option value="">Select Tag</option>
+					 <?php
+					foreach($this->tagsArr as $tag)
+					{ 
+					$select=''; 
+					if($this->params['tags'])
+					{
+					if(in_array($tag['id'],$this->params['tags']))
+					{
+					 $select='selected';
+					}
+					else
+					{
+					$select='';	
+					}
+					}
+					?>
+					<option value="<?=$tag['id']?>" <?=$select?>><?php echo $tag['tag_name'];?></option> 	
+					<?php }
+					?>                               
+					</select>
+					<span id="tagsError" class="error"></span>
+                  </div>
+				 </div>-->
+				  <div class="col-sm-3">
+				  <label for="exampleInputPassword1">Website<span class="error">*</span></label>
+				  <?php
+				  if($this->params['website'])
+				 {
+				  $paramWebsite=$this->params['website'];
+				 }
+				 else
+				 {
+				  $paramWebsite='emarketz.net';	 
+				 }
+				  
+				  ?>
+				  
+                 <select name="website" id="website" class="form-control select2" onchange="OtherFunction();">
+                 <option value="">Please Select</option>
+                 <?php
+				 
+                 foreach($this->WebsiteData as $Website)
+				 { ?>
+					<option value="<?php echo $Website['id'];?>" <?php if($paramWebsite==$Website['id']){ ?> selected="selected" <?php }?> webType="<?=$Website['website_type']?>"><?php echo $Website['website'];?></option> 
+				<?php  }
+				 ?>
+                 </select>
+                <span id="websiteError" class="error"></span>
+				  </div>
+				  
+				  
+				  
+				  <div class="col-sm-3">
+				  <label for="exampleInputPassword1">Category</label>
+                  <select name="requirement" id="requirement" class="form-control select2">
+                  <option value="">Please Select</option>
+				 <?php foreach($this->serviceData as $service)
+				 { ?>
+				  <option value="<?=$service['id']?>" <?php if($this->params['requirement']==$service['id']){ ?> selected="selected" <?php }?>><?=$service['name']?></option>	 
+				<?php  }?>
+				 
+				 <!--<option value="Other" <?php if($this->params['requirement']=="Other"){ ?> selected="selected" <?php }?>>Other</option> -->
+				 
+                 </select>
+				 <span id="requirementError" class="error"></span>
+				  </div>
+				 
+                
+				     
+				   <div class="col-sm-3">
+				 <div class="form-group">
+                  <label for="exampleInputPassword1">Company Size</label>
+                  <select name="company_size" id="company_size" class="form-control">
+				  <option value="">Select Company Size</option>
+					 
+				   
+					<option value="10 to 50 Employees" <?php if($this->params['company_size']=='10 to 50 Employees'){ ?> selected="selected" <?php }?>>10 to 50 Employees</option> 	
+					<option value="51 to 100 Employees" <?php if($this->params['company_size']=='51 to 100 Employess'){ ?> selected="selected" <?php }?>>51 to 100 Employees</option> 
+					<option value="101 to 150 Employees" <?php if($this->params['company_size']=='101 to 150 Employees'){ ?> selected="selected" <?php }?>>101 to 150 Employees</option> 
+					<option value="151 to 200 Employees" <?php if($this->params['company_size']=='151 to 200 Employees'){ ?> selected="selected" <?php }?>>151 to 200 Employees</option> 
+					<option value="200 + Employees" <?php if($this->params['company_size']=='200 + Employees'){ ?> selected="selected" <?php }?>>200 + Employees</option>
+					<option value="500 + Employees" <?php if($this->params['company_size']=='500 + Employees'){ ?> selected="selected" <?php }?>>500 + Employees</option>
+					<option value="Not Known" <?php if($this->params['company_size']=='Not Known'){ ?> selected="selected" <?php }?>>Not Known</option>                            
+					</select>
+					<span id="company_sizeError" class="error"></span>
+                  </div>
+				 </div>
+				 
+				  <div class="col-sm-3">
+				 <div class="form-group">
+                  <label for="exampleInputPassword1">Designation</label>
+                  <input type="text" name="designation_name" id="designation_name" placeholder="Enter Designation" class="form-control" value="<?php echo $this->params['designation_name'];?>">
+				 
+					<span id="designation_nameError" class="error"></span>
+                  </div>
+				 </div>
+				 
+				  
+				  <div class="col-sm-3">
+				   <div class="form-group">
+				  <label for="exampleInputPassword1">Priority</label>
+                 <select name="priority" id="priority" class="form-control select2">
+				 <option value="">Please Select</option>
+						 <?php
+                         foreach($this->priorityArr as $priority)
+                         {
+                         ?>
+                        
+                        <option value="<?php echo $priority['priority'].'|'.$priority['follow_up_day'].'|'.$priority['contact_by'];?>" <?=($priority['priority'].'|'.$priority['follow_up_day'].'|'.$priority['contact_by']==$this->params['priority'])?"selected":""?>><?php echo $priority['priority'];?></option> 
+                          <?php }?>
+						  
+						  
+						  
+                                    </select>
+					<span id="priorityError" class="error"></span>				
+				  </div>
+				  </div>
+				  
+				   
+				  
+                
+				   <div class="col-sm-3 PhDDiv" style="display:<?=($this->userInfo->category=='PhD')?'block':'none'?>">
+				   	<div class="form-group">
+                 <label for="exampleInputPassword1">Mode of Contact</label>
+                 <select name="academic_level" id="academic_level" class="form-control select2">
+                 <option value="Telephonic validation needed"<?php if($this->params['academic_level']=="Telephonic validation needed"){ ?> selected="selected" <?php }?>>Telephonic validation needed</option>
+                 <option value="Email with more details"<?php if($this->params['academic_level']=="Email with more details"){ ?> selected="selected" <?php }?>>Email with more details</option>
+                 </select>
+               </div>
+                 </div>
+				  
+				 
+				  
+			<!--<div class="col-sm-3">
+				  	<div class="form-group">
+                 <label for="remarks">Requirement</label>
+                 <textarea name="remarks" id="remarks" class="form-control" rows="2" ><?php //echo $this->params['remarks'];?></textarea>
+               </div>
+          </div>-->
+
+          <div class="clearfix"></div>
+
+          <div class="col-sm-3">
+          	<div class="form-group">
+                 <label for="requirementtype">Requirement Type</label>
+                 <select name="requirement_type" id="requirement_type" class="form-control select2">
+                 <option value="">Select Requirement Type</option>
+                 <option value="Line Format"<?php if($this->params['requirement_type']=="Line Format"){ ?> selected="selected" <?php }?>>Line Format</option>
+                 <option value="Paragraph Format"<?php if($this->params['requirement_type']=="Paragraph Format"){ ?> selected="selected" <?php }?>>Paragraph Format</option>
+                 </select>
+               </div>
+          </div>
+
+          <div class="col-sm-3" id="requirement-type-line-format-div" style="display:none;">
+          	<div class="form-group">
+                 <label for="requirementtypeline">Requirement Type Line Format</label>
+                <textarea class="form-control" id="line_format" name="line_format" rows="2"><?php echo $this->params['line_format'];?></textarea>
+								<script>CKEDITOR.replace('line_format');</script>
+				 
+               </div>
+          </div>
+
+          <div class="col-sm-3" id="requirement-type-paragraph-format-div" style="display:none;">
+          	<div class="form-group">
+                 <label for="requirementtypeparagraph">Requirement Type Paragraph Format</label>
+                 <textarea class="form-control" name="paragraph_format" id="paragraph_format" rows="2"><?php echo $this->params['paragraph_format'];?></textarea>
+               </div>
+          </div>
+				  
+				  <div class="col-sm-3">
+
+				 <label for="exampleInputPassword1">Upload File</label>
+                 <div class="row" id="attachment_file">
+				 
+				 <div class="form-group">
+                                            <div class="col-md-10"><input type="file" class="form-control" name="upload_file[]" id="upload_file1"/></div>
+                                            <div class="col-md-2" id="add_more_button">
+											<i style="font-size:20px;padding-top:3px;cursor:pointer;" class="fa fa-plus-circle"></i></div>
+              
+
+				 </div>
+		 
+				 </div>
+ 
+                </div> 
+				  
+				  
+                
+                
+                <!-- <div class="row form-group" style="display:none;">
+				 <div class="col-sm-4">
+                 <label for="exampleInputPassword1">Word Count</label>
+                 <input type="text" name="word_count" id="word_count" value="<?php echo $this->params['word_count'];?>" class="form-control" />
+                </div>-->
+                
+               <!-- <div class="col-sm-4" style="display:none;">
+                 <label for="exampleInputPassword1">Deadline</label>
+                 <input type="text" name="deadline" id="deadline" value="<?php echo $this->QueryInfo['deadline'];?>" class="form-control tcal" />
+                </div>-->
+                
+                
+				  
+				 
+                </div>
+				
+                 <div class="row form-group">
+				<!-- <div class="col-sm-4" style="display:none;">
+                 <label for="exampleInputPassword1">Approx Value of Lead</label>
+<select name="approx_value" id="approx_value" class="form-control">
+				<option value="">Please Select</option>
+				<option value="Rs.7500-10000"<?php if($this->params['approx_value']=="Rs.7500-10000"){ ?> selected="selected" <?php }?>>Rs.7500-10000</option>
+				<option value="Rs. 10000-20000"<?php if($this->params['approx_value']=="Rs. 10000-20000"){ ?> selected="selected" <?php }?>>Rs. 10000-20000</option>
+				<option value="Rs. 20000-50000"<?php if($this->params['approx_value']=="Rs. 20000-50000"){ ?> selected="selected" <?php }?>>Rs. 20000-50000</option>
+				<option value="Rs. 60000-80000"<?php if($this->params['approx_value']=="Rs. 60000-80000"){ ?> selected="selected" <?php }?>>Rs. 60000-80000</option>
+				<option value="Rs. 80000-100000"<?php if($this->params['approx_value']=="Rs. 80000-100000"){ ?> selected="selected" <?php }?>>Rs. 80000-100000</option>
+				<option value="Rs. 100000-150000"<?php if($this->params['approx_value']=="Rs. 100000-150000"){ ?> selected="selected" <?php }?>>Rs. 100000-150000</option>
+				</select>
+
+				 </div>-->
+                
+                <!-- <div class="col-sm-4">-->
+                <!-- <label for="remarks">Remarks</label>-->
+                <!-- <textarea name="remarks" id="remarks" class="form-control" ><?php echo $this->params['remarks'];?></textarea>-->
+                <!--</div>-->
+                
+                <!-- <div class="col-sm-8" style="display:none;">
+                 <div class="row">
+				 <div class="col-sm-4"><input type="checkbox" name="flag_mark" id="flag_mark"  />
+				 <label for="flag_mark">Flag Mark</label>
+				 </div>
+				 <div class="col-sm-4"><input type="checkbox" name="sms_notify" id="sms_notify" checked  />
+				 <label for="sms_notify">SMS Notification</label>
+				 </div>
+				 <div class="col-sm-4"><input type="checkbox" name="query_type" id="query_type" value="1"  />
+				 <label for="query_type">Old Query</label>
+				 </div>
+				 
+				 </div>
+                </div>-->
+				
+				 <!--<div class="col-sm-12">-->
+				 <!--<label for="exampleInputPassword1">Upload File</label>-->
+     <!--            <div class="row" id="attachment_file">-->
+				 
+				 <!--<div class="form-group">-->
+     <!--                                       <div class="col-md-10"><input type="file" class="form-control" name="upload_file[]" id="upload_file1"/></div>-->
+     <!--                                       <div class="col-md-2" id="add_more_button">-->
+					<!--						<i style="font-size:20px;padding-top:3px;cursor:pointer;" class="fa fa-plus-circle"></i></div>-->
+              
+
+				 <!--</div>-->
+		 
+				 <!--</div>-->
+ 
+     <!--           </div> -->
+				
+				
+				
+				</div>
+             
+				
+				<div class="row form-group entrytype">
+				<div class="col-sm-12">
+				<div class="box-footer pull-right">
+                 <input type="submit" name="submitBtn" id="submitBtn" class="btn btn-primary" value="Submit" onclick="return Validate();" />
+				 &nbsp;&nbsp;
+				  <input type="button" class="btn bg-maroon" onClick="parent.location='<?=SITEURL?>managequery/userquery'"  value="Cancel" />
+              </div>
+				</div>
+				</div>
+               
+                 
+              </div>
+              <!-- /.box-body -->
+
+            </form>
+          
+		  
+		  </div>
+          <!-- /.box -->
+
+       <div class="col-md-3">
+	   <div class="box box-primary">
+	   <div class="box-header with-border">
+              <h3 class="box-title" style="font-weight:bold;">Today Pending Task for User`s</h3>
+			    </div>
+	    <div class="box-body right_bx">
+		<table class="table table-bordered">
+                <tbody><tr>
+                   <th>User Name</th>
+                  <th>Total Pending</th>
+                 </tr>
+				 <?php 
+		$totalPendingTask=0;
+		foreach($this->todayTask as $user){
+		    //print_r($user);
+		?>
+                <tr>
+                   <td><?=$user['user_name']?></td>
+                  <td><?=$user['total_pending']?></td>
+                 </tr>
+				 <?php
+     $totalPendingTask=$totalPendingTask+$user['total_pending'];
+		}?>
+           <tr style="font-size:15px;color:red;">
+                   <td>Total Pending Task</td>
+                  <td><?=$totalPendingTask?></td>
+                 </tr>     
+              </tbody></table>
+		 
+ 			 
+ 		</div>
+	   
+	   </div>
+	   </div>
+
+        </div>
+        <!--/.col (left) -->
+        <!-- right column -->
+         
+        <!--/.col (right) -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+  </div>
+<?php include("js/js-addquery.phtml")?>
+<script>
+ function changeState()
+{
+    
+var country=$("#location").val();
+    if(country == "India")
+    {
+    $('.stateslist').show(); 
+        $.ajax({
+    type : 'POST',
+    url : '<?php echo SITEURL?>manageuser/index/loadstates',
+    data : "country="+country,
+	cache:false,
+	beforeSend: function()
+	{
+    $("#state").html('<option value="">Loading...</option>');
+	},
+	success: function(response)
+	{
+   
+    $("#state").html(response);
+
+	}
+    });
+    }
+    else{
+         $('.stateslist').hide(); 
+    }
+}
+</script>
+<script>
+	$(function() {
+     
+    $('#requirement_type').change(function(){
+        if($('#requirement_type').val() == 'Line Format') {
+            $('#requirement-type-line-format-div').show(); 
+            $('#requirement-type-paragraph-format-div').hide(); 
+        } else if($('#requirement_type').val() == 'Paragraph Format'){
+            $('#requirement-type-paragraph-format-div').show(); 
+            $('#requirement-type-line-format-div').hide(); 
+        } 
+    });
+});
+</script>

@@ -1,0 +1,138 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        Add Priority
+       </h1>
+    </section>
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <!-- left column -->
+        <div class="col-md-12">
+          <!-- general form elements -->
+          <div class="box box-primary">
+             <!-- form start -->
+            <form role="form" action="" method="post" id="user_form" name="user_form">
+              <div class="box-body">
+                <div class="row form-group">
+				<div class="col-sm-4">
+                  <label for="exampleInputEmail1">Priority Name<span class="error">*</span></label>
+                  <input type="text" name="priority" id="priority" style=" width:333px;" required="required" class="form-control" value="<?php echo $this->priorityInfo['priority'];?>" />
+                 </div>
+                <div class="col-sm-8">
+          
+        <table class="table table-bordered table-responsive">
+        
+        <?php if($this->id){
+			$follow_up_day=explode(',',$this->priorityInfo['follow_up_day']);
+			$contact_by=explode(',',$this->priorityInfo['contact_by']);
+			for($i=0;$i<count($follow_up_day);$i++)
+			{
+			?>
+         <tr id="foloowupspace<?=$i;?>">
+          <td>
+           <label for="exampleInputPassword1">No. of Days<span class="error">*</span></label>
+           <input type="text" name="follow_up_day[]" required="required" id="follow_up_day<?=$i;?>" class="form-control" value="<?php echo $follow_up_day[$i];?>" placeholder="No. of Days"/>
+          </td>
+        <td>
+        <label for="exampleInputPassword1">Contact By<span class="error">*</span></label>
+        <select name="contact_by[]" id="contact_by1" class="form-control">
+        <option value="Phone"<?php if($contact_by[$i]=="Phone"){?> selected="selected" <?php }?>>Phone</option>
+        <option value="Email"<?php if($contact_by[$i]=="Email"){?> selected="selected" <?php }?>>Email</option>
+        <option value="Chat"<?php if($contact_by[$i]=="Chat"){?> selected="selected" <?php }?>>Chat</option>
+        </select>
+        </td>
+            <td style="padding:25px 0 0 10px; font-weight: 700; font-size:20px;">
+            <?php if($i!=0){?>
+            <a style="cursor:pointer;" onclick="removeFolowup(<?=$i;?>);"> - </a>
+            <?php } else  {?>
+          <a style="cursor:pointer;" onclick="addMore();"> + </a>
+          <?php }?>
+           </td>
+         </tr>
+         <input type="hidden" id="addcounter" value="<?=count($follow_up_day);?>">
+         <?php } } else {?>
+         <tr>
+          <td>
+           <label for="exampleInputPassword1">No. of Days<span class="error">*</span></label>
+           <input type="text" name="follow_up_day[]" required="required" id="follow_up_day1" class="form-control" value="" placeholder="No. of Day"/>
+          </td>
+        <td>
+        <label for="exampleInputPassword1">Contact By<span class="error">*</span></label>
+        <select name="contact_by[]" id="contact_by1" class="form-control">
+        <option value="Phone">Phone</option>
+        <option value="Email">Email</option>
+        <option value="Chat">Chat</option>
+        </select>
+        </td>
+            <td style="padding:25px 0 0 10px; font-weight: 700; font-size:20px;">
+          <a style="cursor:pointer;" onclick="addMore();"> + </a>
+           </td>
+         </tr>
+         <input type="hidden" id="addcounter" value="1">
+         <?php }?>
+        </table>
+        <table id="add_followup" class="table table-bordered table-responsive"></table>
+
+       
+                  </div>
+				 
+				  </div>
+				  
+				  <div class="row form-group">
+				<div class="col-sm-12">
+				<div class="box-footer">
+                <input type="submit" name="submitBtn" id="submitBtn" class="btn btn-primary" value="submit" />
+              </div>
+				</div>
+				</div>
+				  
+                  </div>
+              <!-- /.box-body -->
+            </form>
+          </div>
+          <!-- /.box -->
+          </div>
+        <!--/.col (left) -->
+        <!-- right column -->
+         <!--/.col (right) -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+  </div>
+ 
+ <script type="text/javascript">
+ 
+ 
+ function addMore()
+ {
+var counter=$("#addcounter").val();
+counter++;
+ var html='<tr id="foloowupspace'+counter+'">';
+	    html+='<td><label for="exampleInputPassword1">No. of Days<span class="error">*</span></label><input type="text" name="follow_up_day[]" required="required" id="follow_up_day'+counter+'" class="form-control" value="" placeholder="No. of Day" /></td>';
+		html+='<td><label for="exampleInputPassword1">Contact By<span class="error">*</span></label><select name="contact_by[]" id="contact_by'+counter+'" class="form-control"><option value="Phone">Phone</option><option value="Email">Email</option><option value="Chat">Chat</option></select></td>';
+		
+		html+='<td style="padding:25px 0 0 10px; font-weight: 700; font-size:20px;"><a style="cursor:pointer;" onclick="removeFolowup('+counter+');"> - </a></td>';
+ 		html+='</tr>';
+		
+		if(counter < 16)
+		{
+	$("#addcounter").val(counter);
+	 
+	$( "#add_followup" ).append(html);	 
+		}
+   }
+
+ function removeFolowup(counterid)
+{
+	
+$("#foloowupspace"+counterid).remove();
+var counter=$("#addcounter").val();
+counter--;
+$("#addcounter").val(counter);
+}
+
+
+</script>

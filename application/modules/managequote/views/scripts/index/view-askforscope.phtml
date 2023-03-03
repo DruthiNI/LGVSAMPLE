@@ -1,0 +1,471 @@
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>View Ask For Scope</h1>
+    </section>
+      <!-- Main content -->
+    <section class="content">
+     
+	 <?php
+$this->userObj = new Manageuser_Model_Manageuser();
+$this->tag = new Tags_Model_Tags();
+ 
+$prioritydata=($this->QueryInfo['assign_priority'])?$this->QueryInfo['assign_priority']:$this->QueryInfo['priority'];
+$template_name='';
+$mail_subject='';
+$mail_body='';
+ $arrTag=array();
+
+ ?>  
+  <div class="row">
+ 				 <div class="col-md-12">
+				  
+ 				 <!-- Custom Tabs -->
+          <div class="box box-primary  nav-tabs-custom">
+            <ul class="nav nav-tabs">
+              <li class="active"><a href="#tab_QueryInfo" data-toggle="tab">Query Information</a></li>
+			  
+			  <?php if($this->userInfo->user_type=='Lead Validator'){
+			   if(count($this->CommentInfo) > 0)
+			   { ?>
+					<li><a id="ClickToAutoQuote" href="#tab_AskScope" data-toggle="tab" onclick="showChatHistory()">Ask for Scope</a></li>	 
+			  <?php }
+			    } ?>
+			  <?php if(($this->userInfo->user_type=='sub-admin' or $this->userInfo->user_type=='Lead Generator') and $this->quoteInfo['id']!=""){ 
+				?>
+					<li><a id="ClickToAutoQuote" href="#tab_AskScope" data-toggle="tab" onclick="showChatHistory()">Ask for Scope</a></li>	 
+			  <?php
+			    } ?>
+				<?php if($this->userInfo->user_type=='admin' and $this->quoteInfo['id']!=""){ 
+				?>
+					<li><a id="ClickToAutoQuote" href="#tab_AskScope" data-toggle="tab" onclick="showChatHistory()">Ask for Scope</a></li>	 
+			  <?php
+			    } ?>
+               
+             </ul>
+            <div class="tab-content">
+              <div class="tab-pane active" id="tab_QueryInfo">
+            <!-- ////////////////////////////////////////-->
+			
+			
+				 <div class="row">
+				<div class="col-xs-5"><label>Ref. No.</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6">
+				 <?php if($this->userInfo->user_type!='Lead Validator'){ ?>
+			   <a href="javascript:" class="dropdown-toggle" data-toggle="dropdown"  onclick="getActivityHistory()"> <?=$this->QueryInfo['assign_id'];?> <i class="caret"></i></a> 
+                
+                  <ul class="dropdown-menu dropdownmenu" role="menu">
+                    <div class="box-header with-border">
+                    <h2 class="box-title">Earlier Activity </h2>
+                  </div>
+			 <div class="box-body" id="activityHistoryData"></div>
+		        </ul>
+			  <?php } else{
+				echo $this->QueryInfo['assign_id']; 
+			  }?>
+				  
+				
+				
+				</div>
+				</div>
+				 
+				<div class="row">
+				<div class="col-xs-5"><label>Profile</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6">
+				<div id="ShowProfileDiv">  
+				<span id="GetProfileName"><?=$this->QueryInfo['profile_name'];?></span>
+				<?php /*if($this->userInfo->user_type=='Lead Validator'){ ?>
+                 <span onclick="SwitchProfileFun()" style="font-size: 20px; margin-left: 10px; cursor:pointer;" class="fa fa-edit"></span>
+				<?php }*/ ?>
+				 </div>
+				 <?php if($this->userInfo->user_type=='Lead Validator'){ ?>
+				 <div style="display: none;" id="EditProfileDiv">
+                  <select name="switch_profile" id="switch_profile" class="form-control switch_profile">
+				  <option value="">Select Profile</option>
+				  <?php foreach($this->profileData as $profile){?>
+                      <option value="<?=$profile['id']?>" <?=($profile['id']==$this->QueryInfo['profile_id'])?"selected":""?>><?=$profile['profile_name']?></option>
+				  <?php } ?>
+                      
+                   </select>
+                    </div>
+				<?php } ?>
+				
+				</div>
+				</div>
+				   
+				
+				<?php if($this->QueryInfo['name']){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Name</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?=$this->QueryInfo['name'];?></div>
+				</div>
+				  <?php }?>
+				  
+				  <?php if($this->QueryInfo['email_id']){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Email</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?=$this->QueryInfo['email_id'];?></div>
+				</div>
+				<?php }?>
+				<?php if($this->QueryInfo['alt_email_id']){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Alternate Email ID</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?=$this->QueryInfo['alt_email_id'];?></div>
+				</div>
+				<?php }?>
+				<?php if($this->QueryInfo['phone']){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Contact No.</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?=$this->QueryInfo['phone'];?></div>
+				</div>
+				<?php }?>
+				<?php if($this->QueryInfo['alt_contact_no']){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Alternate Contact No.</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?=$this->QueryInfo['alt_contact_no'];?></div>
+				</div>
+				<?php }?>
+				<?php if($this->QueryInfo['area_of_study']){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Topic/Area of Study</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?=$this->QueryInfo['area_of_study'];?></div>
+				</div>
+				<?php }?>
+				<?php if($this->QueryInfo['service_name']){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Requirement</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?php if($this->QueryInfo['service_name']=="Other"){ echo $this->QueryInfo['other_requirement'];} else {
+									echo $this->QueryInfo['service_name'];
+								}?></div>
+				</div>
+				<?php }?>
+				 
+				  
+				 
+				  <?php if($this->QueryInfo['location']){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Location</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"> <?php echo $this->QueryInfo['location'];?></div>
+				</div>
+				  <?php }?>
+				  <?php if($this->QueryInfo['city']){?>
+				<div class="row">
+				<div class="col-xs-5"><label>City</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"> <?php echo $this->QueryInfo['city'];?></div>
+				</div>
+				  <?php }?>
+				  <?php if($this->QueryInfo['complete_address']){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Complete Address</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?php echo $this->QueryInfo['complete_address'];?></div>
+				</div>
+				  <?php }?>
+				  <?php if($this->QueryInfo['company_name']){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Company Name</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?php echo $this->QueryInfo['company_name'];?> </div>
+				</div>
+				  <?php }?>
+				 <?php if($this->QueryInfo['designation']){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Designation</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?php echo $this->QueryInfo['designation'];?></div>
+				</div>
+				 <?php }?>
+				 <?php if($this->QueryInfo['website_name']){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Website</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?php if($this->QueryInfo['website_name']=="others"){ echo $this->QueryInfo['other_website'];} else {
+									echo $this->QueryInfo['website_name'];
+								}?></div>
+				</div>
+				 <?php }?>
+                                
+                <div class="row">
+				<div class="col-xs-5"><label>Allocated To</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?php echo $this->QueryInfo['user_name'];?></div>
+				</div>                
+				<div class="row">
+				<div class="col-xs-5"><label>Priority</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6">
+				<div id="ShowPriorityDiv">  
+				<span id="GetPriorityName"><?=$prioritydata;?></span>
+				<?php /*if($this->QueryInfo['update_status']!=5){ ?>
+                 <span onclick="SwitchPriorityFun()" style="font-size: 20px; margin-left: 10px; cursor:pointer;" class="fa fa-edit"></span>
+				<?php }*/ ?>
+				 </div>
+				 <?php //if($this->userInfo->user_type=='admin'){ ?>
+				 <div style="display: none;" id="EditPriorityDiv">
+                  <select name="switch_priority" id="switch_priority" class="form-control switch_priority">
+				  <option value="">Select Priority</option>
+				  <?php foreach($this->priorityArr as $priority){?>
+                      
+					<option value="<?php echo $priority['priority'].'|'.$priority['follow_up_day'].'|'.$priority['contact_by'];?>" <?php if($prioritydata==$priority['priority']){ ?> selected="selected" <?php }?>><?php echo $priority['priority'];?></option> 
+					  
+					  
+				  <?php  } ?>
+                      
+                   </select>
+                    </div>
+				<?php //} ?>
+				
+				</div>
+				
+				
+				
+				<!--<div class="col-xs-6"><?php echo $this->QueryInfo['priority'];?></div>-->
+				</div>
+			   <?php if($this->QueryInfo['academic_level']){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Academic Level</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?php echo $this->QueryInfo['academic_level'];?></div>
+				</div>
+			 <?php }?>
+			 
+			 <?php //if($this->QueryInfo['tags']){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Tag</label></div>
+				<div class="col-xs-1"></div>
+				
+				<div class="col-xs-6">
+				<div id="ShowTagDiv" style="word-wrap: break-word;">  
+				<span id="GetTagName">
+				<?php
+				if($this->QueryInfo['tags'] and $this->QueryInfo['tags'] != 'null')
+				{
+				$arrTag=$this->tag->TagNameMatchingId($this->QueryInfo['tags']);
+				//$arrTag=explode(",",$this->QueryInfo['tags']);
+					foreach($arrTag as $tags)
+					{
+						echo '<span class="label label-warning" style="padding:2px;">'.$tags['tag_name'].'</span>&nbsp;';
+					}
+				}
+				
+				?>
+				</span>
+				<?php /*if($this->userInfo->user_type!='Lead Generator'){ ?>
+                 <span onclick="SwitchTagFun()" style="font-size: 20px; margin-left: 10px; cursor:pointer;" class="fa fa-edit pull-right"></span>
+				<?php }*/ ?>
+				 </div>
+				 <?php if($this->userInfo->user_type!='Lead Generator'){ ?>
+				 <div style="display: none;" id="EditTagDiv">
+                  <select name="switch_tag[]" id="switch_tag" multiple class="form-control select2">
+				  <option value="">Select Tags</option>
+				  <?php foreach($this->tagsArr as $tag){
+					$array= explode(",",$this->QueryInfo['tags']);
+					if(in_array($tag['id'],$array))
+					{
+					 $select='selected';
+					}
+					else
+					{
+					$select='';	
+					}  
+					  
+					  ?>
+                      <option value="<?=$tag['id']?>" <?=$select?>><?=$tag['tag_name']?></option>
+				  <?php } ?>
+                      
+                   </select>
+				   <button type="button" class="btn btn-success btn-sm pull-right" onclick="return SaveTags()">Save</button>
+                    </div>
+				<?php } ?>
+				
+				</div>
+				
+				
+				 
+				</div>
+			 <?php //}?>
+			 
+			 <?php if($this->QueryInfo['remarks']){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Remarks</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?php echo $this->QueryInfo['remarks'];?></div>
+				</div>
+			 <?php }?>
+			 
+			 <?php if($this->QueryInfo['flag_mark']=='on'){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Flag Mark</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?php if($this->QueryInfo['flag_mark']=="on"){ ?> 
+								<img src="<?=PUBLICURL?>images/flag_mark_red.png" width="24" height="24">
+								<?php }?></div>
+				</div>
+			 <?php }?>
+				<div class="row">
+				<div class="col-xs-5"><label>Follow up Date</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?php echo date("d/m/Y",$this->QueryInfo['assign_follow_up_date']);?></div>
+				</div>
+				
+				<div class="row">
+				<div class="col-xs-5"><label>Query Created Date</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?php echo date("d/m/Y H:i A",$this->QueryInfo['assign_date']);?>
+				<input type="hidden" id="created_date_time" value="<?=($this->QueryInfo['open_date'])?date("m/d/Y H:i:s",$this->QueryInfo['open_date']):"";?>">
+				
+				</div>
+				</div>
+				<?php if(count($this->QueryFilesData) > 0){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Uploaded Files</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6">
+				<?php
+				foreach($this->QueryFilesData as $files)
+				{ ?>
+				 <div><a href="<?=SITEURL?><?=$files['file_path'];?>" download><?=$files['filename'];?></a></div>
+				<?php }
+				?>
+				</div>
+				</div>
+				<?php }?>
+				
+				<div class="row">
+				<div class="col-xs-5"><label>Query Status</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6">
+				<?php 
+				if($this->QueryInfo['update_status']==1)
+				{
+					echo '<span class="label label-info">Pending for Validation</span>';
+				}
+				else if($this->QueryInfo['update_status']==2)
+				{
+					echo '<span class="label label-primary">Contact Made</span>';
+				}
+				else if($this->QueryInfo['update_status']==3)
+				{
+					echo '<span class="label label-warning">Quoted </span>';
+				}
+				else if($this->QueryInfo['update_status']==4)
+				{
+					echo '<span class="label label-default">Negotiating  </span>';
+				}
+				else if($this->QueryInfo['update_status']==5)
+				{
+					echo '<span class="label label-success">Converted   </span>';
+				}
+				else if($this->QueryInfo['update_status']==6)
+				{
+					echo '<span class="label label-danger">Client Not Interested   </span>';
+				}
+				else if($this->QueryInfo['update_status']==7)
+				{
+					echo '<span class="label label-info">Reminder </span>';
+				}
+				else if($this->QueryInfo['update_status']==8)
+				{
+					echo '<span class="label label-danger">Lost deals </span>';
+				}
+				?>
+				
+				</div>
+				</div>
+				
+			
+            <!-- ////////////////////////////////////////-->
+
+                
+              </div>
+              <!-- /.tab-pane -->
+              <div class="tab-pane" id="tab_AskScope">
+                <?php if($this->userInfo->user_type=='Lead Validator'){
+			   if(count($this->CommentInfo) > 0)
+			   { 
+				include(APPLICATION_PATH."/modules/dashboard/views/scripts/index/askforscope/user-ask-quote.phtml");
+			   }
+			    } ?>
+				 <?php if(($this->userInfo->user_type=='sub-admin' or $this->userInfo->user_type=='Lead Generator') and $this->quoteInfo['id']!=""){ 
+				include(APPLICATION_PATH."/modules/dashboard/views/scripts/index/askforscope/user-ask-quote.phtml");
+			    } ?>
+				
+				<?php if($this->userInfo->user_type=='admin' and $this->quoteInfo['id']!=""){ 
+				include(APPLICATION_PATH."/modules/dashboard/views/scripts/index/askforscope/admin-ask-quote.phtml");
+			    } ?>
+				
+              </div>
+              <!-- /.tab-pane -->
+              
+			  
+              <!-- /.tab-pane -->
+            </div>
+            <!-- /.tab-content -->
+          </div>
+          <!-- nav-tabs-custom -->
+			
+			 
+			
+				</div>
+				 
+			 
+			   </div>
+			   
+ 	
+                
+ 
+<style>
+.direct-chat-messages {
+   max-height: 400px;
+}
+img {
+    max-width: 100%;
+    max-height: 100%;
+}
+.nav-tabs-custom>.nav-tabs>li.active>a, .nav-tabs-custom>.nav-tabs>li.active:hover>a {
+    background-color: #3d8dbc;
+    color: #fff;
+}
+.mailinfoToogle{
+	margin-left:42px;margin-top:-15px;;
+}
+.close {
+  opacity: 1;
+}
+
+.dropdownmenu {
+    width: 500px;
+	border-color: #9E9E9E;
+}
+ 
+.dropdownmenu li {
+    padding: 5px;
+	font-size:17px;
+}
+.nav-tabs-custom>.nav-tabs>li {
+    font-size: 12px;
+	margin-right: 3px;
+}
+.nav>li>a {
+    padding: 10px 10px;
+}
+.refrencUrl{display:none;}
+</style>
+ 
+ <?php include(APPLICATION_PATH."/modules/dashboard/views/scripts/index/popjs.phtml")?>
+    </section>
+    <!-- /.content -->
+
+  </div>
+ 

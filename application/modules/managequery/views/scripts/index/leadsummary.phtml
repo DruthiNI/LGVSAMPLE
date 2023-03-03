@@ -1,0 +1,331 @@
+<?php
+ $date = new Zend_Date();
+?>
+<?php
+$statusObj = new Managequery_Model_Status();
+$campObj = new Managequery_Model_Campaign();
+$this->userObj = new Manageuser_Model_Manageuser();
+$this->tag = new Tags_Model_Tags();
+$this->QueryDashboardObj = new Dashboard_Model_Managequery();
+$this->QueryObj = new Managequery_Model_Managequery();
+
+
+ /*echo "<pre>";
+ print_r($this->QueryUsers);
+ echo "</pre>";*/
+?>
+<style>
+.dateFilterClass label {
+    background: #e0e0e0;
+}
+</style>
+<script src="<?=PUBLICURL?>plugins/timepicker/bootstrap-timepicker.min.js"></script>
+<script src="<?=PUBLICURL?>plugins/datepicker/bootstrap-datepicker.js"></script>
+ <script src="<?=PUBLICURL?>plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
+ <script src="<?=PUBLICURL?>plugins/ckeditor/ckeditor.js"></script>
+ <script src="<?=PUBLICURL?>dist/js/lightbox.min.js"></script>
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    
+    <?php
+  $uri = Zend_Controller_Front::getInstance()->getRequest()->getRequestUri();
+
+  
+   $uri = $this->userAgent()->getServerValue('request_uri');
+
+  $enduid = end(explode('/', $uri));
+    //print_r($this->QueryInfo);
+   $getusername= $this->userObj->getUserId($enduid);
+
+    ?>
+ <section class="content-header">
+      <h1> Lead History : <?php echo $getusername['name']; ?></h1>
+        <div class="breadcrumb">
+      
+   
+      <a class="btn btn-primary btn-sm btn-flat" href="<?=SITEURL?>reports">Back</a>
+   
+      </div>
+    </section>
+    <form name="form1" id="form1" method="post" action="<?php echo SITEURL?>managequery/index/leadsummary/userid/<?php echo $enduid;?>">
+      <inpu type="hidden" name="user_id" id="user_id" value="<?php echo $enduid;?>" >
+    <section class="content1">
+  <?=$this->successmessage?>
+        <table class="table table-bordered table-striped table-responsive">
+       <tr>
+     
+     
+     
+       
+      
+      
+       <td> <input type="text" value="<?php echo $this->filter_date;?>" name="filter_date" id="filter_date" class="form-control pull-right"  placeholder="From Date - To Date" > 
+        </td>
+        
+      
+         <td>
+            <select name="update_status" id="update_status" class="form-control">
+            <option value="">Select Status</option>
+       <?php
+       foreach($this->updateStatus as $statusData)
+       { if($statusData['id']!=4)
+         {
+       ?>
+       <option value="<?=$statusData['id']?>" <?php if($statusData['id']==$this->update_status){ ?> selected="selected" <?php }?>><?=$statusData['status_name']?></option>
+       <?php } }?>
+       </select>
+         
+       </td>
+    
+     
+    
+       
+       <td><select name="category" id="category" class="form-control">
+         
+           <option value="" selected>Select Category</option>
+    <?php
+           foreach($this->CategoryData as $category)
+       {
+       ?>
+           <option value="<?php echo $category['id'];?>" <?php if($category['id']==$this->category){ ?> selected="selected" <?php }?>><?php echo ucwords($category['name']);?></option>
+     <?php }?>
+           </select>
+       </td>
+          
+        <td> <input type="submit" name="searchBtn" id="searchBtn" class="btn btn-primary" value="Search">
+       </td>
+      
+       </tr> 
+       
+       
+       
+       </table>
+      
+     </section></form>
+
+    <!-- Main content -->
+    <section class="content">
+    <?php if($this->errors){ echo $this->errors;}?>
+      <div class="row">
+        <!-- left column -->
+        <div class="col-md-12">
+          <!-- general form elements -->
+          <div class="box box-primary">
+             <!-- form start -->
+           
+<div class="table-responsive">
+              <table id="example1" class="table table-bordered table-striped">
+              <thead>
+                  <tr>
+                   
+                                 <th>Ref. No.</th>
+                                 <th>User Name</th>
+                              <th>Email ID</th>
+                 <!--  <th>Email ID</th> -->
+                                 <th>Website</th> 
+                                 <th>Contact No.</th>
+                                 <!-- <th>Tags</th> --> 
+                                 <!--<th>Campaign</th> -->
+                 <?php
+                 if($this->userInfo->user_type!='user')
+                          {
+                 ?>
+                                 <th>Ownership</th>
+                <?php }?>
+                <th>Category</th>
+                                 <th>Status</th>
+                                 <th>Assign Date</th>
+                 <?php if($this->claime_query==1){?>
+                                 <th>Claimed Action</th>
+                 <?php }?>
+                </tr>
+                       </thead>
+                       <tbody>  
+                            <?php $i=1;
+              $tagsArr=array();
+                          foreach($this->QueryInfo as $Query)
+              {   
+              $statusInfo=$statusObj->FetchStatusName($Query['update_status']);
+              if($Query['trans_repli_user'] and $Query['transfer_type'])
+              {
+              $UserInfo=$this->userObj->getUserId($Query['trans_repli_user']);
+              $preUser_name=$UserInfo->name;
+              }
+              $arrTag=$this->tag->TagNameMatchingId($Query['tags']);
+              //$campData=$campObj->getCampaignWithQuery($Query['assign_id']);
+              ?>
+                         <tr id="deleteRow_<?php echo $Query['assign_id'];?>">
+                          
+                                  <td>
+                  
+               
+                   <?php echo $Query['assign_id'];?> 
+           
+          
+           
+           
+                   
+                
+              
+                  
+                  </td>
+                                  <td><?php $username= $this->userObj->getUserId($Query['user_id']);echo $username['name'];?></td>
+                                 <td><a href="javascript:void(0)" data-placement="bottom" data-toggle="tooltip" data-original-title="<?=$Query['name'];?>"><?=$Query['email_id']?></a></td>
+                 <!-- <td><?php echo $Query['email_id'];?> </td>-->
+                                  <td>
+                 <?php  $website_name=$this->QueryObj->fetchWebsiteName($Query['website_id']);
+                 echo $website_name['website'];
+                ?></td> 
+                               <td><?php echo $Query['phone'];?></td>
+                 <!-- <td>
+                <?php 
+                $tagsArr=array();
+                foreach($arrTag as $tags)
+                  {
+                    $tagsArr[]=$tags['tag_name'];
+                  }
+                            echo implode(", ",$tagsArr);
+                  ?>
+                 </td>  -->
+                 <!-- <td>
+                <?php 
+                $campArr=array();
+                foreach($campData as $camp)
+                  {
+                    $campArr[]=$camp['camp_title'];
+                  }
+                            echo implode(", ",$campArr);
+                  ?>
+                 </td>-->
+                 <?php
+                 if($this->userInfo->user_type!='user')
+                          {
+                 ?>
+                 <td>  <?php 
+                  
+                   if($Query['transfer_type']==1)
+                   {
+                  echo "Transfered";   
+                   }
+                   else if($Query['transfer_type']==2)
+                   {
+                  echo "Replicated from ".$Query['trans_repli_user'];
+                   }
+                   else
+                   {
+                  echo 'Fresh';   
+                   }
+               
+                
+                 ?> 
+                 </td>
+                <?php }?>
+
+                <td><?php
+                $categoryname=$this->QueryDashboardObj->getCategoryName($Query['requirement']);
+                echo $categoryname['name'];?></td>
+                <?php
+                if($Query['user_id']=='1'){?>
+                     <td><span id="change_status_name<?php echo $Query['assign_id'];?>">Pending for Allocation</span> </td>
+               <?php
+               }else{?>
+                     <td><span id="change_status_name<?php echo $Query['assign_id'];?>"><?php echo $statusInfo['status_name'];?></span> </td>
+               <?php
+               }
+               ?>
+               
+                
+                <td>
+                <?php 
+                 if($this->userInfo->user_type=='Campaign Manager')
+                 {
+                echo date("d M, Y",$Query['assign_campaign_date']);   
+                 }
+                 else
+                 {
+                echo date("d M, Y",$Query['assign_date']);   
+                 }
+                ?></td>
+                <?php if($this->claime_query==1){?>
+                                 <td>
+                 Box Added : <?=($Query['created_on'])?date("d M, Y h:i A",$Query['created_on']):'NA'?><br>
+                 Claimed Date : <?=($Query['claimed_date'])?date("d M, Y h:i A",$Query['claimed_date']):'NA'?>
+                 </td>
+                 <?php }?>
+                 
+                 
+              </tr>
+                         <?php $i++; }?>
+                 
+                 </tbody>
+              </table>
+              </div>
+<style>
+.todo-list>li {
+    border-radius: 0px;
+    padding: 0px;
+    background: none;
+    margin-bottom: 0px;
+    border-left: 0px;
+    color: none;
+}
+</style>
+
+<script>
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+    /*$('#filter_date').daterangepicker();*/
+    
+     $('#example1').DataTable( {
+        
+    
+    <?php
+         if(isset($this->userInfo->id) and ($this->userInfo->user_type=='admin' or $this->userInfo->user_type=='sub-admin')){ 
+    ?>
+    dom: 'Bfrtip',
+    lengthMenu: [
+            [ 50, 100, 500,1000, -1 ],
+            [ '50 rows', '100 rows', '500 rows', '1000 rows', 'Show all' ]
+        ],
+    
+    
+        buttons: [
+            {
+                extend: 'excelHtml5',
+                exportOptions: {
+                    columns: ':visible'
+                }
+            },
+     
+            'colvis',
+      'pageLength'
+        ],
+    <?php }?>
+    order: [],
+columnDefs: [ { orderable: false, targets: [0] } ]
+    } );
+    
+ 
+    $(".select2").select2();
+ 
+  });
+</script>
+
+ 
+          </div>
+          <!-- /.box -->
+
+       
+
+        </div>
+        <!--/.col (left) -->
+        <!-- right column -->
+         
+        <!--/.col (right) -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+  </div>
+
+<script src="<?=PUBLICURL?>bootstrap/js/jquery.js"></script>

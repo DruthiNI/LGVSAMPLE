@@ -1,0 +1,397 @@
+<?php $date = new Zend_Date();
+$userObj = new Manageuser_Model_Manageuser();
+ ?>
+ 
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>Email Template</h1>
+       
+    </section>
+     <!-- Main content -->
+    <section class="content">
+      <div class="row">
+	  
+        <div class="col-xs-<?=($this->userInfo->user_type=='Lead Validator')?8:12?>">
+           <div class="box">
+            <!-- /.box-header -->
+			
+			  
+            <div class="box-body">
+              <table id="example1" class="table table-bordered table-striped table-responsive">
+              <thead>
+                 <tr>
+ 								<th>Sr. No.</th>
+								<?php if($this->userInfo->user_type=="admin"){?>
+ 								<th>Category</th>
+								<?php }?>
+								<th>Template  Name</th>
+								<th>Website</th>
+								<?php if($this->userInfo->user_type!="Lead Validator"){?>
+ 								<th>Assign User</th>
+								<?php }?>
+                                <th>Action</th>
+  							</tr>
+                       </thead>
+                       <tbody>  
+                          <?php $i=1;
+                          foreach($this->templateData as $temp)
+						  { 
+						  $userData=$userObj->getSubadminAllUsers($temp['assign_user']);
+						  ?>
+                             <tr id="DelTemp<?=$temp['id']?>">
+                             <td><?=$i;?></td>
+							 <?php if($this->userInfo->user_type=="admin"){
+								 ?>
+							 <td><?php echo $temp['category'];?></td>
+							 <?php }?>
+							 <td><?php echo $temp['template_name'];?></td>
+							 <td><?php echo $temp['website_name'];?></td>
+							 <?php if($this->userInfo->user_type!="user"){?>
+ 							 <td style="word-break: break-word;"><?php foreach($userData as $user)
+							 {
+								 echo '<span style="padding:2px;" class="label label-warning">'.$user['name'].'</span>&nbsp;';
+							 }?></td>
+							 <?php }?>
+                             <td>
+							 <?php if($this->userInfo->user_type=="user"){?>
+							 <a href="javascript:" onclick="EditTemplate(<?=$temp['id']?>,'copy')"><i class="fa fa-copy"></i></a>
+								&nbsp;&nbsp;&nbsp;&nbsp;
+                                <a href="javascript:" onclick="EditTemplate(<?=$temp['id']?>,'edit')"><img src="<?=PUBLICURL?>images/edit.gif"></a>
+								&nbsp;&nbsp;&nbsp;&nbsp;
+							 <?php } ?>
+								<a href="javascript:" onclick="DeleteTemplate(<?=$temp['id']?>)"><img src="<?=PUBLICURL?>images/0.png"></a>
+                             </td>
+  							</tr>
+                     <?php $i++; }?>
+                 
+                 </tbody>
+              </table>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+      
+	  </div>
+<?php
+   if(isset($this->userInfo->id) and $this->userInfo->user_type=='Lead Validator')
+   {
+   ?>       
+<div class="col-xs-4">
+<div class="box">
+            <!-- /.box-header -->
+            <div class="box-body p-2">
+              <h1>Add Template</h1>
+             <form method="post" id="user_form" name="user_form">
+			 <input type="hidden" name="temp_id" id="temp_id">
+              <div class="box-body">
+			  <?php if($this->userInfo->user_type=="admin"){?>
+			 
+                  <div class="form-group">
+                  <label for="exampleInputPassword1">Category</label>
+				  <div class="row">
+                  <div class="col-sm-6">
+				  <input type="radio" required name="category" id="category1" class="flat-red" value="PhD" >
+				  <label for="category1">PhD</label>
+				  </div>
+				  <div class="col-sm-6">
+				  <input type="radio" required name="category" id="category2" class="flat-red" value="Sales" >
+				  <label for="category2">Sales</label>
+				  </div>
+				  </div>
+				  <div id="category1Error" class="error"></div>
+                   </div>
+                  
+				<?php } else { ?>
+					<input type="hidden" name="category" id="category" class="flat-red" value="<?=$this->userInfo->category?>" >
+				<?php }?>
+				
+				
+			  
+                <div class="form-group">
+                  <label for="template_name">Template Name<span class="error">*</span></label>
+                  <input type="text" name="template_name" id="template_name" class="form-control" value="<?php echo $this->teamInfo['template_name'];?>" />
+				  <div class="error" id="template_nameError"></div>
+				</div>
+			  
+				<div class="form-group">
+                  <label for="website_id">Website Name<span class="error">*</span></label>
+                  <select name="website_id" id="website_id" class="form-control">
+				  <option value="">Select Website</option>
+				  <?php foreach($this->websiteData as $website){?>
+				  <option value="<?=$website['id']?>"><?=$website['website']?></option>
+				  <?php }?>
+				  </select>
+				  <div class="error" id="website_idError"></div>
+				</div>
+				<div class="form-group">
+                  <label for="mail_subject">Mail Subject<span class="error">*</span></label>
+                  <input type="text" name="mail_subject" id="mail_subject" class="form-control" value="<?php echo $this->teamInfo['mail_subject'];?>" />
+				  <div class="error" id="mail_subjectError"></div>
+				</div>
+				<div class="form-group">
+                  <label for="mail_body">Mail Body<span class="error">*</span></label>
+                  <textarea class="form-control textarea" name="mail_body" id="mail_body" placeholder="Place some text here"></textarea>
+				  <div class="error" id="mail_bodyError"></div>
+				</div>
+				
+				 
+				  
+				  <div class="row form-group">
+				<div class="col-sm-12">
+				<div class="box-footer">
+                <input type="reset"  class="btn btn-danger" value="Reset" onclick="ResetForm()" /> &nbsp;&nbsp;
+                <input type="button" name="submitBtn" id="submitBtn" class="btn btn-primary" onclick="return ValidateForm()" value="Submit" />
+              </div>
+				</div>
+				</div>
+				  
+                  </div>
+              <!-- /.box-body -->
+            </form>
+          
+		 </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+      
+</div>
+	<?php }?>
+	   <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+ 
+  </div>
+     
+<script src="<?=PUBLICURL?>plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
+  <script type="text/javascript">
+
+function checkAll(checkname, exby) {
+  for (i = 0; i < checkname.length; i++)
+  checkname[i].checked = exby.checked? true:false
+ }
+ 
+ 
+function delRecord(int_dogid)
+{    
+    var formobj=document.form1;
+	if(check_mul(formobj))
+	{
+	if(confirm("Are you sure you want to delete record!"))
+	{
+		var formobj=document.form1;
+		formobj.action="?Action=Delete";
+		formobj.submit();
+	} 
+	}
+}
+
+ 
+
+function check_one(formObj)
+{
+	count=0;
+	for (var i=0;i < formObj.length;i++) 
+    {
+		fldObj = formObj.elements[i];
+		if (fldObj.type == 'checkbox')
+		{
+			if(fldObj.checked == true)
+			{
+				count=count+1;
+			}
+		}
+    }
+	if(count>1)
+	{
+		alert("please select only one record");
+		return false;
+	}
+	if(count==0)
+	{
+		alert("Please select a record");
+		return false;
+	}
+	return true;
+}
+
+function check_mul(formObj)
+{
+	count=0;
+	for (var i=0;i < formObj.length;i++) 
+    {
+		fldObj = formObj.elements[i];
+		if (fldObj.type == 'checkbox')
+		{
+			if(fldObj.checked == true)
+			{
+				count=count+1;
+			}
+		}
+    }
+	if(count==0)
+	{
+		alert("Please select a record");
+		return false;
+	}
+	return true;
+}
+</script>
+
+  <script>
+  $(function () {
+    $('.textarea').wysihtml5();
+	  $('#filter_date').daterangepicker();
+	   $(".select2").select2();
+    $("#example1").DataTable();
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": true
+    });
+  });
+  
+ function ValidateForm()
+ { var error="";
+ <?php if($this->userInfo->user_type=="admin"){?>
+if(document.user_form.category1.checked==false && document.user_form.category2.checked==false)
+{
+$("#category1Error").html("Please select category");
+error=1;	
+}
+ <?php }?> 
+if($("#template_name").val()=="")
+{
+$("#template_nameError").html("Please enter template name");
+error=1;	
+}
+ 
+if($("#website_id").val()=="")
+{
+$("#website_idError").html("Please select website");
+error=1;	
+}
+if($("#mail_subject").val()=="")
+{
+$("#mail_subjectError").html("Please enter mail subject");
+error=1;	
+}
+if($("#mail_body").val()=="")
+{
+$("#mail_bodyError").html("Please enter mail body");
+error=1;	
+}
+
+if(error==1)
+{
+	return false;
+}	
+else
+{
+$.ajax({
+    type : 'POST',
+    url : '<?=SITEURL?>template/index/saveemail-template',
+    data :$('#user_form').serialize(),
+	cache:false,
+	beforeSend: function()
+	{
+
+ 	},
+	success: function(response)
+	{
+	$.ajax('<?=SITEURL?>template/emailtemplate?ajaxify=1', {
+	    success: function(response) {
+		$("#content").html(response);
+		
+		$(".content").prepend('<div class="alert alert-success alert-dismissible"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button><i class="icon fa fa-check"></i> Mail template submitted successfully.</div>');
+        $('html, body').animate({scrollTop: '0px'}, 0);
+		
+		
+	    }
+        });
+	
+	
+	
+ 
+	}
+  });	
+}
+ }
+ function ResetForm()
+ {
+	$("#temp_id").val(''); 
+  }
+ function EditTemplate(id,funType)
+ {
+$.ajax({
+    type : 'POST',
+    url : '<?=SITEURL?>template/index/get-template-info',
+    data :"id="+id+"&table=tbl_email_template",
+	cache:false,
+	dataType: 'json',
+	beforeSend: function()
+	{
+
+ 	},
+	success: function(response)
+	{
+	  <?php if($this->userInfo->user_type=="admin"){?>
+	  if(response.category=='PhD')
+	  {
+		document.getElementById("category1").checked = true;  
+	  }
+	  if(response.category=='Sales')
+	  {
+		document.getElementById("category2").checked = true;  
+	  }
+	  <?php } else {?>
+	  $("#category").val(response.category);
+	  <?php }?>
+	  if(funType=='edit')
+	  {
+	$("#temp_id").val(response.id);
+	  }
+	$("#template_name").val(response.template_name);
+	$("#tag_name").val(response.tag_name);
+	if(funType=='edit')
+	  {
+	$("#website_id").val(response.website_id);
+	  }
+	$("#mail_subject").val(response.mail_subject);
+	$('.wysihtml5-sandbox').contents().find('.wysihtml5-editor').html(response.mail_body);
+	
+  
+  
+ 
+	}
+  });	 
+ }
+ 
+ function DeleteTemplate(id)
+ {
+if(confirm("Are you sure you want to delete record!"))
+{
+$.ajax({
+    type : 'POST',
+    url : '<?=SITEURL?>template/index/delete-template-info',
+    data :"id="+id+"&table=tbl_email_template",
+	cache:false,
+	dataType: 'json',
+	beforeSend: function()
+	{
+
+ 	},
+	success: function(response)
+	{
+	 $("#DelTemp"+response.id).remove();
+ $(".content").prepend('<div class="alert alert-success alert-dismissible"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button><i class="icon fa fa-check"></i>'+response.message+'</div>');
+	}
+  });	
+}  
+ }
+</script>

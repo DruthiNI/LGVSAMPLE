@@ -1,0 +1,218 @@
+<?php
+$statusObj = new Managequery_Model_Status();
+$this->userObj = new Manageuser_Model_Manageuser();
+$this->boxQueryObj = new Managequery_Model_Boxquery();
+ //echo "<pre>";
+ //print_r($this->QueryUsers);
+ //echo "</pre>";
+?>
+<div class="table-responsive">
+              <table id="example1" class="table table-bordered table-striped">
+              <thead>
+                  <tr>
+                   <th><input name="2" type="checkbox" onclick="checkAll(document.form1.check,this)" /></th>
+                                 <th>Name</th>
+                                 <th>Email ID</th>
+                                 <th>Website</th> 
+                                 <th>Contact No.</th>
+                                 <th>Box Tags</th> 
+                                 <th>Created Date</th>
+								 <?php if($this->userInfo->user_type=='user'){ ?>
+                                 <th>Action</th>
+								 <?php }?>
+   							</tr>
+                       </thead>
+                       <tbody>  
+                            <?php $i=1;
+							$tagsArr=array();
+                          foreach($this->queryData as $Query)
+						  {   
+						 
+						  $arrTag=$this->boxQueryObj->TagNameMatchingId($Query['box_tag']);
+						  ?>
+                           <td><input id="check" name="checkid[]" type="checkbox" value="<?php echo $Query['id'];?>"  /></td>
+						   <td><?php echo $Query['name'];?> </td>
+                           <td><a href="javascript:void(0)" data-placement="bottom" data-toggle="tooltip" data-original-title="<?=$Query['name'];?>"><?=$Query['email_id']?></a></td>
+						   <td><?php if($Query['website']=="others")
+								  { 
+								  echo $Query['other_website'];}
+								  else {
+									echo $Query['website'];
+								}
+								if($Query['if_generic_query']=='yes')
+								{
+									echo 'Generic Query';
+								}
+								
+								?></td> 
+                               <td><?php echo $Query['phone'];?></td>
+                               <td>
+							   <?php 
+							  $tagsArr=array();
+							  foreach($arrTag as $tags)
+									{
+										$tagsArr[]=$tags['box_tag_name'];
+										echo '<span class="label label-default">'.$tags['box_tag_name'].'</span>&nbsp;';
+									}
+									?>
+							  </td>
+							     
+ 							  <td><?php echo date("d M, Y H:i", $Query['created_on']);?> </td>
+							  
+							  <?php if($this->userInfo->user_type=='user'){ ?>
+							   <td>
+							   <div>
+							   <?php
+							   if($Query['if_generic_query']=='yes')
+								{
+								?>
+								<input type="button" class="btn btn-primary" onclick="boxQueryDetailsPopUp(<?php echo $Query['id'];?>);" value="Claim"> 
+								<?php
+								}
+								else
+								{ ?>
+								<input type="button" class="btn btn-primary" onclick="claimBoxQuery(<?=$Query['id']?>)" value="Claim"> 	
+								<?php }
+							   ?>
+							   
+							</div>
+							<!--<a style="cursor:pointer;" onclick="boxQueryDetailsPopUp(<?php echo $Query['id'];?>);"><img src="<?=PUBLICURL?>images/view-details.png"></a>
+							  -->
+							  </td>
+						<?php }?>
+							  
+							</tr>
+                         <?php $i++; }?>
+                 
+                 </tbody>
+              </table>
+              </div>
+			  
+			  <div class="modal right fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
+<div class="modal-dialog" role="document">
+<div class="modal-content" id="PopViewBoxQuery">
+<div class="QueryDetailsLoader"><img src="<?=PUBLICURL?>images/ajax-loader.gif"></div>
+</div>
+</div>
+</div>
+<style>
+.modal.right .modal-dialog {
+    width: 700px;    
+}
+</style>
+
+<script>
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+	  /*$('#filter_date').daterangepicker();*/
+	  
+	   $('#example1').DataTable( {
+        
+		
+		<?php
+         if(isset($this->userInfo->id) and ($this->userInfo->user_type=='admin' or $this->userInfo->user_type=='sub-admin')){ 
+		?>
+		dom: 'Bfrtip',
+		lengthMenu: [
+            [ 50, 100, 500,1000, -1 ],
+            [ '50 rows', '100 rows', '500 rows', '1000 rows', 'Show all' ]
+        ],
+		
+		
+        buttons: [
+            {
+                extend: 'excelHtml5',
+                exportOptions: {
+                    columns: ':visible'
+                }
+            },
+		 
+            'colvis',
+			'pageLength'
+        ],
+		<?php }?>
+		order: [],
+columnDefs: [ { orderable: false, targets: [0] } ]
+    } );
+	  
+ 
+    $(".select2").select2();
+ 
+  });
+  
+  function boxQueryDetailsPopUp(query_id)
+  {
+$('#myModal3').modal({
+			backdrop: 'static',
+            keyboard: false
+		});	
+
+  $.ajax({
+    type : 'POST',
+    url : '<?=SITEURL?>dashboard/index/getboxquerydetails',
+    data :"query_id="+query_id,
+	cache:false,
+	beforeSend: function()
+	{
+	$("#PopViewBoxQuery").html('<div style="text-align:center;"> <img style="height:150px;" src="<?=PUBLICURL?>images/pre-loader-new.gif"></div>');	
+ 	},
+	success: function(response)
+	{
+	 $("#PopViewBoxQuery").html(response);
+	}
+  });		
+  }
+  
+function claimBoxQuery(box_query_id)
+{
+	if(confirm("Are you sure you want to claim this query!"))
+	{
+		$.ajax({
+		type : 'get',
+		url : '<?=SITEURL?>managequery/index/claimeboxquery',
+		data :"query_id="+box_query_id,
+		cache:false,
+		beforeSend: function()
+		{
+
+		},
+		success: function(response)
+		{
+        window.location.href = "/managequery/userquery";
+		}
+	  });
+	}
+ 	
+}
+ 
+function claimBoxQueryGeneric(box_query_id)
+{
+	if($("#website_id").val()=="")
+	{
+		alert("Please select website");
+		return false;
+	}
+	if($("#website_id").val()!="")
+	{
+		if(confirm("Are you sure you want to claim this query!"))
+		{
+			$.ajax({
+			type : 'post',
+			url : '<?=SITEURL?>managequery/index/claimeboxquery',
+			data :{query_id:box_query_id,website_id:$("#website_id").val()},
+			cache:false,
+			beforeSend: function()
+			{
+             $("#genclaimBtnLoad").html('<input type="button" class="btn btn-primary" disabled  value="Please Wait...">');
+			},
+			success: function(response)
+			{
+			window.location.href = "/managequery/userquery";
+			}
+		  });
+		}
+	}
+}
+</script>
+
+ 

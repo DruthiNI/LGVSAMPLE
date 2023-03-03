@@ -1,0 +1,13 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# dependencies
+/library
+
+
+# misc
+.htaccess
+application/configs/application.ini
+
+# System Files
+.DS_Store
+Thumbs.db

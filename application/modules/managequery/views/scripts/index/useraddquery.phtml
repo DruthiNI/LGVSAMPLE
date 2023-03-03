@@ -1,0 +1,549 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1> Add New Query </h1>
+    </section>
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <!-- left column -->
+        <div class="col-md-12">
+          <!-- general form elements -->
+          <div class="box box-primary">
+          <div align="center"> <?=$this->errors;?>
+		  <?php if(isset($this->successmessage) and $this->successmessage){ echo $this->successmessage; }?>
+		  </div>
+		   
+             <!-- form start -->
+            <form role="form" action="" method="post" id="query_form" name="query_form" enctype="multipart/form-data">
+              <div class="box-body">
+                <div class="row form-group">
+				 <div class="col-sm-3">
+				  <label for="exampleInputEmail1">Query Code</label>
+                   
+				  <select name="query_code" id="query_code" class="form-control">
+				  <option value="">Select Query Code</option>
+				  <option value="GH56671" <?=($this->params['query_code']=='GH56671')?"selected":""?>>GH56671</option>
+				  <option value="654QTYP" <?=($this->params['query_code']=='654QTYP')?"selected":""?>>654QTYP</option>
+				  <option value="C9-987-EE" <?=($this->params['query_code']=='C9-987-EE')?"selected":""?>>C9-987-EE</option>
+				  <option value="7651/09/7145" <?=($this->params['query_code']=='7651/09/7145')?"selected":""?>>7651/09/7145</option>
+				  <option value="15:98716" <?=($this->params['query_code']=='15:98716')?"selected":""?>>15:98716</option>
+			      <option value="E3W33BS" <?=($this->params['query_code']=='E3W33BS')?"selected":""?>>E3W33BS</option>
+				  <option value="AG6521" <?=($this->params['query_code']=='AG6521')?"selected":""?>>AG6521</option>
+				  <option value="F3485TK" <?=($this->params['query_code']=='F3485TK')?"selected":""?>>F3485TK</option>
+ 				  </select>
+                  <span id="query_codeError" class="error"></span>
+				  </div>
+				
+                  <div class="col-sm-3">
+                  <label for="exampleInputEmail1">Name<span class="error">*</span></label>
+                  <input type="text" name="name" id="name" class="form-control" value="<?=($this->exist_name)?$this->exist_name:$this->params['name']?>" />
+                  <span id="nameError" class="error"></span>
+                 </div>
+				 <div class="col-sm-3">
+				 <label for="email_id">Email ID<span class="error">*</span></label>
+                  <input type="text" name="email_id" id="email_id" value="<?php echo $this->params['email_id'];?>" class="form-control" />
+                  <span id="email_idError" class="error"></span>
+				 </div>
+				 
+				 <div class="col-sm-3">
+				 <label for="alt_email_id">Alternate Email ID</label>
+                  <input type="text" name="alt_email_id" id="alt_email_id" value="<?php echo $this->params['alt_email_id'];?>" class="form-control" />
+				 </div>
+				 </div>
+				 
+				 <div class="row form-group">
+                  <div class="col-sm-4">
+				  <label for="phone">Contact No.</label>
+                 <input type="text" name="phone" id="phone" value="<?php echo $this->params['phone'];?>" class="form-control" /> 
+				  </div>
+				 <div class="col-sm-4">
+				 <label for="alt_contact_no">Alternate  Contact No.</label>
+                 <input type="text" name="alt_contact_no" id="alt_contact_no" value="<?php echo $this->params['alt_contact_no'];?>" class="form-control" />
+				 </div>
+				 
+				 <div class="col-sm-4">
+				 <label for="date">Date</label>
+                 <input type="text" name="date" id="date" value="<?=($this->params['date'])?$this->params['date']:date('m/d/Y')?>" class="form-control tcal" /> 
+				 </div>
+				 </div>
+				 
+				 <div class="row form-group">
+                  <div class="col-sm-4">
+				 <label for="location">Location</label>
+                  <select name="location" id="location" class="form-control">
+                 <option value="">Please Select</option>
+                 <?php
+                 foreach($this->CountryData as $Country)
+				 { ?>
+					<option value="<?php echo $Country['nicename'];?>" <?php if($this->params['location']==$Country['nicename']){ ?> selected="selected" <?php }?>><?php echo $Country['nicename'];?></option> 
+				<?php  }
+				 ?>
+                 </select>
+				  </div>
+				  
+				  <div class="col-sm-4">
+				  <label for="city">City</label>
+                 <input type="text" name="city" id="city" value="<?php echo $this->params['city'];?>" class="form-control" /> 
+				  </div>
+				  
+				 <div class="col-sm-4">
+				 <label for="complete_address">Complete Address</label>
+                 <input type="text" name="complete_address" id="complete_address" value="<?php echo $this->params['complete_address'];?>" class="form-control" />
+				 </div>
+				 
+				 
+				 </div>
+				 
+				 
+				 <div class="row form-group">
+				 <div class="col-sm-4">
+				 <label for="company_name">Company Name</label>
+                 <input type="text" name="company_name" id="company_name" value="<?php echo $this->params['company_name'];?>" class="form-control" /> 
+				 </div>
+                  <div class="col-sm-4">
+				<label for="designation">Designation</label>
+                 <input type="text" name="designation" id="designation" value="<?php echo $this->params['designation'];?>" class="form-control" />  
+				  </div>
+				 <div class="col-sm-4">
+				 <label for="website">Website<span class="error">*</span></label>
+				 <?php
+				 if($this->params['website'])
+				 {
+				  $paramWebsite=$this->params['website'];
+				 }
+				 else
+				 {
+				  $paramWebsite='emarketz.net';	 
+				 }
+				 
+				 ?>
+                 <select name="website" id="website" class="form-control" onchange="OtherFunction();">
+                 <option value="">Please Select</option>
+                 <?php
+				  
+                 foreach($this->WebsiteData as $Website)
+				 { ?>
+					<option value="<?php echo $Website['website'];?>" <?php if($paramWebsite==$Website['website']){ ?> selected="selected" <?php }?>><?php echo $Website['website'];?></option> 
+				<?php  }
+				 ?>
+                 <option value="others">Others</option>
+                 </select>
+                <span id="websiteError" class="error"></span>
+				 </div>
+				 
+				 <div class="col-sm-4" style="display:none;" id="other_website_div">
+				  <label for="other_website">Other Website</label>
+                 <input type="text" name="other_website" id="other_website" value="<?php echo $this->params['other_website'];?>" class="form-control" />
+                   <span id="other_websiteError" class="error"></span>
+				 </div>
+				 </div>
+				 
+				 
+				 <div class="row form-group">
+                  <div class="col-sm-4">
+				<label for="area_of_study">Topic/Area of study</label>
+                 <input type="text" name="area_of_study" id="area_of_study" value="<?php echo $this->params['area_of_study'];?>" class="form-control" /> 
+				  </div>
+				 <div class="col-sm-4">
+				 <label for="requirement">Requirement</label>
+                  <select name="requirement" id="requirement" class="form-control" onchange="otherRequirement()">
+                 <option value="">Please Select</option>
+				 
+				  <option value="Lead Generation" <?php if($this->params['requirement']=="Lead Generation"){ ?> selected="selected" <?php }?>>Lead Generation</option>
+				 <option value="Website Designing & Development" <?php if($this->params['requirement']=="Website Designing & Development"){ ?> selected="selected" <?php }?>>Website Designing & Development</option>
+				 
+				 <option value="SEO" <?php if($this->params['requirement']=="SEO"){ ?> selected="selected" <?php }?>>SEO</option>
+				 <option value="SMO" <?php if($this->params['requirement']=="SMO"){ ?> selected="selected" <?php }?>>SMO</option>
+				
+				<option value="Digital Marketing" <?php if($this->params['requirement']=="Digital Marketing"){ ?> selected="selected" <?php }?>>Digital Marketing</option>
+				 
+				 <option value="Brochure Design" <?php if($this->params['requirement']=="Brochure Design"){ ?> selected="selected" <?php }?>>Brochure Design</option>
+				 
+				 
+					<option value="Topic selection" <?php if($this->params['requirement']=="Topic selection"){ ?> selected="selected" <?php }?>>Topic selection</option>
+                    <option value="Proposal/Synopsis writing" <?php if($this->params['requirement']=="Proposal/Synopsis writing"){ ?> selected="selected" <?php }?>>Proposal/Synopsis writing</option>
+                    <option value="Thesis writing" <?php if($this->params['requirement']=="Thesis writing"){ ?> selected="selected" <?php }?>>Thesis writing</option>
+                    <option value="Research design" <?php if($this->params['requirement']=="Research design"){ ?> selected="selected" <?php }?>>Research design</option>
+                    <option value="Questionnaire" <?php if($this->params['requirement']=="Questionnaire"){ ?> selected="selected" <?php }?>>Questionnaire</option>
+                    <option value="SPSS analysis" <?php if($this->params['requirement']=="SPSS analysis"){ ?> selected="selected" <?php }?>>SPSS analysis</option>
+                    <option value="Qualitative analysis" <?php if($this->params['requirement']=="Qualitative analysis"){ ?> selected="selected" <?php }?>>Qualitative analysis</option>
+                    <option value="Implementation" <?php if($this->params['requirement']=="Implementation"){ ?> selected="selected" <?php }?>>Implementation</option>
+                    <option value="Research paper writing" <?php if($this->params['requirement']=="Research paper writing"){ ?> selected="selected" <?php }?>>Research paper writing</option>
+					
+					<option value="Topic & Proposal" <?php if($this->params['requirement']=="Topic & Proposal"){ ?> selected="selected" <?php }?>>Topic & Proposal</option>
+					<option value="Dissertation Writing" <?php if($this->params['requirement']=="Dissertation Writing"){ ?> selected="selected" <?php }?>>Dissertation Writing</option>
+					
+					<option value="Editing & Proofreading" <?php if($this->params['requirement']=="Editing & Proofreading"){ ?> selected="selected" <?php }?>>Editing & Proofreading</option>
+					
+					<option value="Plagiarism Removal" <?php if($this->params['requirement']=="Plagiarism Removal"){ ?> selected="selected" <?php }?>>Plagiarism Removal</option>
+					
+					
+                    <option value="Other" <?php if($this->params['requirement']=="Other"){ ?> selected="selected" <?php }?>>Other</option> 
+				 
+                 </select>
+				 </div>
+				 
+				 <div class="col-sm-4" style="display:none;" id="other_requirement_div">
+                 <label for="other_requirement">Other Requirement</label>
+                 <input type="text" name="other_requirement" id="other_requirement" value="<?php echo $this->params['other_requirement'];?>" class="form-control" />
+				  
+				 </div>
+				 </div>
+				 
+				 
+				 <div class="row form-group">
+                  <div class="col-sm-4">
+				<label for="allocated_to">Allocated To</label>
+                <select name="allocated_to" id="allocated_to" class="form-control select2" multiple="multiple" data-placeholder="Select a User">
+				<option value="">Select User</option>
+                                     <?php
+                                    foreach($this->ActiveUsers as $users)
+									{ ?>
+									<option value="<?php echo $users['id'];?>" <?php if($users['id']==$this->userInfo->id){ ?> selected="selected" <?php }?>><?php echo $users['username'];?></option> 	
+									<?php }
+									?>                               
+                                    </select>
+                                    <span id="allocated_toError" class="error"></span>
+				  </div>
+				
+                <div class="col-sm-4">
+				 <div class="form-group">
+                  <label for="profile_id">Select Profile</label>
+                  <select name="profile_id" id="profile_id" class="form-control">
+				  <option value="">Select Profile</option>
+				  </select>
+				  <span id="profile_idError" class="error"></span>
+                  </div>
+				 </div>
+				 
+				  <div class="col-sm-4">
+				 <div class="form-group">
+                  <label for="team_id">Select Team</label>
+                  <select name="team_id" id="team_id" class="form-control">
+				  <option value="">Select Team</option>
+					 <?php
+					foreach($this->teamsArr as $team)
+					{ 
+					?>
+					<option value="<?php echo $team['id'];?>"><?php echo $team['team_name'];?></option> 	
+					<?php }
+					?>                               
+					</select>
+					<span id="team_idError" class="error"></span>
+                  </div>
+				 </div>
+				 
+				   <div class="col-sm-4">
+				 <div class="form-group">
+                  <label for="tag_id">Select Tags</label>
+                  <select name="tag_id" id="tag_id" class="form-control">
+				  <option value="">Select Tag</option>
+					 <?php
+					foreach($this->tagsArr as $tag)
+					{ 
+					?>
+					<option value="<?php echo $tag['id'];?>" <?=($this->params['tag_id']==$tag['id'])?"selected":""?>><?php echo $tag['tag_name'];?></option> 	
+					<?php }
+					?>                               
+					</select>
+					<span id="tag_idError" class="error"></span>
+                  </div>
+				 </div>
+				  
+
+
+				<div class="col-sm-4">
+				 <label for="priority">Priority</label>
+                 <select name="priority" id="priority" class="form-control select2">
+						 <?php
+                         foreach($this->priorityArr as $priority)
+                         {
+                         ?>
+                        <!-- <option value="<?php echo $priority['priority'].'|'.$priority['contact_by'];?>"><?php echo $priority['priority'];?></option>-->
+                        <option value="<?php echo $priority['priority'].'|'.$priority['follow_up_day'].'|'.$priority['contact_by'];?>"><?php echo $priority['priority'];?></option> 
+                          <?php }?>
+                                    </select>
+						<span id="priorityError" class="error"></span>			
+				 </div>
+				 
+				 <div class="col-sm-4" class="form-group">
+                 <label for="subject">Subject<span class="error">*</span></label>
+                 <input type="text" name="subject" id="subject" value="<?php echo $this->params['subject'];?>" class="form-control" />
+				  <span id="subjectError" class="error"></span>
+				  </div>
+                
+				 
+				 <div class="col-sm-4" style="display:none;" class="form-group">
+                 <label for="exampleInputPassword1">Number of Follow up Day</label>
+                 <input type="text" name="no_day" id="no_day" value="<?php //echo $this->params['no_day'];?>" class="form-control" />
+                
+				 </div>
+				 </div>
+				 
+				 
+				<div class="row form-group" style="display:none;">
+                  <div class="col-sm-4">
+				<label for="exampleInputPassword1">Word Count</label>
+                 <input type="text" name="word_count" id="word_count" value="<?php echo $this->params['word_count'];?>" class="form-control" />
+				  </div>
+				 <div class="col-sm-4" style="display:none;">
+				 <label for="exampleInputPassword1">Deadline</label>
+                 <input type="text" name="deadline" id="deadline" value="<?php echo $this->QueryInfo['deadline'];?>" class="form-control tcal" />
+				 </div>
+				 
+				 <div class="col-sm-4">
+                  <label for="exampleInputPassword1">Academic Level</label>
+                 <select name="academic_level" id="academic_level" class="form-control select2">
+                 <option value="PHD"<?php if($this->params['academic_level']=="PHD"){ ?> selected="selected" <?php }?>>PHD</option>
+                 <option value="Masters"<?php if($this->params['academic_level']=="Masters"){ ?> selected="selected" <?php }?>>Masters</option>
+                 <option value="Bachelors"<?php if($this->params['academic_level']=="Bachelors"){ ?> selected="selected" <?php }?>>Bachelors</option>
+                 </select>
+				 </div>
+				 </div>
+				 
+				 
+				 <div class="row form-group">
+                  <div class="col-sm-4" style="display:none;">
+				<label for="exampleInputPassword1">Approx Value of Lead</label>
+				<select name="approx_value" id="approx_value" class="form-control">
+				<option value="">Please Select</option>
+				<option value="Rs.7500-10000"<?php if($this->params['approx_value']=="Rs.7500-10000"){ ?> selected="selected" <?php }?>>Rs.7500-10000</option>
+				<option value="Rs. 10000-20000"<?php if($this->params['approx_value']=="Rs. 10000-20000"){ ?> selected="selected" <?php }?>>Rs. 10000-20000</option>
+				<option value="Rs. 20000-50000"<?php if($this->params['approx_value']=="Rs. 20000-50000"){ ?> selected="selected" <?php }?>>Rs. 20000-50000</option>
+				<option value="Rs. 60000-80000"<?php if($this->params['approx_value']=="Rs. 60000-80000"){ ?> selected="selected" <?php }?>>Rs. 60000-80000</option>
+				<option value="Rs. 80000-100000"<?php if($this->params['approx_value']=="Rs. 80000-100000"){ ?> selected="selected" <?php }?>>Rs. 80000-100000</option>
+				<option value="Rs. 100000-150000"<?php if($this->params['approx_value']=="Rs. 100000-150000"){ ?> selected="selected" <?php }?>>Rs. 100000-150000</option>
+				</select>
+ 				  </div>
+				 <div class="col-sm-4">
+				 <label for="exampleInputPassword1">Remarks</label>
+                 <textarea name="remarks" id="remarks" class="form-control" ><?php echo $this->params['remarks'];?></textarea>
+				 </div>
+				 
+				 <div class="col-sm-2">
+                 <input type="checkbox" name="flag_mark" id="flag_mark"  />
+				 <label for="exampleInputPassword1">Flag Mark</label>
+				 </div>
+				 
+				 <div class="col-sm-2">
+				 <input type="checkbox" name="query_type" id="query_type" value="1"  />
+				 <label for="query_type">Old Query</label>
+				 </div>
+				 
+				 
+				 <div class="col-sm-12">
+				 <label for="exampleInputPassword1">Upload File</label>
+                 <div class="row" id="attachment_file">
+				 
+				 <div class="form-group">
+                                            <div class="col-md-10"><input type="file" class="form-control" name="upload_file[]" id="upload_file1"/></div>
+                                            <div class="col-md-2" id="add_more_button">
+											<i style="font-size:20px;padding-top:3px;" class="fa fa-plus-circle"></i></div>
+              
+
+				 </div>
+		 
+				 </div>
+ 
+                </div>
+				 
+				 
+				 
+				 </div>
+          
+                 <div class="row form-group">
+				<div class="col-sm-12">
+				<div class="box-footer">
+                <input type="submit" name="submitBtn" id="submitBtn" class="btn btn-primary" value="submit" onclick="return Validate();" />
+				&nbsp;&nbsp;
+				  <input type="button" class="btn bg-maroon" onClick="parent.location='<?=SITEURL?>managequery'"  value="Cancel" />
+              </div>
+				</div>
+				</div>
+				
+              </div>
+              <!-- /.box-body -->
+
+            </form>
+          </div>
+          <!-- /.box -->
+
+       
+
+        </div>
+        <!--/.col (left) -->
+        <!-- right column -->
+         
+        <!--/.col (right) -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+  </div>
+
+  <script src="<?=PUBLICURL?>bootstrap/js/jquery.js"></script>
+   <script type="text/javascript">
+    $(document).ready(function(){
+	 	
+  var max_fields_limit      = 10; //set limit for maximum input fields
+    var x = 1; //initialize counter for text box
+    $('#add_more_button').click(function(e){ //click event on add more fields button having class add_more_button
+        e.preventDefault();
+        if(x < max_fields_limit){ //check conditions
+            x++; //counter increment
+			var html="";
+			
+			
+			html+='<div class="form-group"><div class="col-md-10"><input type="file" class="form-control" name="upload_file[]" id="upload_file'+x+'"/></div>';
+            html+='<div class="col-md-2" id="remove_field"><i style="font-size:20px;padding-top:3px;" class="fa fa-minus-circle"></i></div></div>';
+			
+			
+            $('#attachment_file').append(html); //add input field
+        }
+    });
+
+
+$('#attachment_file').on("click","#remove_field", function(e){ //user click on remove text links
+        e.preventDefault(); $(this).parent('div').remove(); x--;
+    })	
+
+	changeAllocateUser();   
+   })
+   
+   function Validate()
+  { 
+  var error="";
+  if($("#name").val()=="")
+  {
+	$("#nameError").html("Please enter name");
+	document.getElementById("name").focus();
+	error=1;
+  }	 
+  if($("#email_id").val()=="")
+  {
+	$("#email_idError").html("Please enter email ID");
+	document.getElementById("email_id").focus();
+	error=1;
+  }	 
+  
+  if($("#website").val()=="")
+  {
+	$("#websiteError").html("Please select website");
+	document.getElementById("website").focus();
+	error=1;
+  }	 
+  
+   
+  if($("#website").val()=="others" && $("#other_website").val()=="" )
+  {
+	$("#other_websiteError").html("Please enter other website");
+	document.getElementById("other_website").focus();
+	error=1;  
+  }
+  
+  if($("#date").val()=="")
+  {
+	$("#dateError").html("Please select date");
+	document.getElementById("date").focus();
+	error=1;
+  }	 
+  
+   
+   if($("#allocated_to").val()==null || $("#allocated_to").val()=="")
+  {
+	$("#allocated_toError").html("Please seletct allocated to user");
+	document.getElementById("allocated_to").focus();
+	error=1;
+  }	 
+     if($("#profile_id").val()=="")
+  {
+	$("#profile_idError").html("Please seletct profile");
+	document.getElementById("profile_id").focus();
+	error=1;
+  }
+    if($("#team_id").val()=="")
+  {
+	$("#team_idError").html("Please seletct team");
+	document.getElementById("team_id").focus();
+	error=1;
+  }
+   if($("#tag_id").val()=="")
+  {
+	$("#tag_idError").html("Please seletct tag");
+	document.getElementById("tag_id").focus();
+	error=1;
+  }
+ if($("#priority").val()=="")
+  {
+	$("#priorityError").html("Please select priority");
+	document.getElementById("priority").focus();
+	error=1;
+  }
+ if($("#subject").val()=="")
+  {
+	$("#subjectError").html("Please enter subject");
+	document.getElementById("subject").focus();
+	error=1;
+  }
+  
+  if(error==1)
+  {
+	  return false;
+  }
+  else
+  {
+	  return true;
+  }
+  
+ }
+ 
+function OtherFunction()
+{
+if($("#website").val()=="others")
+  {	
+   $("#other_website_div").show();
+  }
+  else
+  {
+	  $("#other_website").val("");
+	 $("#other_website_div").hide();  
+ }
+}
+
+ 
+function otherRequirement()
+{
+if($("#requirement").val()=="Other")
+  {	
+   $("#other_requirement_div").show();
+  }
+  else
+  {
+	  $("#other_requirement").val("");
+	 $("#other_requirement_div").hide();  
+ }
+}
+
+
+function changeAllocateUser()
+{
+var user_id=$("#allocated_to").val();
+$.ajax({
+    type : 'POST',
+    url : '<?php echo SITEURL?>manageuser/index/getuserprofile',
+    data : "user_id="+user_id,
+	cache:false,
+	beforeSend: function()
+	{
+    $("#profile_id").html('<option value="">Loading...</option>');
+	},
+	success: function(response)
+	{
+    $("#profile_id").html(response);
+
+	}
+  });	
+}
+
+</script>

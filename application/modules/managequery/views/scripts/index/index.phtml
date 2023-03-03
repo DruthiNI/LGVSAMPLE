@@ -1,0 +1,279 @@
+<?php
+$this->QueryObj = new Managequery_Model_Managequery();
+$this->userObj = new Manageuser_Model_Manageuser();
+ $date = new Zend_Date();
+?>
+ 
+ <form name="form1"  id="form1" method="post" action="">
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        Query List
+       </h1>
+       <div class="breadcrumb">
+        <?php
+         if(isset($this->userInfo->id) and $this->userInfo->user_type!='user'){ 
+		?>
+         <span> <input class="btn btn-primary btn-sm btn-flat" type="button" value="Delete"  onclick="javascript:delRecord();" > &nbsp;</span>
+         <?php }?>
+		 
+		 <?php
+         if(isset($this->userInfo->id) and $this->userInfo->user_type=='admin'){ 
+		?>
+        <span> <input class="btn btn-primary btn-sm btn-flat" type="button" value="Export"  onclick="javascript:ExportRecord();" > &nbsp;</span>
+		<?php }?>
+		
+		
+       
+      </div>
+    </section>
+    <section class="content1">
+     <form role="form" action="" method="post" id="search_form" name="search_form">
+       <table class="table table-bordered table-striped table-responsive">
+       <tr>
+       
+       <td><input type="text" value="<?php echo $this->filter_date;?>" name="filter_date" id="filter_date" class="form-control pull-right"  placeholder="From Date - To Date" > 
+        </td>
+        
+        <td> <input type="text" value="<?php echo $this->search_keywords;?>" name="search_keywords" id="search_keywords" class="form-control" placeholder="Enter Name or Email or Phone Keywords">
+       </td>
+       <td><select name="website" id="website" class="form-control">
+           <option value="">Select Website</option>
+          <?php
+                 foreach($this->WebsiteData as $Website)
+				 { ?>
+					<option value="<?php echo $Website['website'];?>" <?php if($this->website==$Website['website']){ ?> selected="selected" <?php }?>><?php echo $Website['website'];?></option> 
+                    
+				<?php  }
+				 ?>
+              <option value="others" <?php if($this->website=='others'){ ?> selected="selected" <?php }?>>Others</option> 
+            </select>
+       </td>
+          <td> <input type="button" name="searchBtn" id="searchBtn" class="btn btn-primary" value="Search" onclick="return ValidateSearchForm();">
+       </td>
+       </tr>
+       
+      
+       
+       
+       </table>
+       </form>
+	   </section>
+    <section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+           <div class="box">
+            <!-- /.box-header -->
+            <div id="Regloader" style="position:absolute; display:none;left:30%;top: 101px;background: rgba(156, 156, 156, 0.22);padding:2px;z-index: 999999;"> <img src="<?=PUBLICURL?>images/ajax-loader.gif"> <br> <span style="position:absolute;top: 103px;left: 30%;color: #FF4933;z-index: 999999;font-size: 16px;">Data Loading...</span></div>
+            <div class="box-body" id="load_query">
+             <div style="width: 100%;text-align: center;position: relative;"> <img src="<?=PUBLICURL?>images/ajax-loader.gif"> <br> <span style="position:absolute;top: 103px;left: 46%;color: #E0B831;">Data Loading...</span></div>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+ 
+  </div>
+     </form>
+<!-- End Container -->
+
+<!-- Footer -->
+
+<script type="text/javascript">
+
+function checkAll(checkname, exby) {
+  for (i = 0; i < checkname.length; i++)
+  checkname[i].checked = exby.checked? true:false
+ }
+ 
+function SendMail(int_dogid)
+{    
+       var formobj=document.form1;
+	if(check_mul(formobj))
+	{
+	
+	if($("#template_id").val()!="")
+	{
+	  if(confirm("Are you sure you want to send mail!"))
+	   {
+		var formobj=document.form1;
+		formobj.action="sendmail.php?Action=sendmail";
+		formobj.submit();
+	  }
+	}
+	else
+	{
+	alert("Please select template");
+	document.getElementById("template_id").focus();	
+	return false;
+	}
+	}
+}
+
+function delRecord(int_dogid)
+{    
+    var formobj=document.form1;
+	if(check_mul(formobj))
+	{
+	if(confirm("Are you sure you want to delete record!"))
+	{
+		var formobj=document.form1;
+		formobj.action="?Action=Delete";
+		formobj.submit();
+	} 
+	}
+}
+
+function ExportRecord(int_dogid)
+{    
+    var formobj=document.form1;
+	if(check_mul(formobj))
+	{
+	if(confirm("Are you sure you want to export record!"))
+	{
+		var formobj=document.form1;
+		formobj.action="<?=SITEURL?>managequery/index/queryexport";
+		formobj.submit();
+	} 
+	}
+}
+
+function check_one(formObj)
+{
+	count=0;
+	for (var i=0;i < formObj.length;i++) 
+    {
+		fldObj = formObj.elements[i];
+		if (fldObj.type == 'checkbox')
+		{
+			if(fldObj.checked == true)
+			{
+				count=count+1;
+			}
+		}
+    }
+	if(count>1)
+	{
+		alert("please select only one record");
+		return false;
+	}
+	if(count==0)
+	{
+		alert("Please select a record");
+		return false;
+	}
+	return true;
+}
+
+function check_mul(formObj)
+{
+	count=0;
+	for (var i=0;i < formObj.length;i++) 
+    {
+		fldObj = formObj.elements[i];
+		if (fldObj.type == 'checkbox')
+		{
+			if(fldObj.checked == true)
+			{
+				count=count+1;
+			}
+		}
+    }
+	if(count==0)
+	{
+		alert("Please select a record");
+		return false;
+	}
+	return true;
+}
+
+ 
+</script>
+ <script type="text/javascript">
+ function ValidateSearchForm()
+ { 
+	if($("#fromdate").val()!="" && $("#todate").val()=="")
+	{
+	 alert("Please select to date");
+	 document.getElementById("todate").focus();
+	 return false;	
+	} 
+	else if($("#fromdate").val()=="" && $("#todate").val()!="")
+	{
+	 alert("Please select from date");
+	 document.getElementById("fromdate").focus();
+	 return false;	
+	} 
+	///////////////////////////////////////////////////////////////////////////////////
+	else if($("#search_type").val()!="" && $("#search_keywords").val()=="")
+	{
+	 alert("Please enter search keywords");
+	 document.getElementById("search_keywords").focus();
+	 return false;	
+	} 
+	
+	else if($("#search_type").val()=="" && $("#search_keywords").val()!="")
+	{
+	 alert("Please select search type");
+	 document.getElementById("search_type").focus();
+	 return false;	
+	}
+	else
+	{
+	  
+ 		$.ajax({
+    type : 'POST',
+    url : '<?php echo SITEURL?>managequery/index/loadmanagequery',
+    data : $('#form1').serialize() +"&searchBtn=1",
+	cache:false,
+	beforeSend: function()
+	{
+	$('#Regloader').show();
+	},
+	success: function(response)
+	{
+	setTimeout(function() { $("#Regloader").fadeOut(500); 
+			 $("#load_query").html(response);
+			}, 1000);	
+	}
+	
+	
+});
+		
+		
+	} 
+	
+	
+ }
+ 
+ 
+ 
+function ManageQueryDataLoad()
+{ 
+	$.ajax({
+    type : 'POST',
+    url :'<?php echo SITEURL?>managequery/index/loadmanagequery',
+    data : $('#search_form').serialize(),
+	cache:false,
+	beforeSend: function()
+	{
+	//$('#Regloader').show();
+	},
+	success: function(response)
+	{
+ 			 $("#load_query").html(response);
+ 	}
+ });
+ }
+ $(document).ready(function() {
+    ManageQueryDataLoad();
+	$('#filter_date').daterangepicker(); 
+});
+ </script>
+ 

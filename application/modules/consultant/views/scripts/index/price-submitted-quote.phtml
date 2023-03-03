@@ -1,0 +1,194 @@
+<?php
+$QueryObject = new Manageuser_Model_Manageuser();
+?>
+  <title>Admin | Dashboard</title>
+ <form name="form1" method="post" action="">
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>Submissions</h1>
+       <!--<div class="breadcrumb">
+      <input class="btn btn-primary btn-sm btn-flat" type="button" value="Export"  onclick="javascript:ExportRecord();" >
+      </div>-->
+    </section>
+      <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+           <div class="box">
+            <!-- /.box-header -->
+            <div class="box-body">  
+			  <table id="example1" class="table table-bordered table-striped table-responsive">
+              <thead>
+                 <tr class="headings">
+                 <th><input name=" 2" type="checkbox" onclick="checkAll(document.form1.check,this)" /></th>
+ 				          <th>No.</th>
+                          <th>Ref. No.</th>
+                          <th>Username</th>
+						  
+                          <th>Client Name</th>
+                          <th>Service</th>
+                           <th>Assigned Date</th>
+                          <th>Submitted Date</th>
+						  <th>Action</th>
+  				 </tr>
+                 </thead>
+                       <tbody>  
+                          <?php $i=1; 
+						   
+                          foreach($this->assignSubmittedData as $QuoteData)
+						  {
+  						  ?>
+                         <tr> 
+						 <td><input id="check" name="checkid[]" type="checkbox" value="<?php echo $QuoteData['quote_id'];?>"  /></td>
+                          <td><?=$i?></td> 
+                          <td><?=$QuoteData['ref_id']?> </td> 
+                          <td><?=$QuoteData['name']?></td>  
+                          
+                          <td><?=$QuoteData['client_name']?></td> 
+                          <td><?=$QuoteData['service_name']?></td>
+						  <td><?=date("d M, Y",$QuoteData['assigned_date'])?></td>			
+						  <td><?=date("d M, Y",$QuoteData['user_submitted_date'])?></td>
+						  <td> <a href="<?php echo SITEURL?>consultant/index/viewquote/quoteid/<?php echo $QuoteData['quote_id'];?>"><i class="fa fa-edit editpen" style="color: #E91E63;font-size: 20px;text-align: center;cursor: pointer;"></i></a></td>
+                        </tr> 
+                         <?php $i++; }?>
+                  </tbody>
+              </table>
+			  
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+ 
+  </div>
+     </form>
+  <script type="text/javascript">
+
+function checkAll(checkname, exby) {
+  for (i = 0; i < checkname.length; i++)
+  checkname[i].checked = exby.checked? true:false
+ }
+ 
+function SendMail(int_dogid)
+{    
+       var formobj=document.form1;
+	if(check_mul(formobj))
+	{
+	
+	if($("#template_id").val()!="")
+	{
+	  if(confirm("Are you sure you want to send mail!"))
+	   {
+		var formobj=document.form1;
+		formobj.action="sendmail.php?Action=sendmail";
+		formobj.submit();
+	  }
+	}
+	else
+	{
+	alert("Please select template");
+	document.getElementById("template_id").focus();	
+	return false;
+	}
+	}
+}
+
+function delRecord(int_dogid)
+{    
+    var formobj=document.form1;
+	if(check_mul(formobj))
+	{
+	if(confirm("Are you sure you want to delete record!"))
+	{
+		var formobj=document.form1;
+		formobj.action="?Action=Delete";
+		formobj.submit();
+	} 
+	}
+}
+
+function ExportRecord(int_dogid)
+{    
+    var formobj=document.form1;
+	if(check_mul(formobj))
+	{
+	if(confirm("Are you sure you want to export record!"))
+	{
+		var formobj=document.form1;
+		formobj.action="<?=SITEURL?>manageuser/index/export";
+		formobj.submit();
+	} 
+	}
+}
+
+function check_one(formObj)
+{
+	count=0;
+	for (var i=0;i < formObj.length;i++) 
+    {
+		fldObj = formObj.elements[i];
+		if (fldObj.type == 'checkbox')
+		{
+			if(fldObj.checked == true)
+			{
+				count=count+1;
+			}
+		}
+    }
+	if(count>1)
+	{
+		alert("please select only one record");
+		return false;
+	}
+	if(count==0)
+	{
+		alert("Please select a record");
+		return false;
+	}
+	return true;
+}
+
+function check_mul(formObj)
+{
+	count=0;
+	for (var i=0;i < formObj.length;i++) 
+    {
+		fldObj = formObj.elements[i];
+		if (fldObj.type == 'checkbox')
+		{
+			if(fldObj.checked == true)
+			{
+				count=count+1;
+			}
+		}
+    }
+	if(count==0)
+	{
+		alert("Please select a record");
+		return false;
+	}
+	return true;
+}
+
+ 
+ function ValidateSearch()
+ {
+ if(($("#from_date").val()!="" || $("#to_date").val()!="") && ($("#from_date").val()=="" || $("#to_date").val()=="")) 
+ {
+	alert("Please select both From date and To date.") 
+	return false;
+ }
+ }
+</script>
+
+<script>
+  $(document).ready(function() {
+    $("#example1").DataTable();
+   });
+</script>

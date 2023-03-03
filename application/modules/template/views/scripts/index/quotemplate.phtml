@@ -1,0 +1,184 @@
+<?php $date = new Zend_Date();
+$userObj = new Manageuser_Model_Manageuser();
+ ?>
+ 
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>Quote Template</h1>
+       <div class="breadcrumb">
+        <a class="btn btn-primary btn-sm btn-flat" style="text-decoration:none;" href="<?=SITEURL?>template/index/add-quote-template">Add Quote Template</a>
+      </div>
+    </section>
+     <!-- Main content -->
+    <section class="content">
+      <div class="row">
+	  
+        <div class="col-xs-12">
+           <div class="box">
+            <!-- /.box-header -->
+			
+			  
+            <div class="box-body">
+              <table id="example1" class="table table-bordered table-striped table-responsive">
+              <thead>
+                 <tr>
+ 								<th>Sr. No.</th>
+								<th>Service  Name</th>
+								<th>Website</th>
+ 								<th>Crated Date</th>
+                                <th>Action</th>
+  							</tr>
+                       </thead>
+                       <tbody>  
+                          <?php $i=1;
+                          foreach($this->templateQuoteData as $temp)
+						  { 
+						  $uploadFileArr=json_decode($temp['upload_file'], true);
+ 						  ?>
+                             <tr id="DelTemp<?=$temp['id']?>">
+                             <td><?=$i;?></td>
+							  
+							 <td><?php echo $temp['quote_service_name'];?></td>
+							 <td><?php echo $temp['website_name'];?></td>
+							 <td><?php echo date("d M Y",$temp['created_date']);?></td>
+							 <td>
+							 
+                                <a href="<?=SITEURL?>template/index/edit-quote-template/id/<?=$temp['id']?>"><img src="<?=PUBLICURL?>images/edit.gif"></a>
+								&nbsp;&nbsp;&nbsp;&nbsp;
+								<a href="javascript:" onclick="DeleteTemplate(<?=$temp['id']?>)"><img src="<?=PUBLICURL?>images/0.png"></a>
+                             </td>
+  							</tr>
+                     <?php $i++; }?>
+                 
+                 </tbody>
+              </table>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+      
+	  </div>
+ 
+	   <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+ 
+  </div>
+    <script>
+  $(function () {
+	  $('#filter_date').daterangepicker();
+	   $(".select2").select2();
+    $("#example1").DataTable();
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": true
+    });
+  });
+
+</script>  
+   <script type="text/javascript">
+
+function checkAll(checkname, exby) {
+  for (i = 0; i < checkname.length; i++)
+  checkname[i].checked = exby.checked? true:false
+ }
+ 
+ 
+function delRecord(int_dogid)
+{    
+    var formobj=document.form1;
+	if(check_mul(formobj))
+	{
+	if(confirm("Are you sure you want to delete record!"))
+	{
+		var formobj=document.form1;
+		formobj.action="?Action=Delete";
+		formobj.submit();
+	} 
+	}
+}
+
+ 
+
+function check_one(formObj)
+{
+	count=0;
+	for (var i=0;i < formObj.length;i++) 
+    {
+		fldObj = formObj.elements[i];
+		if (fldObj.type == 'checkbox')
+		{
+			if(fldObj.checked == true)
+			{
+				count=count+1;
+			}
+		}
+    }
+	if(count>1)
+	{
+		alert("please select only one record");
+		return false;
+	}
+	if(count==0)
+	{
+		alert("Please select a record");
+		return false;
+	}
+	return true;
+}
+
+function check_mul(formObj)
+{
+	count=0;
+	for (var i=0;i < formObj.length;i++) 
+    {
+		fldObj = formObj.elements[i];
+		if (fldObj.type == 'checkbox')
+		{
+			if(fldObj.checked == true)
+			{
+				count=count+1;
+			}
+		}
+    }
+	if(count==0)
+	{
+		alert("Please select a record");
+		return false;
+	}
+	return true;
+}
+</script>
+
+  <script>
+ 
+ function DeleteTemplate(id)
+ {
+if(confirm("Are you sure you want to delete record!"))
+{
+$.ajax({
+    type : 'POST',
+    url : '<?=SITEURL?>template/index/delete-template-info',
+    data :"id="+id+"&table=tbl_quote_template",
+	cache:false,
+	dataType: 'json',
+	beforeSend: function()
+	{
+
+ 	},
+	success: function(response)
+	{
+	 $("#DelTemp"+response.id).remove();
+ $(".content").prepend('<div class="alert alert-success alert-dismissible"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button><i class="icon fa fa-check"></i>'+response.message+'</div>');
+	}
+  });	
+}  
+ }
+</script>

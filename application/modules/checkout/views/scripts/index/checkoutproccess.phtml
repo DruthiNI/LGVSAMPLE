@@ -1,0 +1,71 @@
+<?php
+//$this->serviceInfo;
+//$this->clientInfo;
+
+//echo $this->serviceInfo->payment_website;
+//echo "<br>";
+//echo $this->total_price;
+//echo "<pre>";
+//print_r($this->clientInfo);
+?>
+
+<div style="width:49%;margin:auto;">
+<div class="loader"><img style="width:160px;" src="<?=PUBLICURL?>images/pre-loader-new.gif"></div>
+ <div class="row"> You are being redirected to Payment Gateway, it may take upto 10 seconds depending on your internet speed. Please be patient and do not press stop or back button  </div> 
+<?php if($this->serviceInfo['payment_website']=='Fivevidya'){?>
+<form method="post" name="loader_form" id="loader_form" action="https://www.fivevidya.com/processing-discount.php">
+<input type="hidden" name="useremail" value="<?=$this->clientInfo['email_id']?>">
+<input type="hidden" name="amount" value="<?=$this->total_price?>">
+<input type="hidden" name="name" value="<?=$this->clientInfo['name']?>">
+<input type="hidden" name="mobile" value="<?=($this->clientInfo['phone'])?$this->clientInfo['phone']:" "?>">
+<input type="hidden" name="service_ID" value="<?=$this->serviceInfo['ref_id']?>">
+<input type="hidden" name="service_title" value="<?=$this->serviceInfo['service_name']?>">
+
+</form>
+<?php } else if($this->serviceInfo['payment_website']=='Chankya Research'){ ?>
+	<form id="loader_form" method="post" action="https://www.chanakyaresearch.com/instacrm_payments.php" name="loader_form">
+            <input name="reference_no" type="hidden" value="<?=$this->serviceInfo['ref_id']?>">
+             <input name="name" type="hidden" value="<?=$this->clientInfo['name']?>">
+             <input name="address" type="hidden" value="<?=$this->clientInfo['location']?>">
+             <input name="city" type="hidden" value="<?=$this->clientInfo['city']?>">
+             <input name="postal_code" type="hidden" value="">
+             <input name="country" type="hidden" value="<?php echo $_REQUEST['country']; ?>">
+             <input name="phone" type="hidden" value="<?=$this->clientInfo['phone']?>">
+             <input name="email" type="hidden" value="<?=$this->clientInfo['email_id']?>">
+             <input name="amount" value="<?=$this->total_price?>" type="hidden">
+             </form>
+<?php } else if($this->serviceInfo['payment_website']=='Chankya Instamojo'){ ?>
+	<form id="loader_form" method="post" action="https://www.chanakyaresearch.com/instamojo/instacrm.php" name="loader_form">
+            <input name="reference_no" type="hidden" value="<?=$this->serviceInfo['ref_id']?>">
+             <input name="name" type="hidden" value="<?=$this->clientInfo['name']?>">
+             <input name="address" type="hidden" value="<?=$this->clientInfo['location']?>">
+             <input name="city" type="hidden" value="<?=$this->clientInfo['city']?>">
+             <input name="postal_code" type="hidden" value="">
+             <input name="country" type="hidden" value="<?php echo $_REQUEST['country']; ?>">
+             <input name="phone" type="hidden" value="<?=$this->clientInfo['phone']?>">
+             <input name="email" type="hidden" value="<?=$this->clientInfo['email_id']?>">
+             <input name="amount" value="<?=$this->total_price?>" type="hidden">
+             </form>
+<?php } else if($this->serviceInfo['payment_website']=='Emarketz'){ ?>
+	<form id="loader_form" method="post" action="https://www.emarketz.net/razorpay/instacrm_razorpay.php" name="loader_form">
+            <input name="name" type="hidden" value="<?=$this->clientInfo['name']?>">
+            <input name="amount" type="hidden" value="<?=$this->total_price?>">
+            <input name="email" type="hidden" value="<?=$this->clientInfo['email_id']?>">
+            <input name="mobile" type="hidden" value="<?=$this->clientInfo['phone']?>">
+            <input type="hidden" name="service_title" value="<?=$this->serviceInfo['service_name']?>">
+            
+             </form>
+<?php }?>
+   
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js"></script>
+ <script>
+$(document).ready(function () 
+{ 
+document.loader_form.submit();
+});
+</script>   
+   
+   
+   
+  </div>
+ 

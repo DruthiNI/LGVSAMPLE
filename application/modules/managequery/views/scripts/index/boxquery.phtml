@@ -1,0 +1,282 @@
+<?php  $date = new Zend_Date();
+$this->userObj = new Manageuser_Model_Manageuser();
+?>
+ 
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.6.0/css/buttons.dataTables.min.css">
+<style>
+p.message {
+    margin-top: -35px;
+}.custom-comments-message {
+    margin-left: 41px;
+}.item {
+    border-bottom: 1px solid #f1f1f1;
+    margin-bottom: 10px;
+    padding-bottom: 0px !important;
+}.item i {
+    color: orange;
+}.nav-tabs-custom>.nav-tabs>li.active {
+    border-top: none;
+}
+</style>
+ <form name="form1" id="form1" method="post" action="">
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    
+    
+    
+    
+    <section class="content-header">
+      <h1>
+      Box  Query History
+       </h1>
+        
+
+   </section>
+    
+	<section class="content1">
+	<?=$this->successmessage?>
+        <table class="table table-bordered table-striped table-responsive">
+       <tr>
+	 
+ 
+      
+       <td> <input type="text" value="<?php echo $this->filter_date;?>" name="filter_date" id="filter_date" class="form-control pull-right"  placeholder="From Date - To Date" > 
+        </td>
+        
+        <td> <input type="text" value="<?php echo $this->search_keywords;?>" name="search_keywords" id="search_keywords" class="form-control" placeholder="Enter Keywords Name or Email or Phone">
+       </td>
+        <?php if($this->userInfo->user_type!='user'){?>
+        <td><select name="website[]" id="website" multiple class="form-control select2" data-placeholder="Select Website">
+           <option value="">Select Website</option>
+          <?php
+                 foreach($this->WebsiteData as $Website)
+				 { ?>
+					<option value="<?php echo $Website['id'];?>" <?php if($this->website==$Website['id']){ ?> selected="selected" <?php }?>><?php echo $Website['website'];?></option>
+                    
+				<?php  }
+				 ?>
+            </select>
+       </td>
+		<?php }?>
+	   <td><select name="tags[]" id="tags" multiple class="form-control select2" data-placeholder="Select Tags">
+           <option value="">Select Tags</option>
+          <?php
+                 foreach($this->tagsArr as $tag)
+				 { ?>
+					<option value="<?=$tag['id'];?>" <?=($this->tag==$tag['id'])?"selected":""?>><?=$tag['tag_name'];?></option>
+                    
+				<?php  }
+				 ?>
+            </select>
+       </td>
+	    
+          
+        <td> <input type="button" name="searchBtn" id="searchBtn" class="btn btn-primary" value="Search" onclick="return ValidateSearch();">
+       </td>
+      
+       </tr> 
+       
+       
+       
+       </table>
+      
+	   </section>
+    
+
+	<!-- Main content -->
+    <section class="content">
+    
+      <div class="row">
+        <div class="col-xs-12">
+	 
+ 
+            <div class="row">
+   <div class="pull-right">
+        <?php
+         if(isset($this->userInfo->id) and $this->userInfo->user_type!='user' and $this->userInfo->id!=178)
+		 { 
+		?>
+         <span> <input class="btn btn-danger btn-sm btn-flat" type="button" value="Delete"  onclick="javascript:delRecord();" > &nbsp;</span>
+         <?php }?>
+		 
+         
+		 
+       
+        
+          <?php
+         if(isset($this->userInfo->id) and $this->userInfo->user_type=='Lead Generator'){ 
+		?>
+        <span> <a class="btn btn-primary btn-sm btn-flat" style="text-decoration:none;" href="<?=SITEURL?>managequery/addboxquery"><i class="fa fa-plus"></i> Add Box Query</a> </span>
+        <?php }?>
+        </div>
+      </div>
+   <div class="clearfix"></div>
+   
+   
+           <div class="box pt-2">
+            <!-- /.box-header -->
+			 
+            <div class="box-body" id="load_box_query_history">
+           <div style="text-align:center;"> <img style="height:150px;" src="<?=PUBLICURL?>images/pre-loader-new.gif"></div>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+          
+        </div>
+         
+        <div class="col-xs-12 scroll-div" id="SecondDiv"></div>
+        
+        
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+ 
+  </div>
+     </form>
+<!-- End Container -->
+
+<!-- Footer -->
+
+<script>
+function boxQueryDataLoad()
+{
+	$.ajax({
+    type : 'POST',
+    url :'<?php echo SITEURL?>managequery/index/loadboxquery',
+    data : $('#form1').serialize(),
+	cache:false,
+	beforeSend: function()
+	{
+	$("#load_box_query_history").html('<div style="text-align:center;"> <img style="height:150px;" src="<?=PUBLICURL?>images/pre-loader-new.gif"></div>');
+	},
+	success: function(response)
+	{
+	 
+			 $("#load_box_query_history").html(response);
+ 	}
+	
+	
+});
+	
+}
+
+ $(document).ready(function() {
+    boxQueryDataLoad();
+	$('#filter_date').daterangepicker(); 
+});
+
+ function ValidateSearch()
+ {
+	 
+if($("#fromdate").val()!="" && $("#todate").val()=="")
+	{
+	 alert("Please select to date");
+	 document.getElementById("todate").focus();
+	 return false;	
+	} 
+	else if($("#fromdate").val()=="" && $("#todate").val()!="")
+	{
+	 alert("Please select from date");
+	 document.getElementById("fromdate").focus();
+	 return false;	
+	} 
+	else
+	{
+ 		$.ajax({
+    type : 'POST',
+    url : '<?php echo SITEURL?>managequery/index/loadboxquery',
+    data : $('#form1').serialize() +"&searchBtn=1",
+	cache:false,
+	beforeSend: function()
+	{
+	$("#load_box_query_history").html('<div style="text-align:center;"> <img style="height:150px;" src="<?=PUBLICURL?>images/pre-loader-new.gif"></div>');
+	},
+	success: function(response)
+	{
+	setTimeout(function() { $("#Regloader").fadeOut(500); 
+			 $("#load_box_query_history").html(response);
+			}, 1000);	
+	}
+	
+	
+});
+		
+	}
+ }
+ 
+ 
+ function checkAll(checkname, exby) {
+  for (i = 0; i < checkname.length; i++)
+  {
+  checkname[i].checked = exby.checked? true:false
+  console.log(exby.checked);
+  }
+ }
+ 
+function delRecord(int_dogid)
+{    
+    var formobj=document.form1;
+	if(check_mul(formobj))
+	{
+	if(confirm("Are you sure you want to delete record!"))
+	{
+		var formobj=document.form1;
+		formobj.action="?Action=Delete";
+		formobj.submit();
+	} 
+	}
+}
+ 
+function check_one(formObj)
+{
+	count=0;
+	for (var i=0;i < formObj.length;i++) 
+    {
+		fldObj = formObj.elements[i];
+		if (fldObj.type == 'checkbox')
+		{
+			if(fldObj.checked == true)
+			{
+				count=count+1;
+			}
+		}
+    }
+	if(count>1)
+	{
+		alert("please select only one record");
+		return false;
+	}
+	if(count==0)
+	{
+		alert("Please select a record");
+		return false;
+	}
+	return true;
+}
+
+function check_mul(formObj)
+{
+	count=0;
+	for (var i=0;i < formObj.length;i++) 
+    {
+		fldObj = formObj.elements[i];
+		if (fldObj.type == 'checkbox')
+		{
+			if(fldObj.checked == true)
+			{
+				count=count+1;
+			}
+		}
+    }
+	if(count==0)
+	{
+		alert("Please select a record");
+		return false;
+	}
+	return true;
+}
+
+</script>

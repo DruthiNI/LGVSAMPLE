@@ -1,0 +1,254 @@
+<?php 
+$this->userObj = new Manageuser_Model_Manageuser();
+  $date = new Zend_Date();
+?>
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1> View Query Details </h1>
+    </section>
+    <!-- Main content -->
+    <section class="content" style="min-height:650px;">
+      <div class="row">
+        <!-- /.col -->
+        <div class="col-md-12" id="SecondDiv">
+        <div class="box"></div>
+          <?php /*?><div class="box">
+            <!-- /.box-header -->
+            <div class="box-body no-padding">
+            <form action="" name="searchForm" id="searchForm" method="post">
+              <table class="table">
+                 <tr>
+                   <td>Name :</td>
+                  <td>
+                    <?php echo $this->QueryInfo['name'];?>  
+                  </td>
+                 </tr>
+                <tr>
+                   <td>Email ID</td>
+                  <td><?php echo $this->QueryInfo['email_id'];?></td>
+                 </tr>
+                 
+                  <tr>
+                   <td>Alternate Email ID</td>
+                  <td><?php echo $this->QueryInfo['alt_email_id'];?></td>
+                 </tr>
+                 
+                 <tr>
+                   <td>Contact No.</td>
+                  <td><?php echo $this->QueryInfo['phone'];?></td>
+                 </tr>
+                 <tr>
+                   <td>Alternate Contact No.</td>
+                  <td><?php echo $this->QueryInfo['alt_contact_no'];?></td>
+                 </tr>
+                 
+                <tr>
+                   <td>Date</td>
+                   <td><?php echo date("d/m/Y",strtotime($this->QueryInfo['date']));?></td>
+                 </tr>
+                <tr>
+                   <td>Location</td>
+                   <td> <?php echo $this->QueryInfo['location'];?> </td>
+                 </tr>
+                 
+                 <tr>
+                   <td>Complete Address</td>
+                   <td> <?php echo $this->QueryInfo['complete_address'];?> </td>
+                 </tr>
+                 
+                 <tr>
+                   <td>Company Name</td>
+                   <td> <?php echo $this->QueryInfo['company_name'];?> </td>
+                 </tr>
+                 <tr>
+                   <td>Designation</td>
+                   <td> <?php echo $this->QueryInfo['designation'];?> </td>
+                 </tr>
+                 <tr>
+                   <td>Topic/Area of Study</td>
+                   <td> <?php echo $this->QueryInfo['area_of_study'];?> </td>
+                 </tr>
+                 
+                
+                 <tr>
+                   <td>Website</td>
+                   <td> 
+				   <?php if($this->QueryInfo['website']=="others"){ echo $this->QueryInfo['other_website'];} else {
+									echo $this->QueryInfo['website'];
+								}?>
+				    </td>
+                 </tr>
+                 <tr>
+                   <td>Requirement</td>
+                   <td> 
+				   <?php if($this->QueryInfo['requirement']=="Other"){ echo $this->QueryInfo['other_requirement'];} else {
+									echo $this->QueryInfo['requirement'];
+								}?>  </td>
+                 </tr>
+                 <tr>
+                   <td>Allocated To</td>
+                   <td> <?php echo $this->QueryInfo['username'];?> </td>
+                 </tr>
+                 <tr>
+                   <td>Priority</td>
+                   <td> <?php echo $this->QueryInfo['priority'];?> </td>
+                 </tr>
+                 <tr>
+                   <td>Word Count</td>
+                   <td> <?php echo $this->QueryInfo['word_count'];?> </td>
+                 </tr>
+                 <tr>
+                   <td>Deadline</td>
+                   <td> <?php echo $this->QueryInfo['deadline'];?> </td>
+                 </tr>
+                 
+                 <tr>
+                   <td>Academic Level</td>
+                   <td> <?php echo $this->QueryInfo['academic_level'];?> </td>
+                 </tr>
+                 <tr>
+                   <td>Approx Value of Lead</td>
+                   <td> <?php echo $this->QueryInfo['approx_value'];?> </td>
+                 </tr>
+                 <tr>
+                   <td>Remarks</td>
+                   <td> <?php echo $this->QueryInfo['remarks'];?> </td>
+                 </tr>
+                 <tr>
+                   <td>Flag Mark</td>
+                   <td> 
+                   <?php if($this->QueryInfo['flag_mark']=="on"){ ?> 
+								<img src="<?=PUBLICURL?>images/flag_mark_red.png" width="24" height="24">
+								<?php }?>
+                                
+                     </td>
+                 </tr>
+                 <tr>
+                   <td>Follow up Date</td>
+                   <td><?php echo date("d/m/Y",$this->QueryInfo['follow_up_date']);?> </td>
+                 </tr>
+                 
+                 <tr>
+                   <td>Status</td>
+                   <td>
+                   <select name="update_status" id="update_status" class="form-control" style="width:200px;">
+                   <?php
+                   foreach($this->updateStatus as $statusData)
+				   {
+				   ?>
+                   <option value="<?=$statusData['id']?>" <?php if($statusData['id']==$this->QueryInfo['update_status']){ ?> selected="selected" <?php }?>><?=$statusData['status_name']?></option>
+                   <?php }?>
+                   </select>
+                    </td>
+                 </tr>
+                 
+                 
+                 
+                <!-- <tr>
+                   <td>Action Taken</td>
+                   <td>
+                   <input type="checkbox" name="action_taken" id="action_taken" <?php if($this->QueryInfo['action_taken']==1){ ?> checked="checked" <?php }?> value="1">
+                    </td>
+                 </tr>
+                 <?php if($this->QueryInfo['converted']==2){?>
+                  <tr>
+                   <td>Query Dead</td>
+                   <td> 
+                    <input type="checkbox" name="converted" id="converted" <?php if($this->QueryInfo['converted']==2){ ?> checked="checked" <?php }?> value="0">
+                     </td>
+                 </tr>
+                 <?php } else {?>
+                 <tr>
+                   <td>Converted</td>
+                   <td> 
+                    <input type="radio" name="converted" id="converted" <?php if($this->QueryInfo['converted']==1){ ?> checked="checked" <?php }?> value="1">
+                     </td>
+                 </tr>
+                 
+                 <tr>
+                   <td>Query Dead</td>
+                   <td> 
+                    <input type="radio" name="converted" id="converted" <?php if($this->QueryInfo['converted']==2){ ?> checked="checked" <?php }?> value="2">
+                     </td>
+                 </tr>
+                 <?php }?>-->
+                 
+                 <tr>
+                   <td>Comments</td>
+                   <td style="max-width:545px;"> 
+                   
+                   <div class="box-tools pull-right">
+                <div class="has-feedback">
+                  <input type="text" name="searchdate" value="<?php echo $this->searchdate;?>" class="form-control input-sm tcal bx-input" placeholder="Search Comment">
+                 <span onclick="searchFun()" class="glyphicon glyphicon-search form-control-feedback myiocnbx"></span> 
+                </div>
+              </div>
+               
+              <div style="clear:both;"></div>
+                   <ul style="margin-left:-30px; min-height:100px; max-height:500px;overflow:auto;" class="timeline">
+                 <?php 
+                 foreach($this->CommentInfo as $Comments)
+				 { ?>
+				   <li><div class="timeline-item">
+                <span class="time"><i class="fa fa-clock-o"></i> <?php echo date("d M Y h:i A",$Comments['date']);?></span>
+
+                <h3 class="timeline-header no-border"><a><?php echo $Comments['name'];?> : </a> <?php echo $Comments['comments'];?></h3>
+              </div></li>	 
+			   <?php }
+				 ?>
+                 </ul> 
+                  <textarea rows="3" name="comments" id="comments" style="margin-top:-28px; width:100%;"></textarea>
+                   <input type="submit" name="updateBtn"  style="float:right;"class="btn btn-primary" value="Submit" onclick="return UpdateComents();">
+                     </td>
+                 </tr>
+              </table>
+             </form>
+            </div>
+            <!-- /.box-body -->
+          </div><?php */?> 
+          <!-- /.box -->
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+       
+    </section>
+    <!-- /.content -->
+  </div>
+ 
+ <style>
+ .has-feedback .form-control {
+    height: 34px;
+}
+
+ .myiocnbx {
+    position: absolute;
+    top: 0;
+    border: 1px solid #ccc;
+	cursor:pointer;     
+    padding: 0px;
+}
+.CloseBtn{ display:none;}
+ </style>
+ 
+<script type="text/javascript">
+function CallViewDetails()
+  {
+	$.post("<?php echo SITEURL?>managequery/index/loadviewquerydetails/queryid/<?=$this->QueryInfo['assign_id']?>", function( data ) {
+		$("#SecondDiv").show();
+		 $("#SecondDiv").html(data);
+	$('html, body').animate({
+	 scrollTop: $(".scroll-div").offset().top
+	 }, 200);
+	 
+    }); 
+ }
+ 
+ 
+  $(document).ready(function() {
+    CallViewDetails();
+});
+ 
+</script>

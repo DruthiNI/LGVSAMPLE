@@ -1,0 +1,109 @@
+ <?php $date = new Zend_Date();?>
+ <form name="form1" method="post" action="">
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+       
+       </h1>
+     </section>
+      <!-- Main content -->
+    <section class="content">
+      <div id="Regloader" style="position:fixed;left:50%;top:30%; display:none; z-index:99999;"><img src="<?=PUBLICURL?>images/ajax-loader.gif"></div>
+      <div class="row">
+      <?php
+      if($this->userInfo->user_type=="admin")
+      {
+	  ?>
+      <div class="col-sm-4">
+      <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title"><strong>User List</strong></h3>
+            </div>
+             <div class="box-body"  style="overflow:auto; max-height:400px;">
+             
+             <ul class="list-group list-group-unbordered ">
+             <?php foreach($this->userArr as $userlist) {?>
+                <li class="list-group-item">
+                  <b><a onclick="showMessage(<?php echo $userlist['id'];?>);" style="cursor:pointer;"><?php echo ucwords($userlist['name']);?></a></b>
+                </li>
+               <?php }?>
+              </ul>
+ 
+            </div>
+           </div>
+       </div>
+      
+      <?php }?>
+      
+      <div class="col-sm-8">
+      
+        <div id="LoadUserMessage">
+       <?php echo $this->messageList;  ?>
+        
+        </div>
+      
+      </div>
+      </div>
+      
+    </section>
+   </div>
+     </form>
+   
+<script type="text/javascript">
+function showMessage(id)
+{
+$.ajax({
+    type : 'POST',
+    url : "<?php echo SITEURL?>manageuser/index/loadmessage/id/"+id,
+	cache:false,
+	beforeSend: function()
+	{
+	$('#Regloader').show();
+	},
+	success: function(response)
+	{
+	setTimeout(function() { $("#Regloader").fadeOut(500);
+	 $("#LoadUserMessage").html(response);
+	 $("#remove"+id).remove();
+	 }, 1000);
+	}
+	
+});	
+
+$.ajax({
+    type : 'POST',
+    url : "<?php echo SITEURL?>manageuser/index/checkmessagenotification",
+	cache:false,
+ 	success: function(data)
+	{
+ 	 $("#notify1").html(data);
+	 $("#notify2").html(data);
+	 $("#notify3").html(data);
+	}
+	
+});	
+}
+ 
+</script>
+ 
+<script type="text/javascript">
+function submitMessage()
+{
+var user_id=$("#user_id").val();
+var sender_id=$("#sender_id").val();	
+var message=$("#message").val();
+if(message=="")
+{
+$("#message").css("border-color","#C00");
+return false;	
+}
+else
+{
+$.post("<?php echo SITEURL?>manageuser/index/savemessage/user_id/"+user_id+"/sender_id/"+sender_id+"/message/"+message, function( data ) {
+		parent.window.location.reload();
+    });	
+}
+}
+ 
+</script>

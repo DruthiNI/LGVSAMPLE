@@ -1,0 +1,81 @@
+deny from all
+
+allow from 103.66.79.154
+
+RewriteEngine On 
+RewriteCond %{SERVER_PORT} 80 
+RewriteCond %{REQUEST_URI} !^/\.well-known/acme-challenge/[0-9a-zA-Z_-]+$
+RewriteCond %{REQUEST_URI} !^/\.well-known/cpanel-dcv/[0-9a-zA-Z_-]+$
+RewriteCond %{REQUEST_URI} !^/\.well-known/pki-validation/(?:\ Ballot169)?
+RewriteCond %{REQUEST_URI} !^/\.well-known/pki-validation/[A-F0-9]{32}\.txt(?:\ Comodo\ DCV)?$
+RewriteRule ^(.*)$ https://instacrm.rapidcollaborate.com/$1 [R,L]
+
+SetEnv APPLICATION_ENV development
+
+RewriteEngine On
+
+RewriteCond %{REQUEST_FILENAME} -s [OR]
+
+RewriteCond %{REQUEST_FILENAME} -l [OR]
+
+RewriteCond %{REQUEST_FILENAME} -d
+
+RewriteCond %{REQUEST_URI} !^/\.well-known/acme-challenge/[0-9a-zA-Z_-]+$
+RewriteCond %{REQUEST_URI} !^/\.well-known/cpanel-dcv/[0-9a-zA-Z_-]+$
+RewriteCond %{REQUEST_URI} !^/\.well-known/pki-validation/(?:\ Ballot169)?
+RewriteCond %{REQUEST_URI} !^/\.well-known/pki-validation/[A-F0-9]{32}\.txt(?:\ Comodo\ DCV)?$
+RewriteRule ^.*$ - [NC,L]
+
+RewriteCond %{REQUEST_URI} !^/\.well-known/acme-challenge/[0-9a-zA-Z_-]+$
+RewriteCond %{REQUEST_URI} !^/\.well-known/cpanel-dcv/[0-9a-zA-Z_-]+$
+RewriteCond %{REQUEST_URI} !^/\.well-known/pki-validation/(?:\ Ballot169)?
+RewriteCond %{REQUEST_URI} !^/\.well-known/pki-validation/[A-F0-9]{32}\.txt(?:\ Comodo\ DCV)?$
+RewriteRule ^.*$ index.php [NC,L]
+
+<Files 403.shtml>
+order allow,deny
+
+</Files>
+
+deny from 14.176.142.237
+deny from 185.220.100.250
+deny from 185.220.101.14
+deny from 205.185.114.250
+deny from 212.20.45.102
+deny from 185.220.0.0/16
+
+# BEGIN cPanel-generated php ini directives, do not edit
+# Manual editing of this file may result in unexpected behavior.
+# To make changes to this file, use the cPanel MultiPHP INI Editor (Home >> Software >> MultiPHP INI Editor)
+# For more information, read our documentation (https://go.cpanel.net/EA4ModifyINI)
+<IfModule php5_module>
+   php_value always_populate_raw_post_data -1
+   php_value max_execution_time 60000
+   php_value upload_max_filesize 512M
+   php_value memory_limit 1024M
+   php_flag display_errors Off
+   php_value output_buffering 1
+   php_value max_input_time 600
+   php_flag asp_tags Off
+   php_value max_input_vars 1000
+   php_value post_max_size 260M
+   php_value session.gc_maxlifetime 1440
+   php_value session.save_path "/tmp"
+   php_flag zlib.output_compression Off
+</IfModule>
+<IfModule lsapi_module>
+   php_value always_populate_raw_post_data -1
+   php_value max_execution_time 60000
+   php_value upload_max_filesize 512M
+   php_value memory_limit 1024M
+   php_flag display_errors Off
+   php_value output_buffering 1
+   php_value max_input_time 600
+   php_flag asp_tags Off
+   php_value max_input_vars 1000
+   php_value post_max_size 260M
+   php_value session.gc_maxlifetime 1440
+   php_value session.save_path "/tmp"
+   php_flag zlib.output_compression Off
+</IfModule>
+# END cPanel-generated php ini directives, do not edit

@@ -1,0 +1,211 @@
+                   <div class="row form-group">
+                  <label for="inputEmail3" class="col-sm-4 control-label">Ref No.</label>
+                  <div class="col-sm-8"><?=$this->quoteInfo['ref_id'];?></div>
+                </div>
+				<!--<div class="clearfix"></div>
+				<div class="row form-group">
+                  <label for="inputEmail3" class="col-sm-4 control-label">Deadline</label>
+                  <div class="col-sm-8"><?=$this->quoteInfo['deadline_date'];?></div>
+                </div>-->
+				<div class="clearfix"></div>
+				<div class="row form-group">
+                  <label for="inputEmail3" class="col-sm-4 control-label">Currency</label>
+                  <div class="col-sm-8"><?=$this->quoteInfo['currency'];?></div>
+                </div>
+				<div class="clearfix"></div>
+				<div class="row form-group">
+                  <label for="inputEmail3" class="col-sm-4 control-label">Comments</label>
+                  <div class="col-sm-8"><?=$this->quoteInfo['comments'];?></div>
+                </div>
+				<div class="clearfix"></div>
+				<div class="row form-group">
+                  <label for="inputEmail3" class="col-sm-4 control-label">Created Date</label>
+                  <div class="col-sm-8"><?=date("d M Y h:i A",$this->quoteInfo['created_date']);?></div>
+                </div>
+				<?php if($this->quoteInfo['relevant_file']){?>
+				<div class="row form-group">
+                  <label for="inputEmail3" class="col-sm-4 control-label">Relevant Files</label>
+                  <div class="col-sm-8">
+				  <?php 
+					  $relevant_fileArr=json_decode($this->quoteInfo['relevant_file']);
+					foreach($relevant_fileArr as $files)
+					{ ?>
+						<a href="<?=PUBLICURL.'QuotationFolder/'.$files->file_path?>" download><?=$files->filename?></a><br>
+				 <?php }
+				   
+					  ?></div>
+                </div>
+				<?php }?>
+				 
+				
+				<?php if($this->quoteInfo['status']==0 and $this->assignQuoteInfo['id']=="")
+				  { ?>
+				<div class="clearfix"></div>
+				<div class="row form-group">
+                  <label for="inputEmail3" class="col-sm-4 control-label">Status</label>
+                  <div class="col-sm-8"><?php
+				  
+					  echo "Pending";
+				 
+				   
+				  ?></div>
+                </div>
+				  <?php }?>
+				  
+				  <div class="clearfix"></div>
+				<div class="form-group refrencUrl">
+                  <label for="inputEmail3" class="col-sm-4 control-label">Reference Url</label>
+                  <div class="col-sm-8"><a href="<?=SITEURL.'managequote/view-askforscope/'.$this->quoteInfo['ref_id']?>" target="_blank"><?=SITEURL.'managequote/view-askforscope/'.$this->quoteInfo['ref_id']?></a></div>
+                </div>
+				  
+				<div class="clearfix"></div>
+				<?php 
+				if($this->assignQuoteInfo['id'])
+				{ 
+			if($this->assignQuoteInfo['status']==0)
+			{
+			?>
+					<div class="">
+             
+            <!-- /.box-header -->
+          
+			
+			   <div class="clearfix"></div>
+				<div class="row form-group">
+                  <label for="inputEmail3" class="col-sm-4 control-label">Status</label>
+                  <div class="col-sm-8">Assigned to <?=$this->assignQuoteInfo['name']?></div>
+                </div>
+			
+			 <div class="clearfix"></div>
+				<div class="row form-group">
+                  <label for="inputEmail3" class="col-sm-4 control-label">Assign Date</label>
+                  <div class="col-sm-8"><?=date("d M Y h:i A",$this->assignQuoteInfo['assigned_date'])?></div>
+                </div>
+				<?php if($this->assignQuoteInfo['admin_comments']){?>
+			<div class="clearfix"></div>
+				<div class="row form-group">
+                  <label for="inputEmail3" class="col-sm-4 control-label">Comments</label>
+                  <div class="col-sm-8"><?=$this->assignQuoteInfo['admin_comments']?></div>
+                </div>
+				<?php }?>
+             
+            <!-- /.box-body -->
+          </div>
+				<?php 
+				} 
+				else
+				{ ?>
+				<div class="">
+            
+            <!-- /.box-header -->
+            <div class="box-body">
+			
+			   <div class="clearfix"></div>
+				<div class="row form-group">
+                  <label for="inputEmail3" class="col-sm-4 control-label">Status</label>
+                  <div class="col-sm-8"><?=($this->assignQuoteInfo['status']==1)?"Submitted by ".$this->assignQuoteInfo['name'] :"Submitted"?></div>
+                </div>
+			 <div class="clearfix"></div>
+				<div class="row form-group">
+                  <label for="inputEmail3" class="col-sm-4 control-label">Price</label>
+                  <div class="col-sm-8"><?=$this->quoteInfo['currency']?> <span id="priceDiv"><?=$this->assignQuoteInfo['quote_price']?></div>
+                </div>
+				
+				<div class="clearfix"></div>
+				<div class="row form-group">
+                  <label for="inputEmail3" class="col-sm-4 control-label">Submitted Date</label>
+                  <div class="col-sm-8"><?=date("d M, Y",$this->assignQuoteInfo['user_submitted_date'])?></div>
+                </div>
+				<?php if($this->assignQuoteInfo['admin_comments']){?>
+				<div class="clearfix"></div>
+				<div class="row form-group">
+                  <label for="inputEmail3" class="col-sm-4 control-label">Assigned Comments</label>
+                  <div class="col-sm-8"><?=$this->assignQuoteInfo['admin_comments']?></div>
+                </div>
+			 <?php }?>
+			 
+			 <div class="clearfix"></div>
+				<div class="row form-group">
+                  <label for="inputEmail3" class="col-sm-4 control-label">Comments</label>
+                  <div class="col-sm-8" id="commentDiv"><?=($this->assignQuoteInfo['user_comments']!="")?$this->assignQuoteInfo['user_comments']:$this->assignQuoteInfo['admin_comments']?></div>
+                </div>
+				<?php if($this->assignQuoteInfo['status']==1) {?>
+				<div class="clearfix"></div>
+				<div class="row form-group">
+                  <form name="edit_price_form" id="edit_price_form" class="form-horizontal">
+				  <div class="box-body">
+                  <input type="hidden" name="task_id" id="task_id" value="<?=$this->assignQuoteInfo['id']?>">
+                  <input type="hidden" name="quoteid" id="quoteid" value="<?=$this->assignQuoteInfo['quote_id']?>">
+                <div class="form-group">
+                  <label for="inputPassword3" class="col-sm-3 control-label">Quote Price (INR)</label>
+                 
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control" id="quote_price" name="quote_price" value="<?=$this->assignQuoteInfo['quote_price']?>" placeholder="Quote Price">
+                  </div>
+                </div>
+				
+				 <div class="form-group">
+                  <label for="inputPassword3" class="col-sm-3 control-label">Comments</label>
+                 
+                  <div class="col-sm-9">
+                    <textarea class="form-control" id="user_comments" name="user_comments"><?=($this->assignQuoteInfo['user_comments']!="")?$this->assignQuoteInfo['user_comments']:$this->assignQuoteInfo['admin_comments']?></textarea>
+                  </div>
+                </div>
+           
+              </div>
+			  
+			  
+			  <div class="modal-footer">
+                <span id="load_btn">
+				<button type="button" class="btn btn-primary" onclick="return UpdatePrice()">Confirm</button></span>
+				
+              </div>
+				</form>
+
+				 
+                </div>
+			 <?php }?>
+              
+                  </tbody>
+                </table>
+            </div>
+            <!-- /.box-body -->
+          </div>
+				
+				
+				<?php
+				} }
+				 
+				if($this->quoteInfo['status']==0 and $this->assignQuoteInfo['id']=="")
+				{
+				include("assign_quote_meterial.php");
+				}
+				?>
+
+
+<script>
+function UpdatePrice()
+{
+$.ajax({
+    type : 'POST',
+    url : '<?php echo SITEURL?>managequote/index/updateprice',
+    data : $('#edit_price_form').serialize(),
+	cache:false,
+	beforeSend: function()
+	{
+	$('#load_btn').html('<button type="button" class="btn btn-primary" disabled>Please wait...</button>');
+	},
+	success: function(response)
+	{
+	 setTimeout(function() {  
+	 $("#priceDiv").html($("#quote_price").val());
+	 $("#commentDiv").html($("#user_comments").val());
+	 
+	 $('#load_btn').html('<button type="button" class="btn btn-primary" onclick="return UpdatePrice()">Save changes</button>');
+	}, 1000); 
+	
+	showAdminQuoteDetails();
+	}
+  });	
+}
+</script>				

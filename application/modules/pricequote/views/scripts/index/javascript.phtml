@@ -1,0 +1,753 @@
+
+ <script type="text/javascript">
+   $(document).ready(function(){
+ $("input").keypress(function(){
+ var id=this.id;
+ $("#"+id+"Error").html('');
+});
+$("textarea").keypress(function(){
+ var id=this.id;
+ $("#"+id+"Error").html('');
+});
+ $("input").click(function(){
+ var id=this.id;
+ $("#"+id+"Error").html('');
+});
+ $("select").change(function(){
+ var id=this.id;
+ $("#"+id+"Error").html('');
+});	
+	
+	
+   })
+   
+   function SubmitPriceQuote()
+  {   
+  var error="";
+  var len = $("#no_of_milestone").val();
+  var sum = 0; 
+  if($("#quote_service_id").val()=="")
+  {
+	$("#quote_service_idError").html("Please select Quote service");
+	document.getElementById("quote_service_id").focus();
+	error=1;
+  }	 
+   if($("#total_price").val()=="")
+  {
+	$("#total_priceError").html("Please enter total price");
+	document.getElementById("total_price").focus();
+	error=1;
+  }
+  if($("#no_of_milestone").val()=="")
+  {
+	$("#no_of_milestoneError").html("Please select no of milestone");
+	document.getElementById("no_of_milestone").focus();
+	error=1;
+  }
+  for (var i = 1; i <= len; i++) 
+	 {
+		if($("#milestone_name"+i).val()=="")
+        {
+		$("#milestone_name"+i+"Error").html("Please enter milestone name");
+		document.getElementById("milestone_name"+i).focus();
+		error=1;
+        }
+		else if($("#milestone_name"+i).val().length > 20)
+        {
+		$("#milestone_name"+i+"Error").html("Maximum 20 character allowed for milestone name");
+		document.getElementById("milestone_name"+i).focus();
+		error=1;
+        }
+     if($("#milestone_price"+i).val()=="")
+        {
+		$("#milestone_price"+i+"Error").html("Please enter milestone price");
+		document.getElementById("milestone_price"+i).focus();
+		error=1;
+        }	
+     if($("#milestone_eta"+i).val()=="")
+        {
+		$("#milestone_eta"+i+"Error").html("Please select milestone ETA Date");
+		//document.getElementById("milestone_eta"+i).focus();
+		error=1;
+        }
+		if($("#milestone_remark"+i).val()=="")
+        {
+		$("#milestone_remark"+i+"Error").html("Please enter milestone remarks");
+		document.getElementById("milestone_remark"+i).focus();
+		error=1;
+        }
+	sum+=parseInt($("#milestone_price"+i).val());	
+     		
+	 }
+	 if($("#total_price").val()!=sum)
+  {
+	$("#total_priceError").html("Enter same total price and milestone price");
+	document.getElementById("total_price").focus();
+	error=1;
+  }
+  if($("#discount_type").val()=="")
+  {
+	$("#discount_typeError").html("Please select discount type");
+	document.getElementById("discount_type").focus();
+	error=1;
+  }
+  if(($("#discount_type").val()==1 || $("#discount_type").val()==2) && $("#discount_value").val()=="")
+  {
+	$("#discount_valueError").html("Please enter discount value");
+	document.getElementById("discount_value").focus();
+	error=1;
+  }
+  if(($("#discount_type").val()==1 || $("#discount_type").val()==2) && $("#coupon_code").val()=="")
+  {
+	$("#coupon_codeError").html("Please enter coupon code");
+	document.getElementById("coupon_code").focus();
+	error=1;
+  }
+  if($("#payment_website").val()=="")
+  {
+	$("#payment_websiteError").html("Please select payment website");
+	document.getElementById("payment_website").focus();
+	error=1;
+  }
+  if($("#payment_website").val()!="Other" && $("#expiry_date").val()=="")
+  {
+	$("#expiry_dateError").html("Please enter expire date");
+	error=1;
+  }
+ 
+ if(error==1)
+{
+return false;
+}
+else
+{
+
+ var url = "<?=SITEURL?>pricequote/index/submit-price-quote"; // the script where you handle the form input.
+ $("#priceQuoteForm").submit((function(e) {
+	$("#PriceQuoteSubmitBtn2").show();
+	$("#PriceQuoteSubmitBtn1").hide();
+ 		e.preventDefault();
+ 		$.ajax({
+        	url: url,
+			type: "POST",
+			data:  new FormData(this),
+			contentType: false,
+    	    cache: false,
+			processData:false,
+			success: function(data){
+			if(data)
+			   { 
+            $("#PriceQuoteSubmitBtn1").show();
+	       $("#PriceQuoteSubmitBtn2").hide();
+			   ShowUserPriceQuote();
+			   }	 
+		    },
+		  	error: function(){} 	        
+	   });
+	})); 
+
+} 
+  
+ }
+ 
+function changeDiscountType()
+{
+ if($("#discount_type").val()==1 || $("#discount_type").val()==2)
+  {
+	$(".disCondSec").show(); 
+  }	
+  else
+  {
+	$(".disCondSec").hide();  
+  }
+}
+function SelectMilestone()
+{
+	if($("#total_price").val()=="")
+	{
+	alert("Please enter first total price");
+	$("#no_of_milestone").val("");
+	}
+	else{
+		var len = $("#no_of_milestone").val();
+		var milestonePrice=Math.ceil($("#total_price").val()/len);
+        
+		html="";
+		 for (var i = 1; i <= len; i++) 
+		 {
+	html+='<div class="row" style="border: solid 1px;border-color: #dcd7d7;margin:5px !important;">';
+	html+='<div class="col-sm-6"><input class="form-control" name="milestone_name[]" id="milestone_name'+i+'" value="" placeholder="Milestone Name '+i+'" onchange="removeError(this.id)" onkeypress="removeError(this.id)"><span id="milestone_name'+i+'Error" class="error"></span></div>';
+	html+='<div class="col-sm-6"><input class="form-control" name="milestone_price[]" id="milestone_price'+i+'" value="'+milestonePrice+'" onchange="removeError(this.id)" onkeypress="removeError(this.id)"><span id="milestone_price'+i+'Error" class="error"></span></div>';
+	html+='<div class="clearfix"></div>';
+	html+='<div class="col-sm-6"><input class="form-control datepicker" name="milestone_eta[]" id="milestone_eta'+i+'" value="" placeholder="ETA" onchange="removeError(this.id)" onkeypress="removeError(this.id)"><span id="milestone_eta'+i+'Error" class="error"></span></div>';
+	html+='<div class="col-sm-6"><input class="form-control" name="milestone_remark[]" id="milestone_remark'+i+'" value="" placeholder="Remarks" onchange="removeError(this.id)" onkeypress="removeError(this.id)"><span id="milestone_remark'+i+'Error" class="error"></span></div>';
+	html+='</div>';
+	 
+		 }
+		 
+		$("#milestone_area").html(html);
+		
+		$('body').on('focus',".datepicker", function(){
+    $(this).datepicker({startDate: new Date(),showInputs: false,todayHighlight: true}); 
+    });
+	 }
+
+}
+function removeError(id)
+{
+$("#"+id+"Error").html('');	 
+}
+function ShowAddPriceDiv()
+{
+$("#AddNewPriceDiv").show();	
+}
+function HideAddPriceDiv()
+{
+$("#AddNewPriceDiv").hide();	
+}
+
+ function ClickViewMoreServiceDetails (service_id)
+ {
+	 $(".ServiceContentDiv").fadeOut();
+	 $("#ServiceDiv"+service_id).fadeIn();
+	 
+	 $(".selectedRow").removeClass("selectedColor");
+	 $(".selectedRow"+service_id).addClass("selectedColor");
+	 $("#selectedRowSr"+service_id).addClass("selectedColor");
+	 <?php if($this->QueryInfo['website_id']==8){?>
+	 var url='<?=SITEURL?>pricequote/index/get-service-package';
+     <?php } else {?>
+	 var url='<?=SITEURL?>pricequote/index/get-service-details';
+	 <?php }?>
+ $.ajax({
+ url: url,
+	type: 'POST',
+	data: "service_id="+service_id,
+	beforeSend: function()
+	{
+	$("#ServiceContent"+service_id).html('<div style="text-align:center;"> <img style="height:100px;" src="<?=PUBLICURL?>images/pre-loader-new.gif"></div>');	 
+	},
+	success: function (data) {
+		
+		$("#ServiceDiv"+service_id).show();
+		$("#ServiceContent"+service_id).html(data);
+		
+		} 
+});	 
+}
+function ChangeMilestoneStatus(service_id,milest_id,status)
+{
+ $.ajax({
+ url: '<?=SITEURL?>pricequote/index/change-milestone-status',
+	type: 'POST',
+	data: "service_id="+service_id+"&milest_id="+milest_id+"&status="+status,
+	beforeSend: function()
+	{
+	
+	
+	},
+	success: function (data) {
+		if(data)
+		{
+			 
+			
+			$("#updateServiceStatus"+service_id).html(data);
+			$("#milestoneStatusUpdateMess"+service_id).html('<div class="alert alert-success alert-dismissible"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button><i class="icon fa fa-check"></i> Milestone has been updated successfully.</div>');
+			
+			
+			ClickViewMoreServiceDetails(service_id);
+		}
+		 
+		} 
+});	
+}
+function DeleteMilestone(milest_id,service_id)
+{
+	var x = confirm("Are you sure you want to delete?");
+	if (x)
+	{
+ $.ajax({
+ url: '<?=SITEURL?>pricequote/index/delete-milestone',
+	type: 'POST',
+	data: "milest_id="+milest_id,
+	beforeSend: function()
+	{
+	
+	},
+	success: function (data) {
+		if(data)
+		{
+		 ClickViewMoreServiceDetails(service_id);
+		}
+		 
+		} 
+});
+   }		
+}
+
+function showAddMilestoneDiv(service_id)
+{ 
+var html='';
+
+    html+='<div class="row">';
+	html+='<div class="col-sm-6"><input class="form-control" name="milestone_name" id="milestone_name'+service_id+'" value="" placeholder="Milestone Name "><span id="milestone_nameError" class="error"></span></div>';
+	html+='<div class="col-sm-6"><input class="form-control" name="milestone_price" id="milestone_price'+service_id+'" value=""><span id="milestone_priceError" class="error"></span></div>';
+	html+='<div class="clearfix"></div>';
+	html+='<div class="col-sm-6"><input class="form-control datepicker" name="milestone_eta" id="milestone_eta'+service_id+'" value="" placeholder="ETA"><span id="milestone_etaError" class="error"></span></div>';
+	html+='<div class="col-sm-6"><input class="form-control" name="milestone_remark" id="milestone_remark'+service_id+'" value="" placeholder="Remarks"><span id="milestone_remarkError" class="error"></span></div>';
+	html+='<div class="col-sm-12"> <input type="button" class="btn btn-info btn-sm" value="Save" onclick="return SaveMilestone('+service_id+')"></div>';
+	html+='</div>';
+
+$('body').on('focus',".datepicker", function(){
+    $(this).datepicker({startDate: new Date(),showInputs: false,todayHighlight: true}); 
+    });
+
+
+	$("#milestoneStatusUpdateMess"+service_id).html(html);
+}
+function SaveMilestone(service_id)
+{
+var error="";
+if($("#milestone_name"+service_id).val()=="")
+{
+$("#milestone_name"+service_id).css("border-color","red");
+error=1;
+}
+if($("#milestone_price"+service_id).val()=="")
+{
+$("#milestone_price"+service_id).css("border-color","red");
+error=1;
+}	
+if($("#milestone_eta"+service_id).val()=="")
+{
+$("#milestone_eta"+service_id).css("border-color","red");
+error=1;
+}
+
+if(error==1)
+{
+return false;
+}
+else
+{
+ $.ajax({
+ url: '<?=SITEURL?>pricequote/index/add-milestone',
+	type: 'POST',
+	data: "service_id="+service_id+"&milestone_name="+$("#milestone_name"+service_id).val()+"&milestone_price="+$("#milestone_price"+service_id).val()+"&ref_id=<?=$this->ref_id?>&milestone_eta="+$("#milestone_eta"+service_id).val()+"&milestone_remark="+$("#milestone_remark"+service_id).val(),
+	beforeSend: function()
+	{
+	
+	},
+	success: function (data) {
+		if(data)
+		{
+		 ClickViewMoreServiceDetails(service_id);
+		}
+		 
+		} 
+});
+
+}
+}
+
+ function ChangeServiceAmount(service_id)
+ {
+$("#show_sr_amount_div"+service_id).hide();
+$("#edit_sr_amount_div"+service_id).show();	 
+ }
+ 
+ 
+ function SaveServiceAmount(service_id)
+ {
+	  var edit_service_amount = $("#edit_service_amount"+service_id).val();
+ $.ajax({
+                url: '<?=SITEURL?>pricequote/index/update-service-amount',
+                type: 'POST',
+				data: "service_id="+service_id+"&service_amount="+edit_service_amount,
+                async: false,
+                beforeSend: function()
+                {
+                 },
+                success: function (data) {
+
+                    if(data==1)
+                    { 
+				        $("#show_sr_amount_div"+service_id).html(edit_service_amount+' <span onclick="ChangeServiceAmount('+service_id+')" style="font-size: 15px; margin-left: 10px; cursor:pointer;" class="fa fa-edit"></span>');
+                        $("#show_sr_amount_div"+service_id).show();
+                        $("#edit_sr_amount_div"+service_id).hide();
+                        $("#mainServicePrice"+service_id).html(edit_service_amount);
+						
+						$("#milestoneStatusUpdateMess"+service_id).html('<div class="alert alert-success alert-dismissible"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button><i class="icon fa fa-check"></i> Service price has been updated successfully.</div>');
+                    }
+                },
+            });		 
+ }
+ 
+ function DeleteService(service_id)
+ {
+	var x = confirm("Are you sure you want to delete service?");
+	if (x)
+	{
+ $.ajax({
+ url: '<?=SITEURL?>pricequote/index/delete-service',
+	type: 'POST',
+	data: "service_id="+service_id,
+	beforeSend: function()
+	{
+	
+	},
+	success: function (data) {
+		if(data)
+		{
+		 ShowUserPriceQuote();
+		}
+		 
+		} 
+});
+   }	 
+ }
+ 
+ 
+ function ChangeMilestoneAmount(milest_id)
+ {
+$("#show_ml_amount_div"+milest_id).hide();
+$("#edit_ml_amount_div"+milest_id).show();	 
+ }
+ 
+ function SaveMilestoneAmount(milest_id,service_id)
+ {
+ var edit_milestone_amount = $("#edit_milestone_amount"+milest_id).val();
+ $.ajax({
+                url: '<?=SITEURL?>pricequote/index/update-milestone-amount',
+                type: 'POST',
+				data: "milest_id="+milest_id+"&milestone_price="+edit_milestone_amount,
+                async: false,
+                beforeSend: function()
+                {
+                 },
+                success: function (data) {
+
+                    if(data==1)
+                    { 
+				        $("#show_ml_amount_div"+milest_id).html(edit_milestone_amount+' <span onclick="ChangeMilestoneAmount('+milest_id+')" style="font-size: 15px; margin-left: 10px; cursor:pointer;" class="fa fa-edit"></span>');
+                        $("#show_ml_amount_div"+milest_id).show();
+                        $("#edit_ml_amount_div"+milest_id).hide();
+						
+						$("#milestoneStatusUpdateMess"+service_id).html('<div class="alert alert-success alert-dismissible"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button><i class="icon fa fa-check"></i> Milestone price has been updated successfully.</div>');
+                    }
+                },
+            });		 
+ }
+ 
+  function ChangeWorkScope(service_id)
+ {
+$("#show_ws_div"+service_id).hide();
+$("#edit_ws_div"+service_id).show();	 
+ }
+ 
+ function SaveWorkScope(service_id)
+ {
+var edit_work_scope = $("#edit_work_scope"+service_id).val();
+$.ajax({
+		url: '<?=SITEURL?>pricequote/index/update-service-workscope',
+		type: 'POST',
+		data: "service_id="+service_id+"&work_scope="+edit_work_scope,
+		async: false,
+		beforeSend: function()
+		{
+		 },
+		success: function (data) {
+
+			if(data==1)
+			{ 
+				$("#show_ws_div"+service_id).html(edit_work_scope);
+				$("#show_ws_div"+service_id).show();
+				$("#edit_ws_div"+service_id).hide();
+				
+				$("#milestoneStatusUpdateMess"+service_id).html('<div class="alert alert-success alert-dismissible"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button><i class="icon fa fa-check"></i> Work scope has been updated successfully.</div>');
+			}
+		},
+	});	 
+}
+
+
+function changePaymentWebsite()
+{
+	if($("#payment_website").val()=="Other")
+	{
+	$("#expiryDateDiv").hide();	
+	$("#expiryDateDiv").val('');	
+	}
+	else
+	{
+	$("#expiryDateDiv").show();	
+	}
+} 
+
+function ChangeExpiryDate(service_id)
+{
+$("#show_expdate_div"+service_id).hide();
+$("#edit_expdate_div"+service_id).show();	
+}
+function SaveExpiryDate(service_id)
+{
+var edit_expiry_date = $("#edit_expiry_date"+service_id).val();
+if(edit_expiry_date=="")
+{
+	alert("Please enter expiry date");
+	return false;
+}
+else
+{
+$.ajax({
+		url: '<?=SITEURL?>pricequote/index/update-service-link-expirydate',
+		type: 'POST',
+		data: "service_id="+service_id+"&expiry_date="+edit_expiry_date,
+		async: false,
+		beforeSend: function()
+		{
+		 },
+		success: function (data) {
+
+			if(data)
+			{ 
+				$("#show_expdate_div"+service_id).html(data+' <span onclick="ChangeExpiryDate('+service_id+')" style="font-size:15px; margin-left: 10px; cursor:pointer;" class="fa fa-edit"></span>');
+				$("#show_expdate_div"+service_id).show();
+				$("#edit_expdate_div"+service_id).hide();
+				
+				$("#milestoneStatusUpdateMess"+service_id).html('<div class="alert alert-success alert-dismissible"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button><i class="icon fa fa-check"></i> Expiry date has been updated successfully.</div>');
+			}
+		},
+	});	
+}
+}
+
+function SubmitPriceFiveVidyaQuote()
+{
+  var error="";
+ var len1 = $("#no_of_milestone1").val(); 
+ var len2 = $("#no_of_milestone2").val(); 
+ var len3 = $("#no_of_milestone3").val(); 
+ var sum1 = 0; 
+ var sum2 = 0; 
+ var sum3 = 0; 
+  if($("#quote_service_id").val()=="")
+  {
+	$("#quote_service_idError").html("Please select Quote service");
+	document.getElementById("quote_service_id").focus();
+	error=1;
+  }	 
+  <?php for($j=1; $j<=3;$j++){?>
+   if($("#package_name<?=$j?>").val()=="")
+  {
+	$("#package_name<?=$j?>Error").html("Please enter package name");
+	document.getElementById("package_name<?=$j?>").focus();
+	error=1;
+  }
+  if($("#package_price<?=$j?>").val()=="")
+  {
+	$("#package_price<?=$j?>Error").html("Please enter package price");
+	document.getElementById("package_price<?=$j?>").focus();
+	error=1;
+  }
+  if($("#no_of_milestone<?=$j?>").val()=="")
+  {
+	$("#no_of_milestone<?=$j?>Error").html("Please select no of milestone");
+	document.getElementById("no_of_milestone<?=$j?>").focus();
+	error=1;
+  }
+   if($("#service_scope<?=$j?>").val()=="")
+  {
+	$("#service_scope<?=$j?>Error").html("Please enter service scope");
+	document.getElementById("service_scope<?=$j?>").focus();
+	error=1;
+  }
+  
+  for (var i = 1; i <= $("#no_of_milestone<?=$j?>").val(); i++) 
+	 {
+		if($("#package_milestone_name_<?=$j?>_"+i).val()=="")
+        {
+		$("#package_milestone_name_<?=$j?>_"+i+"Error").html("Please enter milestone name");
+		document.getElementById("package_milestone_name_<?=$j?>_"+i).focus();
+		error=1;
+        }
+		else if($("#package_milestone_name_<?=$j?>_"+i).val().length > 20)
+        {
+		$("#package_milestone_name_<?=$j?>_"+i+"Error").html("Maximum 20 character allowed for milestone name");
+		document.getElementById("package_milestone_name_<?=$j?>_"+i).focus();
+		error=1;
+        }
+     if($("#package_milestone_price_<?=$j?>_"+i).val()=="")
+        {
+		$("#package_milestone_price_<?=$j?>_"+i+"Error").html("Please enter milestone price");
+		document.getElementById("package_milestone_price_<?=$j?>_"+i).focus();
+		error=1;
+        }	
+     if($("#package_milestone_eta_<?=$j?>_"+i).val()=="")
+        {
+		$("#package_milestone_eta_<?=$j?>_"+i+"Error").html("Please select milestone ETA Date");
+		//document.getElementById("milestone_eta"+i).focus();
+		error=1;
+        }
+		if($("#package_milestone_remark_<?=$j?>_"+i).val()=="")
+        {
+		$("#package_milestone_remark_<?=$j?>_"+i+"Error").html("Please enter milestone remarks");
+		document.getElementById("package_milestone_remark_<?=$j?>_"+i).focus();
+		error=1;
+        }
+	//sum+=parseInt($("#package_milestone_price"+i).val());	
+     		
+	 }
+  
+  <?php } ?>
+   
+ /* for (var i = 1; i <= len; i++) 
+	 {
+		if($("#milestone_name"+i).val()=="")
+        {
+		$("#milestone_name"+i+"Error").html("Please enter milestone name");
+		document.getElementById("milestone_name"+i).focus();
+		error=1;
+        }
+     if($("#milestone_price"+i).val()=="")
+        {
+		$("#milestone_price"+i+"Error").html("Please enter milestone price");
+		document.getElementById("milestone_price"+i).focus();
+		error=1;
+        }	
+     if($("#milestone_eta"+i).val()=="")
+        {
+		$("#milestone_eta"+i+"Error").html("Please select milestone ETA Date");
+		//document.getElementById("milestone_eta"+i).focus();
+		error=1;
+        }
+		if($("#milestone_remark"+i).val()=="")
+        {
+		$("#milestone_remark"+i+"Error").html("Please enter milestone remarks");
+		document.getElementById("milestone_remark"+i).focus();
+		error=1;
+        }
+	sum+=parseInt($("#milestone_price"+i).val());	
+     		
+	 }
+	 if($("#total_price").val()!=sum)
+  {
+	$("#total_priceError").html("Enter same total price and milestone price");
+	document.getElementById("total_price").focus();
+	error=1;
+  }
+  */
+  if($("#discount_type").val()=="")
+  {
+	$("#discount_typeError").html("Please select discount type");
+	document.getElementById("discount_type").focus();
+	error=1;
+  }
+  if(($("#discount_type").val()==1 || $("#discount_type").val()==2) && $("#discount_value").val()=="")
+  {
+	$("#discount_valueError").html("Please enter discount value");
+	document.getElementById("discount_value").focus();
+	error=1;
+  }
+  if(($("#discount_type").val()==1 || $("#discount_type").val()==2) && $("#coupon_code").val()=="")
+  {
+	$("#coupon_codeError").html("Please enter coupon code");
+	document.getElementById("coupon_code").focus();
+	error=1;
+  }
+  if($("#payment_website").val()=="")
+  {
+	$("#payment_websiteError").html("Please select payment website");
+	document.getElementById("payment_website").focus();
+	error=1;
+  }
+  if($("#payment_website").val()!="Other" && $("#expiry_date").val()=="")
+  {
+	$("#expiry_dateError").html("Please enter expire date");
+	error=1;
+  }
+ 
+ if(error==1)
+{
+return false;
+}
+else
+{
+ var url = "<?=SITEURL?>pricequote/index/submit-package-price-quote"; // the script where you handle the form input.
+ $("#priceQuoteForm").submit((function(e) {
+	$("#PriceQuoteSubmitBtn2").show();
+	$("#PriceQuoteSubmitBtn1").hide();
+ 		e.preventDefault();
+ 		$.ajax({
+        	url: url,
+			type: "POST",
+			data:  new FormData(this),
+			contentType: false,
+    	    cache: false,
+			processData:false,
+			success: function(data){
+			if(data)
+			   { 
+            $("#PriceQuoteSubmitBtn1").show();
+	       $("#PriceQuoteSubmitBtn2").hide();
+			  ShowUserPriceQuote();
+			   }	 
+		    },
+		  	error: function(){} 	        
+	   });
+	})); 
+} 
+ 	
+}
+function ClickViewMoreServicePackageDetails (package_id)
+ {
+	 $(".ServicePackageContentDiv").fadeOut();
+	 $("#ServicePackageDiv"+package_id).fadeIn();
+	 
+	 $(".selectedPackageRow").removeClass("selectedColor");
+	 $(".selectedPackageRow"+package_id).addClass("selectedColor");
+	 $("#selectedPackageRowSr"+package_id).addClass("selectedColor");
+	 var url='<?=SITEURL?>pricequote/index/get-service-package-details';
+ $.ajax({
+ url: url,
+	type: 'POST',
+	data: "package_id="+package_id,
+	beforeSend: function()
+	{
+	$("#ServicePackageContent"+package_id).html('<div style="text-align:center;"> <img style="height:100px;" src="<?=PUBLICURL?>images/pre-loader-new.gif"></div>');	 
+	},
+	success: function (data) {
+		
+		$("#ServicePackageDiv"+package_id).show();
+		$("#ServicePackageContent"+package_id).html(data);
+		
+		} 
+});	 
+}
+function ChangePackageMilestoneStatus(service_id,package_id,milest_id,status)
+{
+ $.ajax({
+ url: '<?=SITEURL?>pricequote/index/change-package-milestone-status',
+	type: 'POST',
+	data: "service_id="+service_id+"&package_id="+package_id+"&milest_id="+milest_id+"&status="+status,
+	beforeSend: function()
+	{
+	
+	
+	},
+	success: function (data) {
+		if(data)
+		{
+			
+			$("#updateServiceStatus"+service_id).html(data);
+			$("#PackagemilestoneStatusUpdateMess"+package_id).html('<div class="alert alert-success alert-dismissible"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button><i class="icon fa fa-check"></i> Milestone has been updated successfully.</div>');
+			
+			
+			ClickViewMoreServicePackageDetails(package_id);
+		}
+		 
+		} 
+});	
+}
+</script>  
+ 

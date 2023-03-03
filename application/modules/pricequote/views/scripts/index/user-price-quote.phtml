@@ -1,0 +1,102 @@
+<script src="<?=PUBLICURL?>plugins/timepicker/bootstrap-timepicker.min.js"></script>
+<script src="<?=PUBLICURL?>plugins/datepicker/bootstrap-datepicker.js"></script>
+<div class="box-body" id="activityHistoryArea">
+              <div class="box-group" id="accordion">
+                <div class="">
+                  <div class="box-header with-border">
+                    <h2 class="box-title">
+                      <a>Price Quote</a>
+                    </h2>
+                  </div>
+                  <div>
+				   <?php
+				   if(count($this->quoteData) > 0)
+				   { ?>
+					 
+ 
+            <!-- /.box-header -->
+            <div class="box-body no-padding">
+              <table class="table">
+                <tr>
+                   <th>Service Name</th>
+				   <?php if($this->QueryInfo['website_id']!=8){?>
+                  <th>Total Price</th>
+				   <?php }?>
+                  <th>Created Date</th>
+                  <th>Status</th>
+				  <?php if($this->userInfo->user_type=='Lead Validator'){?>
+                  <th>Action</th>
+				  <?php }?>
+                </tr>
+				<?php $i=1; foreach($this->quoteData as $service){?>
+                <tr class="selectedRow"  style="cursor:pointer;" id="selectedRowSr<?=$service['id']?>" onclick="ClickViewMoreServiceDetails(<?=$service['id']?>)">
+                    <td><?=$service['service_name']?></td>
+					 <?php if($this->QueryInfo['website_id']!=8){?>
+                  <td id="mainServicePrice<?=$service['id']?>"> <?=$service['total_price']?> </td>
+					 <?php }?>
+                  <td><?=date("d M Y",$service['created_date'])?></td>
+                  <td id="updateServiceStatus<?=$service['id']?>"><?php if($service['status']==1)
+				  {
+					  echo '<span class="label label-success">Paid</span>';
+				  }  
+				  else 
+				  {
+					  echo '<span class="label label-warning">Pending</span>';
+				  }
+				  ?></td>
+				  <?php if($this->userInfo->user_type=='Lead Validator'){?>
+				  <td><span id="mainServiceDeleteDiv<?=$service['id']?>">
+				  <?php if($service['status']==0){?><a href="javascript:" onclick="DeleteService(<?=$service['id']?>)"><i class="fa fa-trash-o"></i></a><?php }?>
+				  </span>
+				  </td>
+				  <?php }?>
+                </tr>
+				
+				<tr class="ServiceContentDiv" style="display:none;border:solid 1px;border-color: #d2dadc;" id="ServiceDiv<?=$service['id']?>">
+											  
+			  <td colspan="4">
+			  <div id="ServiceContent<?=$service['id']?>">
+			   
+				
+			  </div>
+			  </td>
+			  
+			  </tr>
+				
+				<?php $i++; }?>
+                
+              </table>
+            </div>
+			<p class="clearfix"></p>
+			<?php if($this->userInfo->user_type=='Lead Validator'){?>
+			<hr>
+			<a class="btn btn-primary btn-sm" onclick="ShowAddPriceDiv()">Add New Service</a>
+			<?php }?>
+            <!-- /.box-body -->
+          
+            
+				  <?php } else { if($this->userInfo->user_type!='Lead Validator') { echo '<span class="text-red">Price Quote not found.</span>';} }?>
+				  
+				  <?php if($this->userInfo->user_type=='Lead Validator'){?>
+                   <div id="AddNewPriceDiv" style="display:<?=(count($this->quoteData)==0)?'block':'none'?>">
+				  <?php include("price_quote_form.phtml");?>
+				   </div>
+				  <?php }?>
+				 </div>
+                </div>
+				 
+			 </div>
+            </div>
+			
+ <style type="text/css">
+td, th {
+    padding-top: 15px;
+}
+</style>
+<?php
+include("javascript.phtml");
+?>
+ 
+ 
+ 
+ 

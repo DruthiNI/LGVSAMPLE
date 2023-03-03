@@ -1,0 +1,342 @@
+<?php
+$uploadFileArr=array();
+if($this->templateQuoteInfo['upload_file'])
+{
+$uploadFileArr=json_decode($this->templateQuoteInfo['upload_file'], true);	
+}
+$servicePackage=array();
+if($this->templateQuoteInfo['website_id']==8)
+{
+$servicePackage=json_decode($this->templateQuoteInfo['service_package'], true);
+}
+//echo "<pre>";
+//print_r($servicePackage);die;
+?>
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        Add Quote Template
+       </h1>
+    </section>
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <!-- left column -->
+		<form method="post" id="quote_form" name="quote_form" enctype="multipart/form-data">
+        <div class="col-md-7">
+         <div class="box">
+            <!-- /.box-header -->
+            <div class="box-body p-2">
+              <h1>Add Quote Template</h1>
+             
+			 <input type="hidden" name="id" id="id" value="<?php echo $this->templateQuoteInfo['id'];?>">
+              <div class="box-body">
+			  <div class="form-group">
+                  <label for="website_id">Website Name<span class="error">*</span></label>
+                  <select name="website_id" id="website_id" class="form-control" onchange="changeWebsite()">
+				  <option value="">Select Website</option>
+				  <?php foreach($this->websiteData as $website){?>
+				  <option value="<?=$website['id']?>" <?=($this->templateQuoteInfo['website_id']==$website['id'])?"selected":""?>><?=$website['website']?></option>
+				  <?php }?>
+				  </select>
+				  <div class="error" id="website_idError"></div>
+				</div>
+				
+			  
+                <div class="form-group">
+                  <label for="quote_service_name">Service Name<span class="error">*</span></label>
+                  <input type="text" name="quote_service_name" id="quote_service_name" class="form-control" value="<?php echo $this->templateQuoteInfo['quote_service_name'];?>" />
+				  <div class="error" id="quote_service_nameError"></div>
+				</div>
+				 
+				 <div class="othersection">
+				<div class="form-group">
+                  <label for="service_scope">Service Scope<span class="error">*</span></label>
+                  <textarea class="form-control textarea" name="service_scope" id="service_scope" placeholder="Place some text here"><?php echo $this->templateQuoteInfo['service_scope'];?></textarea>
+				  <div class="error" id="service_scopeError"></div>
+				</div>
+				
+				<div class="row form-group">
+				  <div class="col-sm-6">
+                  <label for="file_title_name">File Title Name To Show Client</label>
+                  <input type="text" class="form-control" name="file_title_name" id="file_title_name" value="<?=$uploadFileArr['file_title_name']?>">
+				  <div class="error" id="upload_fileError"></div>
+				  </div>
+				  
+				  <div class="col-sm-6">
+                  <label for="upload_file1">Attached Document</label>
+                  <input type="file" id="upload_file" name="upload_file" class="form-control">
+				  <div class="error" id="upload_fileError"></div>
+				  <?php if($uploadFileArr['file_title_name']){?>
+				  <a href="<?=SITEURL?>public/UploadFolder/<?=$uploadFileArr['upload_file']?>" download><i class="fa fa-download"></i> <?=$uploadFileArr['file_title_name']?></a>
+				  <?php }?>
+				  </div>
+				  
+				</div>
+				
+				<div class="row form-group">
+				<div class="col-sm-12">
+				<div class="box-footer">
+                <input type="reset"  class="btn btn-danger" value="Reset" onclick="ResetForm()" /> &nbsp;&nbsp;
+                <input type="submit" name="submitBtn" id="submitBtn" class="btn btn-primary" onclick="return ValidateForm()" value="Submit" />
+              </div>
+				</div>
+				</div>
+				  
+				  </div>
+				  
+				  <div class="box-body fivevidyasec spackage" style="display:none;">
+			  <div class="form-group">
+                  <label for="package_name1">Package Name 1<span class="error">*</span></label>
+                  <input type="text" class="form-control" name="packageData[package_name][]" id="package_name1" value="<?=$servicePackage[0]['package_name']?>">
+				  <div class="error" id="package_name1Error"></div>
+				   
+				</div>
+			   <div class="form-group">
+                  <label for="service_scope">Service Scope 1<span class="error">*</span></label>
+                  <textarea class="form-control textarea" name="packageData[service_scope][]" id="service_scope1" placeholder="Place some text here"><?=$servicePackage[0]['service_scope']?></textarea>
+				  <div class="error" id="service_scope1Error"></div>
+				</div>
+				<div class="row form-group">
+				  <div class="col-sm-6">
+                  <label for="file_title_name">File Title Name To Show Client</label>
+                  <input type="text" class="form-control" name="packageData[file_title_name][]" id="file_title_name1" value="<?=$servicePackage[0]['file_title_name']?>">
+				  <div class="error" id="file_title_name1Error"></div>
+				  </div>
+				  <div class="col-sm-6">
+                  <label for="upload_file1">Attached Document</label>
+                  <input type="file" id="upload_file1" name="packageData[upload_file][]" class="form-control">
+				  <div class="error" id="upload_file1Error"></div>
+				  <?php if($servicePackage[0]['file_title_name']!="" and $servicePackage[0]['file_path']!=""){?>
+				  <a href="<?=SITEURL?>public/UploadFolder/<?=$servicePackage[0]['file_path']?>" download><i class="fa fa-download"></i> <?=$servicePackage[0]['file_title_name']?></a>
+				  <?php }?>
+				  <input type="hidden" name="packageData[old_file_name][]" value="<?=$servicePackage[0]['file_path']?>">
+				  </div>
+				</div>
+			</div>
+				  
+                  </div>
+              <!-- /.box-body -->
+           
+          
+		 </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+      
+          </div>
+		  
+  <div class="col-md-5 fivevidyasec" style="display:none;">
+         <div class="box">
+            <!-- /.box-header -->
+            <div class="box-body p-2">             
+			<h1></h1>
+               
+           <div class="box-body spackage">
+		      <div class="form-group">
+                  <label for="package_name2">Package Name 2<span class="error">*</span></label>
+                  <input type="text" class="form-control" name="packageData[package_name][]" id="package_name2" value="<?=$servicePackage[1]['package_name']?>">
+				  <div class="error" id="package_name2Error"></div>
+				   
+				</div>
+			   <div class="form-group">
+                  <label for="service_scope2">Service Scope 2<span class="error">*</span></label>
+                  <textarea class="form-control textarea" name="packageData[service_scope][]" id="service_scope2" placeholder="Place some text here"><?=$servicePackage[1]['service_scope']?></textarea>
+				  <div class="error" id="service_scope2Error"></div>
+				</div>
+				 <div class="row form-group">
+				  <div class="col-sm-6">
+                  <label for="file_title_name2">File Title Name To Show Client</label>
+                  <input type="text" class="form-control" name="packageData[file_title_name][]" id="file_title_name2" value="<?=$servicePackage[1]['file_title_name']?>">
+				  <div class="error" id="file_title_name2Error"></div>
+				  </div>
+				  
+				  <div class="col-sm-6">
+                  <label for="upload_file2">Attached Document</label>
+                  <input type="file" id="upload_file2" name="packageData[upload_file][]" class="form-control">
+				  <div class="error" id="upload_file2Error"></div>
+				  <?php if($servicePackage[1]['file_title_name']!="" and $servicePackage[1]['file_path']!=""){?>
+				  <a href="<?=SITEURL?>public/UploadFolder/<?=$servicePackage[1]['file_path']?>" download><i class="fa fa-download"></i> <?=$servicePackage[1]['file_title_name']?></a>
+				  <?php }?>
+				  <input type="hidden" name="packageData[old_file_name][]" value="<?=$servicePackage[1]['file_path']?>">
+				  </div>
+				</div>
+			</div>
+			
+			<div class="box-body spackage">
+			<div class="form-group">
+                  <label for="package_name3">Package Name 3<span class="error">*</span></label>
+                  <input type="text" class="form-control" name="packageData[package_name][]" id="package_name3" value="<?=$servicePackage[2]['package_name']?>">
+				  <div class="error" id="package_name3Error"></div>
+				   
+				</div>
+			   <div class="form-group">
+                  <label for="service_scope3">Service Scope 3<span class="error">*</span></label>
+                  <textarea class="form-control textarea" name="packageData[service_scope][]" id="service_scope3" placeholder="Place some text here"><?=$servicePackage[2]['service_scope']?></textarea>
+				  <div class="error" id="service_scope3Error"></div>
+				</div>
+				  <div class="row form-group">
+				  <div class="col-sm-6">
+                  <label for="file_title_name3">File Title Name To Show Client</label>
+                  <input type="text" class="form-control" name="packageData[file_title_name][]" id="file_title_name3" value="<?=$servicePackage[2]['file_title_name']?>">
+				  <div class="error" id="file_title_name3Error"></div>
+				  </div>
+				  
+				  <div class="col-sm-6">
+                  <label for="upload_file3">Attached Document</label>
+                  <input type="file" id="upload_file3" name="packageData[upload_file][]" class="form-control">
+				  <div class="error" id="upload_file3Error"></div>
+				  <?php if($servicePackage[2]['file_title_name']!="" and $servicePackage[2]['file_path']!=""){?>
+				  <a href="<?=SITEURL?>public/UploadFolder/<?=$servicePackage[2]['file_path']?>" download><i class="fa fa-download"></i> <?=$servicePackage[2]['file_title_name']?></a>
+				  <?php }?>
+				  <input type="hidden" name="packageData[old_file_name][]" value="<?=$servicePackage[2]['file_path']?>">
+				  </div>
+				</div>
+				
+				 <div class="row form-group">
+				<div class="col-sm-12">
+				<div class="box-footer">
+                <input type="reset"  class="btn btn-danger" value="Reset" onclick="ResetForm()" /> &nbsp;&nbsp;
+                <input type="submit" name="submitBtn" id="submitBtn" class="btn btn-primary" onclick="return ValidatePackageForm()" value="Submit" />
+              </div>
+				</div>
+				</div>
+				
+				
+			</div>
+              
+           </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+      
+ </div>  
+		  </form>
+        <!--/.col (left) -->
+        <!-- right column -->
+         <!--/.col (right) -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+  </div>
+<style>
+.spackage{
+	border: solid 1px;
+    border-color: #0a918b;
+    padding: 10px;
+	margin-bottom: 10px;
+}
+</style> 
+ <script src="<?=PUBLICURL?>plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
+  <script>
+  $(function () {
+    $('.textarea').wysihtml5();
+	changeWebsite();
+	//$('.wysihtml5-sandbox').contents().find('.wysihtml5-editor').html(response.mail_body);
+	
+  });
+  
+ function ValidateForm()
+ { var error="";
+ 
+ 
+ if($("#website_id").val()=="")
+{
+$("#website_idError").html("Please select website");
+error=1;	
+}
+ 
+if($("#quote_service_name").val()=="")
+{
+$("#quote_service_nameError").html("Please enter quote service name");
+error=1;	
+}
+
+if($("#service_scope").val()=="")
+{
+$("#service_scopeError").html("Please enter service scope");
+error=1;	
+}
+
+if(error==1)
+{
+	return false;
+}	
+ 
+ }
+
+ function ValidatePackageForm()
+ { var error="";
+ if($("#website_id").val()=="")
+{
+$("#website_idError").html("Please select website");
+error=1;	
+}
+ 
+if($("#quote_service_name").val()=="")
+{
+$("#quote_service_nameError").html("Please enter quote service name");
+error=1;	
+}
+////////////////////////////////////////////////////////////
+if($("#package_name1").val()=="")
+{
+$("#package_name1Error").html("Please enter package name");
+error=1;	
+}
+ 
+if($("#service_scope1").val()=="")
+{
+$("#service_scope1Error").html("Please enter service scope");
+error=1;	
+}
+
+if($("#package_name2").val()=="")
+{
+$("#package_name2Error").html("Please enter package name");
+error=1;	
+}
+ 
+if($("#service_scope2").val()=="")
+{
+$("#service_scope2Error").html("Please enter service scope");
+error=1;	
+}
+
+if($("#package_name3").val()=="")
+{
+$("#package_name3Error").html("Please enter package name");
+error=1;	
+}
+ 
+if($("#service_scope3").val()=="")
+{
+$("#service_scope3Error").html("Please enter service scope");
+error=1;	
+}
+///////////////////////////////////////////////////////////////////////////
+if(error==1)
+{
+	return false;
+}	
+ 
+ }
+ 
+ 
+function changeWebsite()
+{
+var website_id=	$("#website_id").val();
+if(website_id==8)
+{
+$(".fivevidyasec").show();	
+$(".othersection").hide();	
+}
+else
+{
+$(".fivevidyasec").hide();	
+$(".othersection").show();	
+}
+}
+</script>

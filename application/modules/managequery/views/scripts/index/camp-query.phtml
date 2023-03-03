@@ -1,0 +1,180 @@
+<?php
+$statusObj = new Managequery_Model_Status();
+$this->userObj = new Manageuser_Model_Manageuser();
+$this->tag = new Tags_Model_Tags();
+ //echo "<pre>";
+ //print_r($this->userInfo);
+ //echo "</pre>";
+?>
+ 
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.6.0/css/buttons.dataTables.min.css">
+
+ <form name="form1" id="form1" method="post" action="">
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    
+    
+    
+    
+    <section class="content-header">
+      <h1>
+      Campaign Query
+       </h1>
+        
+
+   </section>
+    
+	 
+
+	<!-- Main content -->
+    <section class="content">
+    
+      <div class="row">
+        <div class="col-xs-12">
+		<table class="table table-bordered table-striped">
+		<tr>
+		<th>Camp Title : <?=$this->campaignInfo['camp_title']?></th>
+		<th>Camp Date : <?=$this->campaignInfo['camp_date']?></th>
+		<th>Camp Website : <?=$this->campaignInfo['website_name']?></th>
+		<th>Total Query : <?=count(explode(',', $this->campaignInfo['queryIds']));?></th>
+		</tr>
+		</table>
+	  <div class="row">
+   <div class="pull-left">
+   
+   </div>
+   
+   <?php  if($this->userInfo->campaign_type!='Calling'){?>
+   <div class="pull-right">
+		 <span> <input class="btn btn-primary btn-sm btn-flat" type="button" value="Export Email Campaign"  onclick="javascript:ExportEmailCampaignRecord(<?=$this->campaignInfo['id']?>);" > &nbsp;</span>
+     </div>
+	     <?php }?>
+      </div>
+   <div class="clearfix"></div>
+           <div class="box pt-2">
+            <!-- /.box-header -->
+			 
+            <div class="box-body">
+
+<div class="table-responsive">
+              <table id="example1" class="table table-bordered table-striped">
+              <thead>
+                  <tr>
+                   <th><input name="2" type="checkbox" onclick="checkAll(document.form1.check,this)" /></th>
+                                 <th>Ref. No.</th>
+                                 <th>Client Name</th>
+                              <th>Email ID</th>
+								 <!--  <th>Email ID</th> -->
+                                 <th>Website</th> 
+                                 <th>Contact No.</th>
+                                 <th>Tags</th> 
+								 
+                                 <th>Status</th>
+                                 <th>Created Date</th>
+   							</tr>
+                       </thead>
+                       <tbody>  
+                            <?php $i=1;
+							$tagsArr=array();
+                          foreach($this->queryData as $Query)
+						  {   
+						  $statusInfo=$statusObj->FetchStatusName($Query['update_status']);
+						  if($Query['trans_repli_user'] and $Query['transfer_type'])
+						  {
+						  $UserInfo=$this->userObj->getUserId($Query['trans_repli_user']);
+						  $preUser_name=$UserInfo->name;
+						  }
+						  $arrTag=$this->tag->TagNameMatchingId($Query['tags']);
+						  ?>
+                         <tr id="deleteRow_<?php echo $Query['assign_id'];?>">
+                          <td><input id="check" name="checkid[]" type="checkbox" value="<?php echo $Query['assign_id'];?>"  /></td>
+                                  <td>
+								  
+							 
+                   <?php echo $Query['assign_id'];?> 
+				   
+				   <?php if($this->userInfo->id!=178){?>
+				    <div class="tools">
+				  <?php 
+							   if($this->userInfo->user_type=='Campaign Manager')
+							   {
+								?>
+                              &nbsp;&nbsp;
+					<a style="cursor:pointer;" onclick="OpenQueryCampaignDetailsPopUp(<?php echo $Query['assign_id'];?>);"><img src="<?=PUBLICURL?>images/view-details.png"></a> 
+                           <?php								
+							   }
+							   else
+							   { ?>
+                    &nbsp;&nbsp;
+					<a style="cursor:pointer;" onclick="OpenQueryDetailsPopUp(<?php echo $Query['assign_id'];?>);"><img src="<?=PUBLICURL?>images/view-details.png"></a>   
+							  <?php }
+							  ?>
+							 
+                     
+                  </div>
+				   <?php }?>
+				   
+				   
+                   
+                
+				 		  
+								  
+								  </td>
+                                  <td><?php echo $Query['name'];?></td>
+                                 <td><a href="javascript:void(0)" data-placement="bottom" data-toggle="tooltip" data-original-title="<?=$Query['name'];?>"><?=$Query['email_id']?></a></td>
+								 <!-- <td><?php echo $Query['email_id'];?> </td>-->
+                                  <td><?php if($Query['website_name']=="others")
+								  { 
+								  echo $Query['other_website'];}
+								  else {
+									echo $Query['website_name'];
+								}?></td> 
+                               <td><?php echo $Query['phone'];?></td>
+							   <td>
+							  <?php 
+							  $tagsArr=array();
+							  foreach($arrTag as $tags)
+									{
+										$tagsArr[]=$tags['tag_name'];
+									}
+                            echo implode(", ",$tagsArr);
+									?>
+							   </td> 
+							   
+							    
+							  <td><span id="change_status_name<?php echo $Query['assign_id'];?>"><?php echo $statusInfo['status_name'];?></span> </td>
+							  
+							  <td><?php echo date("d M, Y",$Query['assign_date']);   ?></td>
+							  
+							   
+								 
+							</tr>
+                         <?php $i++; }?>
+                 
+                 </tbody>
+              </table>
+              </div>
+
+
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+          
+        </div>
+         
+        <div class="col-xs-12 scroll-div" id="SecondDiv"></div>
+        
+        
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+ 
+  </div>
+     </form>
+<!-- End Container -->
+
+<!-- Footer -->
+ <?php include("js/js-userquery.phtml")?>

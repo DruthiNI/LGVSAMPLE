@@ -1,0 +1,19 @@
+<table width="100%">
+							<tr>
+                                <th>Sr. No.</th>
+                                <th>Client Name</th>
+								<th>Email ID</th>
+                                
+    							</tr>
+                         
+                          <?php $i=1;
+                          foreach($this->QueryData as $Query)
+						  {
+						  ?>
+                                <tr>
+								<td><?php echo $i;?></td>
+                                <td><?php echo $Query['name'];?></td>
+								<td><?php echo $Query['email_id'];?></td>
+							</tr>
+                         <?php $i++; }?>
+  						</table>

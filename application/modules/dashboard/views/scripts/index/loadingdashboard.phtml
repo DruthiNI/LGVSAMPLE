@@ -1,0 +1,818 @@
+<?php
+ $this->QueryDashboardObj = new Dashboard_Model_Managequery();
+ //$this->boxQueryObj = new Managequery_Model_Boxquery();
+ $this->userObj = new Manageuser_Model_Manageuser();
+ 
+$profileData=$this->userObj->getUserProfiles($this->userInfo->id);
+ $webIds=array();
+	if(count($profileData) > 0)
+	{
+		foreach($profileData as $web)
+		{
+		$webIds[]=$web['website'];	
+		}
+	}
+	 
+$whereStr="";
+if(isset($this->userInfo->id) and $this->userInfo->user_type=='Lead Validator')
+		{
+		 if($whereStr!="")
+		   {
+		 $whereStr .= " AND box.website_id IN (".implode(",",$webIds).")";
+		   }
+		 else{
+		 $whereStr .= " box.website_id IN (".implode(",",$webIds).")";
+			 }
+		}
+ //echo "<pre>";
+//print_r($this->DelayData);
+ //echo "</pre>";
+ ?>
+ <style>
+ .td_title{
+	 width:30%;color: brown;padding: 3px;
+ }
+ .td_title th{ padding:4px;text-align:center;}
+ </style>
+ <div class="row" style="margin-top:-20px !important;">
+ <!-- <div class="col-md-2"  id="ConversionBtn"><a href="javascript:" class="label label-info pull-right" onclick="showConversionSummary()">Show Conversion Summary</a></div> -->
+ 
+  <div class="col-md-2" style="margin-top:-5px;"><a href="<?=SITEURL?>managequery/client-mail" target="_blank" class="label label-info">Show My Mailbox <span class="label label-warning ClientTotalUnraed"><?=$this->notUnread['ClientTotalUnraed']?></span></a></div>
+ <?php
+
+if($this->userInfo->user_type=='Lead Generator'){?>
+<div class="col-md-2 " style="margin-top:-5px;"><a href="javascript:void(0);" onclick="showConversionSummary()" class="label label-info">Total Score <span class="label label-warning">
+	<?php 
+ 
+foreach($this->tatScore as $totalscore){
+	$sumscore+= $totalscore['total_score'];
+}
+echo $sumscore;
+ ?>
+</span></a></div>
+<?php
+}
+?> 
+  
+
+  </div>
+  <div class="row" id="showConversionSummaryDiv">
+ 
+ </div> 
+ 
+ 
+   
+  <div class="clear-fix"></div>
+   <div class="row">
+   
+   <div class="col-md-2 width14prc">
+          <!-- AREA CHART -->
+           <!-- /.box -->
+           <!-- DONUT CHART -->
+          <div class="box box-solid box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Today’s Tasks (<?=count($this->todayTask)?>)</h3>
+             </div>
+            <div class="box-body scrollbar" id="style-2">
+            <ul class="products-list product-list-in-box connectedSortable box-height" id="sortable3">
+               <?php
+             foreach($this->todayTask as $task)
+			 {
+			    // print_r($task);
+			 ?>
+               <li id="<?=$task['assign_id']?>" class="item" onclick="OpenQueryDetailsPopUp(<?=$task['assign_id']?>)">
+                  <div class="product-info">
+                  		<div>Category:<?php
+                  		$categoryname=$this->QueryDashboardObj->getCategoryName($task['requirement']);
+											echo $categoryname['name'];
+                  	?></div>
+                    <a href="javascript:void(0)" class="product-title"  data-placement="bottom" data-toggle="tooltip" data-original-title="<?=$task['email_id']?>"><?=$task['name']?>
+					
+					
+					
+                      
+					   <?php if($task['update_status']==1)
+						  {
+							 echo '<span class="label label-info pull-right">Pending for Validation</span>'; 
+						  }
+						  else if($task['update_status']==2)
+						  {
+							 echo '<span class="label label-primary pull-right">Contact Made</span>'; 
+						  }
+						  else if($task['update_status']==3)
+						  {
+							 echo '<span class="label label-warning pull-right">Quoted</span>'; 
+						  }
+						  else if($task['update_status']==4)
+						  {
+							 echo '<span class="label label-default pull-right">Negotiating</span>'; 
+						  }
+						  else if($task['update_status']==5)
+						  {
+							 echo '<span class="label label-success pull-right">Approved</span>'; 
+						  }
+						  else if($task['update_status']==6)
+						  {
+							 echo '<span class="label label-danger pull-right">Rejected</span>'; 
+						  }
+						  else if($task['update_status']==7)
+						  {
+							 echo '<span class="label label-info pull-right">Reminder</span>'; 
+						  }
+						  else if($task['update_status']==9)
+						  {
+							 echo '<span class="label label-info pull-right">Follow Up</span>'; 
+						  }
+						  ?>
+					  </a>
+					  
+					  
+					  
+					  
+                        <span class="product-description">
+ 						   	<?php 
+					  	if($this->userInfo->user_type!='Lead Validator')
+					  	{ ?>
+                        <span class="product-description">
+ 						   	 Ref. No. :  <span class="tooltipEl product-title" data-id="<?=$task['assign_id']?>"><?=$task['assign_id']?><i class="caret"></i></span> 
+ 						   	 <?php
+ 						   	}
+ 						   	 ?> 
+							 <?php if($task['assign_follow_up_date']){?>
+							<div>Due since:<?=date("d M Y",$task['assign_follow_up_date'])?></div> 
+							 <?php }?>
+							<?php 
+							if($task['open_date']!="" and $task['open_status']==0){
+								echo '<div class="timerCls"><a href="javascript:void(0)" style="color:red" data-placement="bottom" data-toggle="tooltip" data-original-title="'.date("d M Y h:i A",$task['open_date']).'">Due since:'.$this->QueryDashboardObj->GetdateTimeFormate($task['open_date']).'</a></div>';
+							}
+								?>
+ 						  
+						 
+						 
+                        </span>
+                  </div>
+                </li>
+                
+              <?php }?>
+                </ul>
+				<div class="force-overflow"></div>
+             </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+
+        </div>
+        
+		
+		       
+        <div class="col-md-2 width14prc">
+          <!-- AREA CHART -->
+           <!-- /.box -->
+           <!-- DONUT CHART -->
+          <div class="box box-solid box-warning">
+            <div class="box-header with-border">
+              <h3 class="box-title">Open tasks (<?=count($this->openTask)?>)</h3>
+             </div>
+            <div class="box-body scrollbar" id="style-3">
+            <ul class="products-list product-list-in-box connectedSortable box-height" id="sortable3">
+               <?php
+             foreach($this->openTask as $task)
+			 {
+			 ?>
+               <li id="<?=$task['assign_id']?>" class="item" onclick="OpenQueryDetailsPopUp(<?=$task['assign_id']?>)">
+               		<div>Category:<?php
+                  		$categoryname=$this->QueryDashboardObj->getCategoryName($task['requirement']);
+											echo $categoryname['name'];
+                  	?></div>
+                  <div class="product-info">
+                    <a href="javascript:void(0)" class="product-title" data-placement="bottom" data-toggle="tooltip" data-original-title="<?=$task['email_id']?>"><?=$task['name']?>
+					
+					<?php if($task['update_status']==1)
+						  {
+							 echo '<span class="label label-info pull-right">Pending for Validation</span>'; 
+						  }
+						  else if($task['update_status']==2)
+						  {
+							 echo '<span class="label label-primary pull-right">Contact Made</span>'; 
+						  }
+						  else if($task['update_status']==3)
+						  {
+							 echo '<span class="label label-warning pull-right">Quoted</span>'; 
+						  }
+						  else if($task['update_status']==4)
+						  {
+							 echo '<span class="label label-default pull-right">Negotiating</span>'; 
+						  }
+						  else if($task['update_status']==5)
+						  {
+							 echo '<span class="label label-success pull-right">Approved</span>'; 
+						  }
+						  else if($task['update_status']==6)
+						  {
+							 echo '<span class="label label-danger pull-right">Rejected</span>'; 
+						  }
+						  else if($task['update_status']==7)
+						  {
+							 echo '<span class="label label-info pull-right">Reminder</span>'; 
+						  }
+						   else if($task['update_status']==9)
+						  {
+							 echo '<span class="label label-info pull-right">Follow Up</span>'; 
+						  }
+						  ?>
+					
+					
+					
+                       </a>
+                        <span class="product-description">
+ 						   <?php 
+					  	if($this->userInfo->user_type!='Lead Validator')
+					  	{ ?>
+                        <span class="product-description">
+ 						   	 Ref. No. :  <span class="tooltipEl product-title" data-id="<?=$task['assign_id']?>"><?=$task['assign_id']?><i class="caret"></i></span> 
+ 						   	 <?php
+ 						   	}
+
+ 						   	 ?>
+						  
+						  <?php if($task['open_date']!="" and $task['open_status']==0){
+							  echo '<div class="timerCls"><a href="javascript:void(0)" style="color:red" data-placement="bottom" data-toggle="tooltip" data-original-title="'.date("d M Y h:i A",$task['open_date']).'">Due since:'.$this->QueryDashboardObj->GetdateTimeFormate($task['open_date']).'</a></div>';
+						  } else if($task['update_status']==7){
+							 if($task['remainder_date']!="")
+							 {								 
+							echo '<div class="timerCls"><a href="javascript:void(0)" style="color:red" data-placement="bottom" data-toggle="tooltip" data-original-title="'.date("d M Y h:i A",$task['remainder_date']).'">Due since:'.$this->QueryDashboardObj->GetdateTimeFormate($task['remainder_date']).'</a></div>'; 
+							 }
+						  }?>
+						  
+                        </span>
+                  </div>
+                </li>
+                
+              <?php }?>
+                </ul>
+				<div class="force-overflow"></div>
+             </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+
+        </div>
+        
+		
+			   
+   
+   
+   
+<div class="col-md-2 width14prc">
+          <!-- AREA CHART -->
+           <!-- /.box -->
+           <!-- DONUT CHART -->
+          <div class="box box-solid box-info">
+            <div class="box-header with-border">
+              <h3 class="box-title">Pending for Validation (<?=$this->LeadsCount?>)</h3>
+             </div>
+            <div class="box-body scrollbar" id="style-1">
+             <ul class="products-list product-list-in-box connectedSortable box-height" id="sortable1">
+             <?php 
+             foreach($this->LeadsData as $leadValue)
+			 {
+			 ?>
+                <li id="<?=$leadValue['assign_id']?>" class="item" onclick="OpenQueryDetailsPopUp(<?=$leadValue['assign_id']?>)">
+                  <div class="product-info">
+                  		<div>Category:<?php
+                  		$categoryname=$this->QueryDashboardObj->getCategoryName($leadValue['requirement']);
+											echo $categoryname['name'];
+                  	?></div>
+                    <a href="javascript:void(0)" class="product-title" data-placement="bottom" data-toggle="tooltip" data-original-title="<?=$leadValue['email_id']?>"><?=$leadValue['name']?> </a>
+                        <span class="product-description">
+ 						   
+ 						    <?php 
+					  	if($this->userInfo->user_type!='Lead Validator')
+					  	{ ?>
+                        <span class="product-description">
+ 						   	 Ref. No. :  <span class="tooltipEl product-title" data-id="<?=$leadValue['assign_id']?>"><?=$leadValue['assign_id']?><i class="caret"></i></span> 
+ 						   	 <?php
+ 						   	}
+ 						   	 ?>
+ 						    	<?php if($leadValue['update_status']==1)
+						  {
+							 echo '<span class="label label-info pull-right">Pending for Validation</span>'; 
+						  }
+						  else if($leadValue['update_status']==2)
+						  {
+							 echo '<span class="label label-primary pull-right">Contact Made</span>'; 
+						  }
+						  else if($leadValue['update_status']==3)
+						  {
+							 echo '<span class="label label-warning pull-right">Quoted</span>'; 
+						  }
+						  else if($leadValue['update_status']==4)
+						  {
+							 echo '<span class="label label-default pull-right">Negotiating</span>'; 
+						  }
+						  else if($leadValue['update_status']==5)
+						  {
+							 echo '<span class="label label-success pull-right">Approved</span>'; 
+						  }
+						  else if($leadValue['update_status']==6)
+						  {
+							 echo '<span class="label label-danger pull-right">Rejected</span>'; 
+						  }
+						  else if($leadValue['update_status']==7)
+						  {
+							 echo '<span class="label label-info pull-right">Reminder</span>'; 
+						  }
+						   else if($leadValue['update_status']==9)
+						  {
+							 echo '<span class="label label-info pull-right">Follow Up</span>'; 
+						  }
+						  ?>
+					
+					 <?php  
+					 if($leadValue['open_date']!="" and $leadValue['open_status']==0){
+						 echo '<div class="timerCls"><a href="javascript:void(0)" data-placement="bottom" style="color:red" data-toggle="tooltip" data-original-title="'.date("d M Y h:i A",$leadValue['open_date']).'">Due since:'.$this->QueryDashboardObj->GetdateTimeFormate($leadValue['open_date']).'</a></div>';
+					 }?>
+						  
+                        </span>
+                  </div>
+                </li>
+              <?php }?> 
+                </ul>
+				<div class="force-overflow"></div>
+             </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+        </div>
+		
+		 <?php if($this->userInfo->user_type !='Lead Validator'){?>
+        <div class="col-md-2 width14prc">
+          
+          <div class="box box-solid box-info style_7">
+            <div class="box-header with-border">
+              <h3 class="box-title">Pending for Allocation(<?=count($this->pendingTask)?>)</h3>
+             </div>
+            <div class="box-body scrollbar" id="style-7">
+             <ul class="products-list product-list-in-box connectedSortable box-height" id="sortable3">
+               <?php
+             foreach($this->pendingTask as $task)
+			 {
+			     //print_r($task);
+			 ?>
+               <li id="<?=$task['assign_id']?>" class="item" onclick="OpenQueryDetailsPopUp(<?=$task['assign_id']?>)">
+                  <div class="product-info">
+                  	<div>Category:<?php
+                  		$categoryname=$this->QueryDashboardObj->getCategoryName($task['requirement']);
+											echo $categoryname['name'];
+                  	?></div>
+                    <a href="javascript:void(0)" class="product-title"  data-placement="bottom" data-toggle="tooltip" data-original-title="<?=$task['email_id']?>"><?=$task['name']?>
+					
+					
+					
+                      
+					   <?php if($task['action_taken']==0)
+						  {
+							 echo '<span class="label label-info pull-right">Pending for Allocation</span>'; 
+						  }
+						  ?>
+					  </a>
+					  
+					  
+					  
+					  
+                        <span class="product-description">
+ 						    <?php 
+					  	if($this->userInfo->user_type!='Lead Validator')
+					  	{ ?>
+                        <span class="product-description">
+ 						   	 Ref. No. :  <span class="tooltipEl product-title" data-id="<?=$task['assign_id']?>"><?=$task['assign_id']?><i class="caret"></i></span> 
+ 						   	 <?php
+ 						   	}
+ 						   	 ?>
+							 <?php if($task['assign_follow_up_date']){?>
+							<div>Due since:<?=date("d M Y",$task['assign_follow_up_date'])?></div> 
+							 <?php }?>
+							<?php 
+							if($task['open_date']!="" and $task['open_status']==0){
+								echo '<div class="timerCls"><a href="javascript:void(0)" style="color:red" data-placement="bottom" data-toggle="tooltip" data-original-title="'.date("d M Y h:i A",$task['open_date']).'">Due since:'.$this->QueryDashboardObj->GetdateTimeFormate($task['open_date']).'</a></div>';
+							}
+								?>
+ 						  
+						 
+						 
+                        </span>
+                  </div>
+                </li>
+                
+              <?php }?>
+                </ul>
+				<div class="force-overflow"></div>
+             </div>
+          
+          </div>
+         
+
+        </div>
+		
+		<?php
+		}
+		?>
+        
+        <div class="col-md-2 width14prc">
+          <!-- AREA CHART -->
+           <!-- /.box -->
+           <!-- DONUT CHART -->
+          <div class="box box-solid box-primary style_2">
+            <div class="box-header with-border">
+              <h3 class="box-title"> Contact Made (<?=$this->ContactMadeCount?>)</h3>
+             </div>
+            <div class="box-body scrollbar" id="style_2">
+            <ul class="products-list product-list-in-box connectedSortable box-height" id="sortable2">
+            <?php
+             foreach($this->ContactMadeData as $ContactMadeValue)
+			 {
+			 ?>
+                <li id="<?=$ContactMadeValue['assign_id']?>" class="item" onclick="OpenQueryDetailsPopUp(<?=$ContactMadeValue['assign_id']?>)">
+                  <div class="product-info">
+                  	<div>Category:<?php
+                  		$categoryname=$this->QueryDashboardObj->getCategoryName($ContactMadeValue['requirement']);
+											echo $categoryname['name'];
+                  	?></div>
+                    <a href="javascript:void(0)" class="product-title" data-placement="bottom" data-toggle="tooltip" data-original-title="<?=$ContactMadeValue['email_id']?>"><?=$ContactMadeValue['name']?> 
+                        	<?php if($ContactMadeValue['update_status']==1)
+						  {
+							 echo '<span class="label label-info pull-right">Pending for Validation</span>'; 
+						  }
+						  else if($ContactMadeValue['update_status']==2)
+						  {
+							 echo '<span class="label label-primary pull-right">Contact Made</span>'; 
+						  }
+						  else if($ContactMadeValue['update_status']==3)
+						  {
+							 echo '<span class="label label-warning pull-right">Quoted</span>'; 
+						  }
+						  else if($ContactMadeValue['update_status']==4)
+						  {
+							 echo '<span class="label label-default pull-right">Negotiating</span>'; 
+						  }
+						  else if($ContactMadeValue['update_status']==5)
+						  {
+							 echo '<span class="label label-success pull-right">Approved</span>'; 
+						  }
+						  else if($ContactMadeValue['update_status']==6)
+						  {
+							 echo '<span class="label label-danger pull-right">Rejected</span>'; 
+						  }
+						  else if($ContactMadeValue['update_status']==7)
+						  {
+							 echo '<span class="label label-info pull-right">Reminder</span>'; 
+						  }
+						   else if($ContactMadeValue['update_status']==9)
+						  {
+							 echo '<span class="label label-info pull-right">Follow Up</span>'; 
+						  }
+						  ?>
+                    </a>
+                        <span class="product-description">
+                           	Follow up Date : <?=date("d M Y",$ContactMadeValue['assign_follow_up_date'])?>
+						  <br>
+						  <?php 
+					  	if($this->userInfo->user_type!='Lead Validator')
+					  	{ ?>
+                        <span class="product-description">
+ 						   	 Ref. No. :  <span class="tooltipEl product-title" data-id="<?=$ContactMadeValue['assign_id']?>"><?=$ContactMadeValue['assign_id']?><i class="caret"></i></span> 
+ 						   	 <?php
+ 						   	}
+ 						   	
+ 						   	 ?>
+                        </span>
+                  </div>
+                </li>
+                
+              <?php } ?> 
+              </ul>
+			  <div class="force-overflow"></div>
+             </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+
+        </div>
+        
+        
+        
+        <div class="col-md-2 width14prc">
+          <!-- AREA CHART -->
+           <!-- /.box -->
+           <!-- DONUT CHART -->
+          <div class="box box-solid box-warning">
+            <div class="box-header with-border">
+              <h3 class="box-title"> Follow Up (<?=count($this->FollowUpData)?>)</h3>
+             </div>
+             
+             <div class="box-body scrollbar" id="style-5">
+            <ul class="products-list product-list-in-box connectedSortable box-height" id="sortable5">
+                <?php
+             foreach($this->FollowUpData as $FollowUpValue)
+			 {
+			 ?>
+                <li id="<?=$FollowUpValue['assign_id']?>" class="item" onclick="OpenQueryDetailsPopUp(<?=$FollowUpValue['assign_id']?>)">
+                  <div class="product-info">
+                  	<div>Category:<?php
+                  		$categoryname=$this->QueryDashboardObj->getCategoryName($FollowUpValue['requirement']);
+											echo $categoryname['name'];
+                  	?></div>
+                    <a href="javascript:void(0)" class="product-title" data-placement="bottom" data-toggle="tooltip" data-original-title="<?=$FollowUpValue['email_id']?>"><?=$FollowUpValue['name']?> 
+                    
+                    	<?php if($FollowUpValue['update_status']==1)
+						  {
+							 echo '<span class="label label-info pull-right">Pending for Validation</span>'; 
+						  }
+						  else if($FollowUpValue['update_status']==2)
+						  {
+							 echo '<span class="label label-primary pull-right">Contact Made</span>'; 
+						  }
+						  else if($FollowUpValue['update_status']==3)
+						  {
+							 echo '<span class="label label-warning pull-right">Quoted</span>'; 
+						  }
+						  else if($FollowUpValue['update_status']==4)
+						  {
+							 echo '<span class="label label-default pull-right">Negotiating</span>'; 
+						  }
+						  else if($FollowUpValue['update_status']==5)
+						  {
+							 echo '<span class="label label-success pull-right">Approved</span>'; 
+						  }
+						  else if($FollowUpValue['update_status']==6)
+						  {
+							 echo '<span class="label label-danger pull-right">Rejected</span>'; 
+						  }
+						  else if($FollowUpValue['update_status']==7)
+						  {
+							 echo '<span class="label label-info pull-right">Reminder</span>'; 
+						  }
+						   else if($FollowUpValue['update_status']==9)
+						  {
+							 echo '<span class="label label-info pull-right">Follow Up</span>'; 
+						  }
+						  ?>
+                    </a>
+                        <span class="product-description">
+ 						   	Shifted On : <?php echo date("d M Y",$FollowUpValue['update_status_date']);?>
+ 						  <br>
+ 						  	<?php 
+					  	if($this->userInfo->user_type!='Lead Validator')
+					  	{ ?>
+                        <span class="product-description">
+ 						   	 Ref. No. :  <span class="tooltipEl product-title" data-id="<?=$FollowUpValue['assign_id']?>"><?=$FollowUpValue['assign_id']?><i class="caret"></i></span> 
+ 						   	 <?php
+ 						   	}
+ 						   	 	
+ 						   	 ?> 
+                        </span>
+                  </div>
+                </li>
+                
+              <?php }?>
+                </ul>
+				<div class="force-overflow"></div>
+             </div>
+            
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+
+        </div>
+        
+            
+     
+		
+        <div class="col-md-2 width14prc">
+          <!-- AREA CHART -->
+           <!-- /.box -->
+           <!-- DONUT CHART -->
+          <div class="box box-solid box-success">
+            <div class="box-header with-border">
+              <h3 class="box-title"> Lead Approved (<?=$this->ConvertedCount?>)</h3>
+             </div>
+            <div class="box-body scrollbar" id="style-5">
+            <ul class="products-list product-list-in-box connectedSortable box-height" id="sortable5">
+                <?php
+             foreach($this->ConvertedData as $ConvertedValue)
+			 {
+			 ?>
+                <li id="<?=$ConvertedValue['assign_id']?>" class="item" onclick="OpenQueryDetailsPopUp(<?=$ConvertedValue['assign_id']?>)">
+                  <div class="product-info">
+                  	<div>Category:<?php
+                  		$categoryname=$this->QueryDashboardObj->getCategoryName($ConvertedValue['requirement']);
+											echo $categoryname['name'];
+                  	?></div>
+                    <a href="javascript:void(0)" class="product-title" data-placement="bottom" data-toggle="tooltip" data-original-title="<?=$ConvertedValue['email_id']?>"><?=$ConvertedValue['name']?>
+                    	<?php if($ConvertedValue['update_status']==1)
+						  {
+							 echo '<span class="label label-info pull-right">Pending for Validation</span>'; 
+						  }
+						  else if($ConvertedValue['update_status']==2)
+						  {
+							 echo '<span class="label label-primary pull-right">Contact Made</span>'; 
+						  }
+						  else if($ConvertedValue['update_status']==3)
+						  {
+							 echo '<span class="label label-warning pull-right">Quoted</span>'; 
+						  }
+						  else if($ConvertedValue['update_status']==4)
+						  {
+							 echo '<span class="label label-default pull-right">Negotiating</span>'; 
+						  }
+						  else if($ConvertedValue['update_status']==5)
+						  {
+							 echo '<span class="label label-success pull-right">Approved</span>'; 
+						  }
+						  else if($ConvertedValue['update_status']==6)
+						  {
+							 echo '<span class="label label-danger pull-right">Rejected</span>'; 
+						  }
+						  else if($ConvertedValue['update_status']==7)
+						  {
+							 echo '<span class="label label-info pull-right">Reminder</span>'; 
+						  }
+						   else if($ConvertedValue['update_status']==9)
+						  {
+							 echo '<span class="label label-info pull-right">Follow Up</span>'; 
+						  }
+						  ?>
+                    
+                    </a>
+                        <span class="product-description">
+ 						   	Shifted On : <?php echo date("d M Y",$ConvertedValue['update_status_date']);?>
+ 						  <br>
+ 						  <?php 
+					  	if($this->userInfo->user_type!='Lead Validator')
+					  	{ ?>
+                        <span class="product-description">
+ 						   	 Ref. No. :  <span class="tooltipEl product-title" data-id="<?=$ConvertedValue['assign_id']?>"><?=$ConvertedValue['assign_id']?><i class="caret"></i></span> 
+ 						   	 <?php
+ 						   	}
+ 						   	 
+ 						   	 ?>
+                        </span>
+                  </div>
+                </li>
+                
+              <?php }?>
+                </ul>
+				<div class="force-overflow"></div>
+             </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+
+        </div>
+        
+     
+		       
+        <div class="col-md-2 width14prc">
+          <!-- AREA CHART -->
+           <!-- /.box -->
+           <!-- DONUT CHART -->
+          <div class="box box-solid  box-danger ">
+            <div class="box-header with-border">
+              <h3 class="box-title">Lead Rejected (<?=$this->NotInterestedCount?>)</h3>
+             </div>
+            <div class="box-body scrollbar" id="style-6">
+            <ul class="products-list product-list-in-box connectedSortable box-height" id="sortable6">
+               <?php
+             foreach($this->NotInterestedData as $NotInterestedValue)
+			 {
+			 ?>
+                <li id="<?=$NotInterestedValue['assign_id']?>" class="item" onclick="OpenQueryDetailsPopUp(<?=$NotInterestedValue['assign_id']?>)">
+                  <div class="product-info">
+                  	<div>Category:<?php
+                  		$categoryname=$this->QueryDashboardObj->getCategoryName($NotInterestedValue['requirement']);
+											echo $categoryname['name'];
+                  	?></div>
+                    <a href="javascript:void(0)" class="product-title" data-placement="bottom" data-toggle="tooltip" data-original-title="<?=$NotInterestedValue['email_id']?>"><?=$NotInterestedValue['name']?> 
+                    	<?php if($NotInterestedValue['update_status']==1)
+						  {
+							 echo '<span class="label label-info pull-right">Pending for Validation</span>'; 
+						  }
+						  else if($NotInterestedValue['update_status']==2)
+						  {
+							 echo '<span class="label label-primary pull-right">Contact Made</span>'; 
+						  }
+						  else if($NotInterestedValue['update_status']==3)
+						  {
+							 echo '<span class="label label-warning pull-right">Quoted</span>'; 
+						  }
+						  else if($NotInterestedValue['update_status']==4)
+						  {
+							 echo '<span class="label label-default pull-right">Negotiating</span>'; 
+						  }
+						  else if($NotInterestedValue['update_status']==5)
+						  {
+							 echo '<span class="label label-success pull-right">Approved</span>'; 
+						  }
+						  else if($NotInterestedValue['update_status']==6)
+						  {
+							 echo '<span class="label label-danger pull-right">Rejected</span>'; 
+						  }
+						  else if($NotInterestedValue['update_status']==7)
+						  {
+							 echo '<span class="label label-info pull-right">Reminder</span>'; 
+						  }
+						   else if($NotInterestedValue['update_status']==9)
+						  {
+							 echo '<span class="label label-info pull-right">Follow Up</span>'; 
+						  }
+						  ?>
+                    </a>
+                        <span class="product-description">
+                          Shifted On : <?php echo date("d M Y",$NotInterestedValue['update_status_date']);?>
+ 						   <br>
+ 						   <?php 
+					  	if($this->userInfo->user_type!='Lead Validator')
+					  	{ ?>
+                        <span class="product-description">
+ 						   	 Ref. No. :  <span class="tooltipEl product-title" data-id="<?=$NotInterestedValue['assign_id']?>"><?=$NotInterestedValue['assign_id']?><i class="caret"></i></span> 
+ 						   	 <?php
+ 						   	}
+ 						   	
+ 						   	 ?>
+                        </span>
+                  </div>
+                </li>
+                
+              <?php }?>
+                </ul>
+				<div class="force-overflow"></div>
+             </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+
+        </div>
+        
+		
+		
+</div>        
+ <script src="<?=PUBLICURL?>plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
+ 
+  <script>
+   $(document).ready(function() {
+    //////////////////////////////////////////////////////
+	$(".select2").select2();
+	$('[data-toggle="tooltip"]').tooltip();
+ 	//////////////////////////////////////////////////////
+});
+function showConversionSummary()
+{
+	$("#showConversionSummaryDiv").show();
+	$("#ConversionBtn").html('<a href="javascript:" class="label label-info" onclick="hideConversionSummary()">Hide Conversion Summary</a>');
+	getShowconversionSummaryData();
+	
+}
+function hideConversionSummary()
+{
+	$("#showConversionSummaryDiv").hide();
+	$("#ConversionBtn").html('<a href="javascript:" class="label label-info" onclick="showConversionSummary()">Show Conversion Summary</a>');
+}
+
+ 
+
+  </script>
+  <script>
+  $(document).ready(function(){
+
+  // Add tooltip
+  $('.tooltipEl').tooltip({
+   delay: 500,
+   placement: "bottom",
+   title: userDetails,
+   html: true
+  }); 
+});
+
+// Get user details for tooltip
+function userDetails(){
+	var assign_id = $(this).attr('data-id')
+  //alert(id);
+   var tooltipText = "";
+  $.ajax({
+   url: '<?=SITEURL?>dashboard/index/get-activity-history-dashboard',
+   data: {assign_id:assign_id},
+ 	 type: 'post',
+   async: false,
+   success: function(response){
+   	//alert(response);
+    
+  
+		  
+	    tooltipText = response;
+	
+   }
+  });
+  return tooltipText;
+
+}
+</script>

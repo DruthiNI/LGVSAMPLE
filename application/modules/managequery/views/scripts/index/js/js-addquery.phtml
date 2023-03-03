@@ -1,0 +1,413 @@
+
+  <script src="<?=PUBLICURL?>bootstrap/js/jquery.js"></script>
+   <script type="text/javascript">
+   $(document).ready(function(){
+	 	
+  var max_fields_limit      = 10; //set limit for maximum input fields
+    var x = 1; //initialize counter for text box
+    $('#add_more_button').click(function(e){ //click event on add more fields button having class add_more_button
+        e.preventDefault();
+        if(x < max_fields_limit){ //check conditions
+            x++; //counter increment
+			var html="";
+			
+			
+			html+='<div class="form-group"><div class="col-md-10"><input type="file" class="form-control" name="upload_file[]" id="upload_file'+x+'"/></div>';
+            html+='<div class="col-md-2" id="remove_field"><i style="font-size:20px;padding-top:3px;cursor:pointer;" class="fa fa-minus-circle"></i></div></div>';
+			
+			
+            $('#attachment_file').append(html); //add input field
+        }
+    });
+
+
+$('#attachment_file').on("click","#remove_field", function(e){ //user click on remove text links
+        e.preventDefault(); $(this).parent('div').remove(); x--;
+    })	
+
+
+//checkFunctionEntryType();
+<?php if($this->params and count($this->params) > 0){?>
+changeTeam();
+<?php } ?>   
+   })
+   
+   function Validate()
+  {   
+  var error="";
+ var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+  if($("#name").val()=="")
+  {
+	$("#nameError").html("Please enter name");
+	document.getElementById("name").focus();
+	error=1;
+  }	 
+  if($("#email_id").val()=="")
+  {
+	$("#email_idError").html("Please enter email ID");
+	document.getElementById("email_id").focus();
+	error=1;
+  }	 
+ else if (reg.test($("#email_id").val()) == false) 
+    {
+    $("#email_idError").html("Invalid Email Address");
+	document.getElementById("email_id").focus();
+	error=1;
+    }
+  if($("#website").val()=="")
+  {
+	$("#websiteError").html("Please select website");
+	document.getElementById("website").focus();
+	error=1;
+  }	 
+  
+   
+   if($("#website").val()==42 && $("#other_website").val()=="" )
+  {
+	$("#other_websiteError").html("Please enter other website");
+	document.getElementById("other_website").focus();
+	error=1; 
+  } 
+  
+  if($("#company_size").val()=="")
+  {
+	$("#company_sizeError").html("Please select company size");
+	document.getElementById("company_size").focus();
+	error=1;
+  }	
+  if($("#designation_name").val()=="")
+  {
+	$("#designation_nameError").html("Please enter designation");
+	document.getElementById("designation_name").focus();
+	error=1;
+  }	 
+  
+  if($("#requirement").val()=="")
+  {
+	$("#requirementError").html("Please select service");
+	document.getElementById("requirement").focus();
+	error=1;
+  }
+  
+   if($("#requirement").val()==20 && $("#other_requirement").val()=="" )
+  {
+	$("#other_requirementError").html("Please enter other requirement");
+	document.getElementById("other_requirement").focus();
+	error=1; 
+  }
+  
+  if($("#date").val()=="")
+  {
+	$("#dateError").html("Please select date");
+	document.getElementById("date").focus();
+	error=1;
+  }	 
+ if($("#team_id").val()=="")
+  {
+	$("#team_idError").html("Please seletct team");
+	document.getElementById("team_id").focus();
+	error=1;
+  }
+   if($("#allocated_to").val()=="")
+  {
+	$("#allocated_toError").html("Please seletct allocated to user");
+	document.getElementById("allocated_to").focus();
+	error=1;
+  }
+  if($("#profile_id").val()=="")
+  {
+	$("#profile_idError").html("Please seletct profile");
+	document.getElementById("profile_id").focus();
+	error=1;
+  }
+  if($("#priority").val()=="")
+  {
+	$("#priorityError").html("Please select priority");
+	document.getElementById("priority").focus();
+	error=1;
+  }
+ 
+ if(error==1)
+{
+return false;
+}
+else
+{
+	return true;
+} 
+  
+ }
+ 
+  function ValidateQueryBox()
+  {   
+  var error="";
+ var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+  if($("#name").val()=="")
+  {
+	$("#nameError").html("Please enter name");
+	document.getElementById("name").focus();
+	error=1;
+  }	 
+  if($("#email_id").val()=="")
+  {
+	$("#email_idError").html("Please enter email ID");
+	document.getElementById("email_id").focus();
+	error=1;
+  }	 
+ else if (reg.test($("#email_id").val()) == false) 
+    {
+    $("#email_idError").html("Invalid Email Address");
+	document.getElementById("email_id").focus();
+	error=1;
+    }
+  if(document.query_form.if_generic_query.checked==false && $("#website").val()=="")
+  {
+	$("#websiteError").html("Please select website");
+	document.getElementById("website").focus();
+	error=1;
+  }	 
+  
+   
+   if(document.query_form.if_generic_query.checked==false && $("#website").val()==42 && $("#other_website").val()=="" )
+  {
+	$("#other_websiteError").html("Please enter other website");
+	document.getElementById("other_website").focus();
+	error=1; 
+  } 
+  if($("#requirement").val()=="")
+  {
+	$("#requirementError").html("Please select service");
+	document.getElementById("requirement").focus();
+	error=1;
+  }
+  
+   if($("#requirement").val()==20 && $("#other_requirement").val()=="" )
+  {
+	$("#other_requirementError").html("Please enter other requirement");
+	document.getElementById("other_requirement").focus();
+	error=1; 
+  }
+  
+  if($("#date").val()=="")
+  {
+	$("#dateError").html("Please select date");
+	document.getElementById("date").focus();
+	error=1;
+  }	 
+ if($("#team_id").val()=="")
+  {
+	$("#team_idError").html("Please seletct team");
+	document.getElementById("team_id").focus();
+	error=1;
+  }
+   if($("#allocated_to").val()=="")
+  {
+	$("#allocated_toError").html("Please seletct allocated to user");
+	document.getElementById("allocated_to").focus();
+	error=1;
+  }
+  if($("#profile_id").val()=="")
+  {
+	$("#profile_idError").html("Please seletct profile");
+	document.getElementById("profile_id").focus();
+	error=1;
+  }
+  if($("#priority").val()=="")
+  {
+	$("#priorityError").html("Please select priority");
+	document.getElementById("priority").focus();
+	error=1;
+  }
+ 
+ if(error==1)
+{
+return false;
+}
+else
+{
+	return true;
+} 
+  
+ }
+ 
+ 
+    function ValidateCSV()
+  {   
+  var error="";
+ var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+ 	 
+ if($("#team_id").val()=="")
+  {
+	$("#team_idError").html("Please seletct team");
+	document.getElementById("team_id").focus();
+	error=1;
+  }
+   if($("#allocated_to").val()=="")
+  {
+	$("#allocated_toError").html("Please seletct allocated to user");
+	document.getElementById("allocated_to").focus();
+	error=1;
+  }
+  if($("#profile_id").val()=="")
+  {
+	$("#profile_idError").html("Please seletct profile");
+	document.getElementById("profile_id").focus();
+	error=1;
+  }
+  if($("#priority").val()=="")
+  {
+	$("#priorityError").html("Please select priority");
+	document.getElementById("priority").focus();
+	error=1;
+  }
+  if($("#import_csv_file").val()=="")
+  {
+	$("#import_csv_fileError").html("Please select csv file");
+	document.getElementById("import_csv_file").focus();
+	error=1;
+  }
+ if(error==1)
+{
+return false;
+}
+else
+{
+	return true;
+} 
+  
+ }
+ 
+ 
+function OtherFunction()
+{
+if($("#website").val()==42)
+  {	
+   $("#other_website_div").show();
+  }
+  else
+  {
+	  $("#other_website").val("");
+	 $("#other_website_div").hide();  
+ }
+ checkExitClientAndWebsite();
+}
+
+ 
+function otherRequirement()
+{
+if($("#requirement").val()==20)
+  {	
+   $("#other_requirement_div").show();
+  }
+  else
+  {
+	  $("#other_requirement").val("");
+	 $("#other_requirement_div").hide();  
+ }
+}
+function checkFunctionEntryType()
+{
+ 
+	
+	if(document.query_form.entrytype1.checked==true)
+	{
+	$(".PhDDiv").show();	
+	$(".EmarketzDiv").hide();
+	}
+	else 
+	{
+	$(".PhDDiv").hide();	
+	$(".EmarketzDiv").show();
+	}
+}
+function changeTeam()
+{
+var team_id=$("#team_id").val();
+$.ajax({
+    type : 'POST',
+    url : '<?php echo SITEURL?>manageuser/index/teamuser',
+    data : "team_id="+team_id,
+	cache:false,
+	beforeSend: function()
+	{
+    $("#allocated_to").html('<option value="">Loading...</option>');
+	},
+	success: function(response)
+	{
+    $("#allocated_to").html(response);
+	
+	<?php if($this->params and  $this->params['allocated_to']){?>
+	$("#allocated_to").val(<?=$this->params['allocated_to']?>);
+	$("#allocated_to").val(<?=$this->params['allocated_to']?>).trigger("change");
+     changeAllocateUser();
+	<?php } ?>
+
+	}
+  });	
+}
+function changeAllocateUser()
+{
+var user_id=$("#allocated_to").val();
+$.ajax({
+    type : 'POST',
+    url : '<?php echo SITEURL?>manageuser/index/getuserprofile',
+    data : "user_id="+user_id,
+	cache:false,
+	beforeSend: function()
+	{
+    $("#profile_id").html('<option value="">Loading...</option>');
+	},
+	success: function(response)
+	{
+    $("#profile_id").html(response);
+	<?php if($this->params and  $this->params['profile_id']){?>
+	$("#profile_id").val(<?=$this->params['profile_id']?>);
+	<?php } ?>
+
+	}
+  });	
+}
+function checkExitClientAndWebsite(){var email_id=$("#email_id").val();	var website=$("#website").val();if(email_id!="" && website!=""){$.ajax({    type : 'POST',    url : '<?php echo SITEURL?>managequery/index/checkexitemailandwebsite',    data : "email_id="+email_id+"&website="+website,	dataType: "json",	cache:false,	beforeSend: function()	{	},	success: function(response)	{ 		if(response.totalRecord > 0)	{	$("#showAlraedyExitEmailDiv").show();	$('html, body').animate({        scrollTop: $('#showAlraedyExitEmailDiv').offset().top    },400);	}	else{		$("#showAlraedyExitEmailDiv").hide();	}		var html='<thead>';        html+='<tr>';		html+='<th>Ref. Id</th>';		html+='<th>Allocate To</th>';		html+='<th>Client Name</th>';		html+='<th>Client Email ID</th>';		html+='<th>Website</th>';		html+='<th>Assign Date</th>'; 		html+='<th>Status</th>';		html+='</tr>';       html+='</thead>';       html+='<tbody>';	 $.each(response.array,function(i,obj) 	{    html+='<tr>';    html+='<td><a href="javascript:" onclick="OpenQueryDetailsPopUp('+obj.ref_id+')">'+obj.ref_id+'</a></td>';    html+='<td>'+obj.user_name+'</td>';    html+='<td>'+obj.client_name+'</td>';    html+='<td>'+obj.client_email+'</td>';    html+='<td>'+obj.website+'</td>';    html+='<td>'+obj.assign_date+'</td>';    html+='<td>'+obj.status+'</td>';    html+='</tr>';		  }); 		  html+='</tbody>';$("#alraedyExitEmail").html(html);		}  });	}	}
+
+function checkExsistClientEmail() {
+    var email_id = $("#email_id").val();
+   
+    if (email_id != "") {
+        $.ajax({
+            type: 'POST',
+            url: '<?php echo SITEURL?>managequery/index/checkexsistclientemail',
+            data: "email_id=" + email_id,
+            dataType: "json",
+            cache: false,
+            beforeSend: function() {},
+            success: function(response) {
+                if (response.totalRecord > 0) {
+                    
+                     $('#alraedyExsistEmail').html('Email Id Already Exists');
+                     $('#email_id').val('');
+                     $('#email_id').focus();
+                 
+                } 
+                setTimeout(function(){ $('#alraedyExsistEmail').html(''); }, 3000);
+                 
+                
+                
+            }
+        });
+    }
+}
+
+function AddGenericQuery()
+{
+ if(document.query_form.if_generic_query.checked==true)
+ {
+	$("#website_div").hide(); 
+	$("#other_website_div").hide(); 
+	$("#other_website").val(''); 
+	$("#website option:selected").prop("selected", false);
+	
+ }
+ else
+ {$("#website_div").show();}
+}
+</script>

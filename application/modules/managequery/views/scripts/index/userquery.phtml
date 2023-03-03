@@ -1,0 +1,367 @@
+<?php  $date = new Zend_Date();
+$this->userObj = new Manageuser_Model_Manageuser();
+?>
+ 
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.6.0/css/buttons.dataTables.min.css">
+<style>
+p.message {
+    margin-top: -35px;
+}.custom-comments-message {
+    margin-left: 41px;
+}.item {
+    border-bottom: 1px solid #f1f1f1;
+    margin-bottom: 10px;
+    padding-bottom: 0px !important;
+}.item i {
+    color: orange;
+}.nav-tabs-custom>.nav-tabs>li.active {
+    border-top: none;
+}
+</style>
+ <form name="form1" id="form1" method="post" action="">
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    
+    
+    
+    
+    <section class="content-header">
+      <h1>
+        Lead History
+       </h1>
+        
+
+   </section>
+    
+	<section class="content1">
+	<?=$this->successmessage?>
+        <table class="table table-bordered table-striped table-responsive">
+       <tr>
+	   <td style="display:<?=($this->userInfo->user_type!='user')?"block":"none"?>"><select name="search_team_id" id="search_team_id" class="form-control select2">
+           <option value="">Select Team</option>
+           <?php
+           foreach($this->teamsArr as $team)
+		   {
+		   ?>
+           <option value="<?php echo $team['id'];?>"><?php echo ucwords($team['team_name']);?></option>
+     <?php }?>
+           </select>
+       </td>
+	   
+	   
+       
+       <td style="display:<?=($this->userInfo->user_type!='user')?"block":"none"?>">
+	   <select name="user_ids" id="user_ids" class="form-control select2">
+           <option value="">Select user</option>
+           <?php
+           foreach($this->userArr as $users)
+		   {
+		   ?>
+           <option value="<?php echo $users['id'];?>" <?php if($this->userid==$users['id']){ ?> selected="selected" <?php }?>><?php echo ucwords($users['name']);?></option>
+           <?php }?>
+           </select>
+       </td>
+      
+       <td> <input type="text" value="<?php echo $this->filter_date;?>" name="filter_date" id="filter_date" class="form-control pull-right"  placeholder="From Date - To Date" > 
+        </td>
+        
+        <td> <input type="text" value="<?php echo $this->search_keywords;?>" name="search_keywords" id="search_keywords" class="form-control" placeholder="Enter Keywords Name or Email or Phone">
+       </td>
+      <td><input type="text" class="form-control" name="ref_id" placeholder="Enter Ref. Id" style="width: 110px;"></td>
+        
+        <td><select name="website[]" id="website" multiple class="form-control select2" data-placeholder="Select Website">
+           <option value="">Select Website</option>
+          <?php
+                 foreach($this->WebsiteData as $Website)
+				 { ?>
+					<option value="<?php echo $Website['id'];?>" <?php if($this->website==$Website['id']){ ?> selected="selected" <?php }?>><?php echo $Website['website'];?></option>
+                    
+				<?php  }
+				 ?>
+            </select>
+       </td>
+	   
+	  <!--  <td><select name="tags[]" id="tags" multiple class="form-control select2" data-placeholder="Select Tags">
+           <option value="">Select Tags</option>
+          <?php
+                 foreach($this->tagsArr as $tag)
+				 { ?>
+					<option value="<?=$tag['id'];?>" <?=($this->tag==$tag['id'])?"selected":""?>><?=$tag['tag_name'];?></option>
+                    
+				<?php  }
+				 ?>
+            </select>
+       </td> -->
+	   
+	   
+         <td>
+            <select name="update_status" id="update_status" class="form-control">
+            <option value="">Select Status</option>
+		   <?php
+		   foreach($this->updateStatus as $statusData)
+		   { if($statusData['id']!=4)
+			   {
+		   ?>
+		   <option value="<?=$statusData['id']?>" <?php if($statusData['id']==$this->update_status){ ?> selected="selected" <?php }?>><?=$statusData['status_name']?></option>
+		   <?php } }?>
+		   </select>
+         
+       </td>
+     <td style="display:<?=($this->userInfo->user_type=='user')?"none":"block"?>"><select name="transfer_type" id="transfer_type" class="form-control">
+	       
+           <option value="" selected>Select All</option>
+		   <option value="Fresh">Fresh</option>
+		   <option value="1">Transferred</option>
+		   <option value="2">Replicated</option>
+           </select>
+       </td>
+	   
+	  <!--<td><select name="claime_query" id="claime_query" class="form-control">
+	       
+           <option value="" selected>Select All</option>
+		   <option value="1">Claimed Query</option>
+           </select>
+       </td>-->
+       
+       <td><select name="state" id="state" class="form-control">
+	       
+           <option value="" selected>Select State</option>
+		<?php
+           foreach($this->StateData as $state)
+		   {
+		   ?>
+           <option value="<?php echo $state['state_title'];?>" <?php if($state['state_title']==$this->state){ ?> selected="selected" <?php }?>><?php echo ucwords($state['state_title']);?></option>
+     <?php }?>
+           </select>
+       </td>
+          
+        <td> <input type="button" name="searchBtn" id="searchBtn" class="btn btn-primary" value="Search" onclick="return ValidateSearch();">
+       </td>
+      
+       </tr> 
+       
+       
+       
+       </table>
+      
+	   </section>
+    
+
+	<!-- Main content -->
+    <section class="content">
+    
+      <div class="row">
+        <div class="col-xs-12">
+		<?php if($this->userInfo->user_type =='admin' or $this->userInfo->user_type=='sub-admin'){?>
+		
+		<?php if($this->userInfo->user_type!='user'){?>
+		<?php if($this->userArr and count($this->userArr) > 0){?>
+		<table class="table table-bordered table-striped table-responsive" style="width:30%;">
+       <tr>
+       
+       <td><select name="team_ids" id="team_ids" class="form-control select2" style="width:200px;" onchange="changeTeams()">
+           <option value="">Select Team</option>
+           <?php
+           foreach($this->teamsArr as $team)
+		   {
+		   ?>
+           <option value="<?php echo $team['id'];?>"><?php echo ucwords($team['team_name']);?></option>
+     <?php }?>
+           </select>
+       </td>
+	    <td><select name="assign_user_ids" id="assign_user_ids" class="form-control select2" style="width:200px;" onchange="changeAllocateUsers()">
+           <option value="">Select User</option>
+           </select>
+       </td>
+	    <td><select name="profile_ids" id="profile_ids" class="form-control" style="width:200px;">
+           <option value="">Select Profile</option>
+           </select>
+       </td>
+	   
+	   <!-- <td><select  name="add_tags[]" id="add_tags" multiple class="form-control select2" style="width:200px;" data-placeholder="Select Tags">
+           <option value="">Select Tags</option>
+           <?php
+                 foreach($this->tagsArr as $tag)
+				 { ?>
+           <option value="<?=$tag['id'];?>"><?=$tag['tag_name'];?></option>]
+     <?php }?>
+           </select>
+       </td> -->
+	   
+	    <td> <input type="button" name="searchBtn" id="searchBtn" class="btn btn-primary" value="Transfer Queries" onclick="javascript:ValidateAssignUser();" >
+		</td>
+	   
+	    <td>
+		<input type="button" name="searchBtn" id="searchBtn" class="btn btn-primary" value="Replicate Queries" onclick="javascript:ValidateReplicateQueries();" >
+ 
+       </td>
+        <td>
+		<input type="button" name="searchBtn" id="searchBtn" class="btn btn-primary" value="Shift Queries" onclick="javascript:ValidateShiftQueries();" >
+ 
+       </td>
+       </tr> 
+ 
+       </table>
+		<?php }?>
+		<?php }?>
+   
+		<?php } ?>
+   <?php /*
+   if(isset($this->userInfo->id) and ($this->userInfo->user_type=='admin' or $this->userInfo->user_type=='sub-admin')){ ?>
+   <table class="table table-bordered table-striped table-responsive" style="width:30%;">
+       <tr>
+       
+	    <td><select name="campaign_user_id" id="campaign_user_id" class="form-control select2" style="width:200px;">
+           <option value="">Select User</option>
+		   <?php foreach($this->campaignUserArr as $user){?>
+		    <option value="<?=$user['id']?>"><?=$user['name']?></option>
+		   <?php }?>
+           </select>
+       </td>
+	   
+	 
+	   
+	    <td> <span> <input class="btn btn-primary btn-sm btn-flat" type="button" value="Assign Query for Campaign"  onclick="javascript:AssignQueryCampaign();" > &nbsp;</span>
+		</td>
+	   
+	    
+       </tr> 
+ 
+       </table>
+   
+   
+   
+   <?php }
+   */?>
+   <div class="row">
+   <div class="pull-left">
+   
+   </div>
+   
+   <div class="pull-right">
+        <?php
+         if(isset($this->userInfo->id) and $this->userInfo->user_type!='Lead Validator' and $this->userInfo->id!=178 and $this->userInfo->user_type!='Campaign Manager')
+		 { 
+		?>
+         <span> <input class="btn btn-danger btn-sm btn-flat" type="button" value="Delete"  onclick="javascript:delRecord();" > &nbsp;</span>
+         <?php }?>
+		 
+         
+		 <?php
+		 
+		 if($this->userInfo->id==178 || $this->userInfo->user_type=='Campaign Manager')
+		 {
+		 ?>
+        <span> <input class="btn btn-primary btn-sm btn-flat" type="button" value="Export Email Campaign"  onclick="javascript:ExportEmailCampaignRecord();" > &nbsp;</span>
+		
+		<span> <input class="btn btn-primary btn-sm btn-flat" type="button" value="Export All Data"  onclick="javascript:ExportAllRecord();" > &nbsp;</span>
+		 <?php	 
+		 }
+		 else
+		 {
+         if(isset($this->userInfo->id) and ($this->userInfo->user_type=='admin' or $this->userInfo->user_type=='sub-admin')){ 
+		?>
+        
+        <span> <input class="btn btn-primary btn-sm btn-flat" type="button" value="Export"  onclick="javascript:ExportRecord();" > &nbsp;</span>
+		
+		<span> <input class="btn btn-primary btn-sm btn-flat" type="button" value="Export CSV"  onclick="javascript:ExportRecordCSV();" > &nbsp;</span>
+		 <?php
+		 } 
+		 }?>
+       
+        
+          <?php
+         if(isset($this->userInfo->id) and $this->userInfo->user_type=='Lead Generator'){ 
+		?>
+        <span> <a class="btn btn-primary btn-sm btn-flat" style="text-decoration:none;" href="<?=SITEURL?>managequery/addquery"><i class="fa fa-plus"></i> Add Lead</a> </span>
+        <?php }?>
+        </div>
+      </div>
+   <div class="clearfix"></div>
+   
+           <div class="box pt-2">
+            <!-- /.box-header -->
+			 
+            <div class="box-body" id="load_query_history">
+           <div style="text-align:center;"> <img style="height:150px;" src="<?=PUBLICURL?>images/pre-loader-new.gif"></div>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+          
+        </div>
+         
+        <div class="col-xs-12 scroll-div" id="SecondDiv"></div>
+        
+        
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+ 
+  </div>
+     </form>
+<!-- End Container -->
+ <div class="modal right2 fade" id="myModal_campaign" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
+<div class="modal-dialog" role="document">
+<div class="modal-content" id="PopViewBoxQuery">
+ <div class="modal-header">
+					<button type="button" class=" close" data-dismiss="modal" aria-label="Close" onclick="CloseMainQueryDetailsPopup()"><span class="btn btn-danger" aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="myModalLabel2">Assign Query for campaign </h4>
+				</div>
+                
+<div class="modal-body">
+<div class="box-body">
+        <form role="form" action="" method="post" id="camp_form" name="camp_form" enctype="multipart/form-data">
+				<div class="form-group">
+				<label for="exampleInputPassword1">Camp Title  </label>
+                  <input type="text" name="camp_title" id="camp_title" value="" class="form-control" />
+				  <div id="camp_titleError" class="error"></div>
+				</div>
+				
+				<div class="form-group">
+				<label for="exampleInputPassword1">Camp Date  </label>
+                  <input type="text" autocomplete="off" name="camp_date" id="camp_date" value="" class="form-control" />
+				  <div id="camp_dateError" class="error"></div>
+				</div>
+				<div class="form-group">
+				<label for="exampleInputPassword1">Website  </label><br/>
+                  <select name="camp_website" id="camp_website" class="form-control select2" data-placeholder="Select Website" style="width: 340px;">
+                  <option value="">Select Website</option>
+          <?php
+                 foreach($this->WebsiteData as $Website)
+				 { ?>
+					<option value="<?php echo $Website['id'];?>"><?php echo $Website['website'];?></option>
+                    
+				<?php  }
+				 ?>
+            </select>
+			<div id="camp_websiteError" class="error"></div>
+				</div>
+				
+				<div align="center" class="form-group" id="loadCampaignFormSubmitBtn">
+				<input type="button" name="submitBtn" id="submitBtn" class="btn btn-primary" value="Submit" onclick="return AssignQueryCampgainForm();" />
+				
+				</div>
+				
+				 
+			   
+ 	</form>
+			   
+ </div>
+</div>
+</div>
+</div>
+</div>
+
+
+ <style>
+.modal.right2 .modal-dialog {
+    width: 400px;    
+}
+</style>
+<!-- Footer -->
+
+<?php include("js/js-userquery.phtml")?>
+

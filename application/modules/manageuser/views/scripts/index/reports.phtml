@@ -1,0 +1,101 @@
+ <title>Admin | Dashboard</title>
+ <form name="form1" method="post" action="">
+ 
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>User Reports
+	  
+	  <div class="input-group pull-right" style="margin-right:50px;">
+  <button type="button" class="btn btn-default pull-right" id="daterange-btn">
+	<span>
+	  <i class="fa fa-calendar"></i> Date range filter
+	</span>
+	<i class="fa fa-caret-down"></i>
+  </button>
+  </div>
+	  </h1>
+       
+    </section>
+     
+      <!-- Main content -->
+    <section class="content">
+	
+      <div class="row">
+        <div class="col-xs-12">
+           <div class="box">
+               
+            <!-- /.box-header -->
+            <div class="box-body" id="load_query_rports">  
+			  
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+ 
+  </div>
+     </form>
+ 
+ 
+ <script>
+ 
+  $(document).ready(function() {
+      getAllReports('<?=date("m/d/Y", strtotime("-1 month"))?> - <?=date("m/d/Y", time())?>');
+	 $('#daterange-btn span').html('<i class="fa fa-calendar"></i> <?=date("F d, Y", strtotime("-1 month"))?> - <?=date("F d, Y", time())?>');
+  	
+	   $('#daterange-btn').daterangepicker(
+      {
+        ranges   : {
+          'Today'       : [moment(), moment()],
+          'Yesterday'   : [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+          'Last 7 Days' : [moment().subtract(7, 'days'), moment()],
+          'Last 15 Days' : [moment().subtract(14, 'days'), moment()],
+          'Last 30 Days': [moment().subtract(30, 'days'), moment()],
+          'This Month'  : [moment().startOf('month'), moment().endOf('month')],
+          'Last Month'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+		  'Last 90 Days': [moment().subtract(90, 'days'), moment()],
+        },
+        startDate: moment().subtract(30, 'days'),
+        endDate  : moment()
+      },
+      function (start, end) {
+        $('#daterange-btn span').html('<i class="fa fa-calendar"></i> '+start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+		getAllReports(start.format('MM/DD/YYYY')+' - '+end.format('MM/DD/YYYY'));
+		
+       }
+    )
+  
+ 
+	
+}); 
+ 
+function getAllReports(filter_date)
+{
+
+$.ajax({
+    type : 'POST',
+    url : '<?php echo SITEURL?>manageuser/index/reports-load',
+    data :"filter_date="+filter_date+"&ajaxify=1",
+	cache:false,
+	beforeSend: function()
+	{
+	$("#load_query_rports").html('<div style="text-align:center;"> <img style="height:150px;" src="<?=PUBLICURL?>images/pre-loader-new.gif"></div>');
+	},
+	success: function(response)
+	{
+	 setTimeout(function() { $("#Regloader").fadeOut(500); 
+			 
+			 $("#load_query_rports").html(response);
+			}, 1000); 
+	}
+  });
+ 	
+}
+ </script>
+ 

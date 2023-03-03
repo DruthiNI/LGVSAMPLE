@@ -1,0 +1,187 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    
+     <!-- Main content -->
+    <section class="content">
+    <form role="form" action="" method="post" id="search_form" name="search_form">
+       <table class="table table-bordered table-striped table-responsive">
+       <tr>
+       <td><section class="content-header">
+      <h1> Follow Up Notification </h1>
+     </section></td>
+       <?php if($this->userInfo->user_type=='admin' or $this->userInfo->user_type=='sub-admin'){?>
+       <td><select name="userid" id="userid" class="form-control">
+           <option value="">Select user</option>
+           <?php
+           foreach($this->userArr as $users)
+		   {
+		   ?>
+           <option value="<?php echo $users['id'];?>" <?php if($this->userid==$users['id']){ ?> selected="selected" <?php }?>><?php echo ucwords($users['name']);?></option>
+           <?php }?>
+           </select>
+       </td>
+       <?php }?>
+       <td> <input type="text" value="<?php echo $this->filter_date;?>" name="filter_date" id="filter_date" class="form-control pull-right"  placeholder="From Date - To Date" > 
+        </td>
+       
+        <td><select name="search_type" id="search_type" class="form-control">
+           <option value="">Select Search Type</option>
+		   <option value="query.query_code"<?php if($this->search_type=="query_code"){ ?> selected="selected" <?php }?>>Query Code</option>
+           <option value="query.name"<?php if($this->search_type=="name"){ ?> selected="selected" <?php }?>>Client Name</option>
+           <option value="query.email_id"<?php if($this->search_type=="email_id"){ ?> selected="selected" <?php }?>>Client Email ID</option>
+           <option value="query.phone"<?php if($this->search_type=="phone"){ ?> selected="selected" <?php }?>>Phone</option>
+           <option value="query.location"<?php if($this->search_type=="location"){ ?> selected="selected" <?php }?>>Location</option>
+           <option value="query.priority"<?php if($this->search_type=="priority"){ ?> selected="selected" <?php }?>>Priority</option>
+           <option value="query.academic_level"<?php if($this->search_type=="academic_level"){ ?> selected="selected" <?php }?>>Academic Level</option>
+           </select>
+       </td>
+        <td> <input type="text" value="<?php echo $this->search_keywords;?>" name="search_keywords" id="search_keywords" class="form-control" placeholder="Please Enter Search Keywords">
+       </td>
+        
+        <td><select name="website" id="website" class="form-control">
+           <option value="">Select Website</option>
+          <?php
+                 foreach($this->WebsiteData as $Website)
+				 { ?>
+					<option value="<?php echo $Website['website'];?>" <?php if($this->website==$Website['website']){ ?> selected="selected" <?php }?>><?php echo $Website['website'];?></option> 
+ 				<?php  }
+				 ?>
+            <option value="others" <?php if($this->website=='others'){ ?> selected="selected" <?php }?>>Others</option> 
+            </select>
+       </td>
+       <td> 
+       <select name="requirement" id="requirement" class="form-control">
+                 <option value="">Select Service</option>
+					<option value="Topic selection">Topic selection</option>
+                    <option value="Proposal/Synopsis writing">Proposal/Synopsis writing</option>
+                    <option value="Thesis writing">Thesis writing</option>
+                    <option value="Research design">Research design</option>
+                    <option value="Questionnaire">Questionnaire</option>
+                    <option value="SPSS analysis">SPSS analysis</option>
+                    <option value="Qualitative analysis">Qualitative analysis</option>
+                    <option value="Implementation">Implementation</option>
+                    <option value="Research paper writing">Research paper writing</option>
+                    <option value="Other">Other</option> 
+				 
+                 </select>
+       </td>
+        <td><select name="limit" id="limit" class="form-control" style="width:80px;">
+           <option value="" disabled="disabled">Show Records</option>
+           <option value="15">15</option>
+           <option value="20"selected="selected">20</option>
+           <option value="30">30</option>
+           <option value="50">50</option>
+           <option value="100">100</option>
+           <option value="200">200</option>
+           <option value="300">300</option>
+           <option value="400">400</option>
+           <option value="500">500</option>
+           </select>
+       </td>
+        
+        <td> <input type="button" name="searchBtn" id="searchBtn" class="btn btn-primary" value="Search" onclick="return ValidateSearchForm();">
+       </td>
+       </tr>
+       </table>
+       </form>
+       <div style="clear:both;padding:5px;"></div>
+        <div id="Regloader" style="position:absolute; display:none;left:40%;top:235px;background: rgba(156, 156, 156, 0.22);padding:2px;z-index: 999999;"> <img src="<?=PUBLICURL?>images/ajax-loader.gif"> <br> <span style="position:absolute;top: 103px;left: 30%;color: #FF4933;z-index: 999999;font-size: 16px;">Data Loading...</span></div>
+       <div class="row" id="load_query">
+        
+         <div style="width: 100%;text-align: center;position: relative;"> <img src="<?=PUBLICURL?>images/ajax-loader.gif"> <br> <span style="position:absolute;top: 103px;left: 46%;color: #E0B831;">Data Loading...</span></div>
+      </div>
+      <!-- /.row -->
+     </section>
+    <!-- /.content -->
+  </div>
+  
+  <style>
+  .box-height{ min-height:540px;}
+  .item{ cursor:pointer;}
+  section.content-header {
+    padding-top: 0px;
+}
+  </style>
+  
+ <script type="text/javascript">
+ function QueryDataLoad()
+{  
+ ////////////////////////////////////////
+  		$.ajax({
+    type : 'POST',
+    url : '<?php echo SITEURL?>managequery/index/loadnotificationquery',
+    data : $('#search_form').serialize() +"&searchBtn=1",
+	cache:false,
+	beforeSend: function()
+	{
+ 	},
+	success: function(response)
+	{
+	setTimeout(function() { $("#Regloader").fadeOut(500); 
+			 $("#load_query").html(response);
+			}, 1000);	
+	}
+  });
+  	////////////////////////////////////////	
+	
+	
+}
+ function ValidateSearchForm()
+ { 
+	if($("#fromdate").val()!="" && $("#todate").val()=="")
+	{
+	 alert("Please select to date");
+	 document.getElementById("todate").focus();
+	 return false;	
+	} 
+	
+	else if($("#fromdate").val()=="" && $("#todate").val()!="")
+	{
+	 alert("Please select from date");
+	 document.getElementById("fromdate").focus();
+	 return false;	
+	} 
+	///////////////////////////////////////////////////////////////////////////////////
+	
+	else if($("#search_type").val()!="" && $("#search_keywords").val()=="")
+	{
+	 alert("Please enter search keywords");
+	 document.getElementById("search_keywords").focus();
+	 return false;	
+	} 
+	
+	else if($("#search_type").val()=="" && $("#search_keywords").val()!="")
+	{
+	 alert("Please select search type");
+	 document.getElementById("search_type").focus();
+	 return false;	
+	} 
+ 	else
+	{
+	////////////////////////////////////////
+  		$.ajax({
+    type : 'POST',
+    url : '<?php echo SITEURL?>managequery/index/loadnotificationquery',
+    data : $('#search_form').serialize() +"&searchBtn=1",
+	cache:false,
+	beforeSend: function()
+	{
+	$('#Regloader').show();
+	},
+	success: function(response)
+	{
+	 setTimeout(function() { $("#Regloader").fadeOut(500); 
+			 $("#load_query").html(response);
+			}, 1000); 
+	}
+  });
+  	////////////////////////////////////////	
+	}
+  }
+    $(document).ready(function() {
+     QueryDataLoad();
+	$('#filter_date').daterangepicker(); 
+}); 
+   
+ </script>
+ 

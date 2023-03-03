@@ -1,0 +1,73 @@
+<?php  $date = new Zend_Date();
+$this->userObj = new Manageuser_Model_Manageuser();
+$statusObj = new Managequery_Model_Status();
+?>
+ <div class="table-responsive">
+              <table id="example1" class="table table-bordered table-striped">
+              <thead>
+                  <tr>
+                  <th><input name=" 2" type="checkbox" onclick="checkAll(document.form1.check,this)" /></th>
+                                 <th>User Name</th>
+                                <th>Client Name</th>
+								 <th>Email ID</th> 
+                                 <th>Website</th> 
+                                <th>Shift Date</th> 
+                                <th>Reminder Date</th>
+                                 <th>Status</th>
+                                <th>Action</th>
+  							</tr>
+                       </thead>
+                       <tbody>  
+                            <?php $i=1;
+                          foreach($this->QueryRemainderData as $Query)
+						  {   
+						  $statusInfo=$statusObj->FetchStatusName($Query['update_status']);
+						  $remainder_date=strtotime(date("m/d/Y",time()));
+						  ?>
+                         <tr class="<?=($Query['remainder_date'] <= $remainder_date)?"color_red":""?>">
+                         <td><input id="check" name="checkid[]" type="checkbox" value="<?php echo $Query['assign_id'];?>"  /></td>
+                                  <td><?php echo $Query['user_name'];?></td>
+                                 <td><?php echo $Query['name'];?></td>
+								  <td><?php echo $Query['email_id'];?> 
+                                  <td><?=$Query['website_name']?></td> 
+                                   <td><?php if($Query['update_status_date']){ echo date("d/m/Y",$Query['update_status_date']); }?></td>
+                               
+                                  
+                       <td><?php if($Query['remainder_date']){ echo   date("d/m/Y",$Query['remainder_date']); }?></td>
+                      
+                      <td><span id="change_status_name<?php echo $Query['assign_id'];?>"><?php echo $statusInfo['status_name'];?></span> </td>
+                                
+                                 <td>
+                                 
+                              <a style="cursor:pointer;" onclick="OpenQueryDetailsPopUp(<?php echo $Query['assign_id'];?>);"><img src="<?=PUBLICURL?>images/view-details.png"></a>
+                                </td>
+								 
+                              
+							</tr>
+                         <?php $i++; }?>
+                 
+                 </tbody>
+              </table>
+              </div>
+ <style>
+ .color_red{color:red;}
+ </style>
+<script>
+  $(function () {
+    
+	  /*$('#filter_date').daterangepicker();*/
+    $("#example1").DataTable();
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": true
+    });
+ 
+ 
+  });
+</script>
+
+ 

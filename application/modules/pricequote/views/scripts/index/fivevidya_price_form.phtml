@@ -1,0 +1,44 @@
+<?php for($j=1; $j<=3;$j++){?>
+<div class="box-body spackage" id="workScopeId<?=$j?>">
+			<div class="row form-group">
+			    <div class="col-md-6">
+                  <label for="package_name<?=$j?>">Package Name <?=$j?><span class="error">*</span></label>
+                  <input type="text" class="form-control" name="packageData[package_name][]" id="package_name<?=$j?>">
+				  <div class="error" id="package_name<?=$j?>Error"></div>
+				 </div> 
+				<div class="col-md-6">
+                  <label for="package_price<?=$j?>">Package Price <?=$j?><span class="error">*</span></label>
+                  <input type="text" class="form-control" name="packageData[package_price][]" id="package_price<?=$j?>">
+				  <div class="error" id="package_price<?=$j?>Error"></div>
+				 </div> 
+				 <div class="col-md-6">
+                  <label for="no_of_milestone<?=$j?>">Package Mielstone <?=$j?><span class="error">*</span></label>
+                 <select name="packageData[no_of_milestone][]" id="no_of_milestone<?=$j?>" class="form-control" onchange="SelectPackageMilestone(<?=$j?>)">
+					<option value="" label="No of Milestones">No of Milestones</option>
+					<?php for($i=1; $i<=10;$i++){?>
+					<option value="<?=$i?>" label="<?=$i?>"><?=$i?></option>
+					 <?php }?>
+					</select>
+					<span id="no_of_milestone<?=$j?>Error" class="error"></span>
+				 </div>
+				 
+				</div>
+				<div class="row form-group">
+				<div class="col-sm-12"  id="milestone_area<?=$j?>"></div>
+				</div>
+				
+				
+			   <div class="form-group">
+                  <label for="service_scope<?=$j?>">Service Scope <?=$j?><span class="error">*</span></label>
+                  <textarea class="form-control textarea" name="packageData[service_scope][]" id="service_scope<?=$j?>" placeholder="Place some text here"></textarea>
+				  <div class="error" id="service_scope<?=$j?>Error"></div>
+				</div>
+				 
+				<div class="clearfix"></div>
+				<div class="form-group" id="AttachmentQuoteTempFile<?=$j?>"></div> 
+				
+				<input type="hidden" name="packageData[templateUploadFile][]" id="templateUploadFile<?=$j?>">
+			</div>
+			
+ <?php }?>
+              	

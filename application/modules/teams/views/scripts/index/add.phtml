@@ -1,0 +1,125 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        Add Team
+       </h1>
+    </section>
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <!-- left column -->
+        <div class="col-md-12">
+          <!-- general form elements -->
+          <div class="box box-primary">
+             <!-- form start -->
+            <form role="form" action="" method="post" id="user_form" name="user_form">
+              <div class="box-body">
+                <div class="row form-group">
+				<div class="col-sm-4">
+                  <label for="team_name">Team Name<span class="error">*</span></label>
+                  <input type="text" name="team_name" id="team_name" class="form-control" value="<?php echo $this->teamInfo['team_name'];?>" />
+				  <div class="error" id="team_nameError"></div>
+                 </div>
+				 
+				 <div class="col-sm-4">
+                  <label for="team_manager">Team Admin<span class="error">*</span></label>
+                  <select name="team_manager[]" id="team_manager" multiple class="form-control select2"  data-placeholder="Select a Team Admin">
+				   <option>Select Team Admin</option>
+				   <?php foreach($this->mangerUsers as $users) {
+					   $array= explode(",",$this->teamInfo['team_manager']);
+					if(in_array($users->id,$array))
+					{
+					 $select='selected';
+					}
+					else
+					{
+					$select='';	
+					}
+					   ?>
+				  <option value="<?=$users->id?>" <?=$select?>><?=$users->name?></option>
+				   <?php }?>
+ 				  </select>
+				   <div class="error" id="team_managerError"></div>
+                 </div>
+				 <?php /*?>
+				 <div class="col-sm-4">
+                  <label for="allocate_user">Allocate User<span class="error">*</span></label>
+                  <select name="allocate_user[]" id="allocate_user" multiple class="form-control select2" data-placeholder="Select a User">
+				   <option>Select User</option>
+				   <?php foreach($this->userData as $users) {
+					$array= explode(",",$this->teamInfo['allocate_user']);
+					if(in_array($users->id,$array))
+					{
+					 $select='selected';
+					}
+					else
+					{
+					$select='';	
+					}
+				   ?>
+				   <option value="<?=$users->id?>" <?=$select?>><?=$users->name?></option>
+				   <?php }?>
+ 				  </select>
+				  <div class="error" id="allocate_userError"></div>
+                 </div>
+              <?php */?>
+				 
+				  </div>
+				  
+				  <div class="row form-group">
+				<div class="col-sm-12">
+				<div class="box-footer">
+                <input type="submit" name="submitBtn" id="submitBtn" class="btn btn-primary" onclick="return ValidateForm()" value="submit" />
+              </div>
+				</div>
+				</div>
+				  
+                  </div>
+              <!-- /.box-body -->
+            </form>
+          </div>
+          <!-- /.box -->
+          </div>
+        <!--/.col (left) -->
+        <!-- right column -->
+         <!--/.col (right) -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+  </div>
+ <script type="text/javascript">
+ function ValidateForm()
+  {  
+  var error="";
+  if($("#team_name").val()=="")
+  {
+	$("#team_nameError").html("Please enter team name");
+	document.getElementById("team_name").focus();
+	error=1;
+  }	 
+  if($("#team_manager").val()=="" || $("#team_manager").val()==null)
+  {
+	$("#team_managerError").html("Please select team manager");
+	document.getElementById("team_manager").focus();
+	error=1;
+  }	 
+  
+    if($("#allocate_user").val()=="" || $("#allocate_user").val()==null)
+  {
+	$("#allocate_userError").html("Please select allocate user");
+	document.getElementById("allocate_user").focus();
+	error=1;
+  }
+  
+  if(error==1)
+  {
+	  return false;
+  }
+  else{
+	  return true;
+  }
+  
+ }
+</script>

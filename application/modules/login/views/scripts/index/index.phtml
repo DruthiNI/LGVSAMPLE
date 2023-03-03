@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>LGV Panel </title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <!-- Bootstrap 3.3.5 -->
+  <link rel="stylesheet" href="<?=PUBLICURL?>bootstrap/css/bootstrap.min.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="<?=PUBLICURL?>dist/css/AdminLTE.min.css">
+  <!-- iCheck -->
+  <link rel="stylesheet" href="<?=PUBLICURL?>plugins/iCheck/square/blue.css">
+
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+</head>
+<body class="hold-transition login-page">
+<div class="login-box">
+  <div class="login-logo">
+    LGV Panel
+  </div>
+  <!-- /.login-logo -->
+  <div class="login-box-body">
+    <div align="center" style="color:#C00; margin:10px; font-weight:bold;"><?=$this->errMsg;?></div>
+     <form method="post" name="Login" action="<?=SITEURL?>login?redirect_url=<?=$this->redirect_url?>" onsubmit="return funblank()">
+      <div class="form-group has-feedback">
+        <input type="text" class="form-control" name="username" id="username" value="" placeholder="Username">
+        <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+      </div>
+      <div class="form-group has-feedback">
+        <input type="password" name="password" id="password" class="form-control" placeholder="Password">
+        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+      </div>
+      <div class="row">
+        <!-- /.col -->
+        <div class="col-xs-4">
+		
+        <input type="submit" class="btn btn-primary btn-block btn-flat" name="commit" value="Login">
+         </div>
+        <!-- /.col -->
+      </div>
+    </form>
+
+     
+    <!-- /.social-auth-links -->
+      <a href="<?php echo SITEURL;?>signup" class="text-center">Register a new membership</a>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <a href="<?php echo SITEURL;?>signup/index/resetpassword" class="text-center">Reset Password</a> 
+   </div>
+  <!-- /.login-box-body -->
+</div>
+<!-- /.login-box -->
+<!-- Button trigger modal -->
+<!-- Modal -->
+<div class="modal fade" id="otpModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="padding-top:100px;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" style="height:250px;width: 480px;">
+	 <form method="post" name="Login_otp" action="<?=SITEURL?>loginotp?redirect_url=<?=$this->redirect_url?>" onsubmit="return funblankOtp()">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Enter OTP</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+       <div class="form-group has-feedback">
+        <input type="text" name="otp_code" id="otp_code" class="form-control" placeholder="Enter OTP" required>
+		<?php if($_SESSION['otp_wrong']!=""){?>
+		<div style="color: red;"><?=$_SESSION['otp_wrong']?></div>
+		<?php }?>
+		<input type="hidden"  name="username" value="<?=$_SESSION['otp_username']?>" >
+		<input type="hidden"  name="password" value="<?=$_SESSION['otp_password']?>" >
+      </div>
+	   
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Validate OTP</button>
+      </div>
+	  </form>
+    </div>
+  </div>
+</div>
+<!-- jQuery 2.1.4 -->
+<script src="<?=PUBLICURL?>plugins/jQuery/jQuery-2.1.4.min.js"></script>
+<!-- Bootstrap 3.3.5 -->
+<script src="<?=PUBLICURL?>bootstrap/js/bootstrap.min.js"></script>
+<!-- iCheck -->
+<script src="<?=PUBLICURL?>plugins/iCheck/icheck.min.js"></script>
+
+<link rel="stylesheet" href="<?=PUBLICURL?>docs/css/colorbox.css" />
+ <script src="<?=PUBLICURL?>docs/js/jquery.colorbox.js"></script>
+
+<?php if($_SESSION['otp_code']!="" and $_SESSION['otp_username']!="" and $_SESSION['otp_password']!=""){?>
+<script type="text/javascript">
+    $(window).on('load', function() {
+		console.log(<?=$_SESSION['otp_code']?>);
+        $('#otpModal').modal({backdrop: 'static', keyboard: false});
+    });
+</script>
+<?php }?>
+<script language="javascript">
+ 
+function funblank()
+{
+if(document.Login.username.value== "" )
+{
+alert("Please enter username")
+document.Login.username.focus()
+return false
+}
+if(document.Login.password.value== "" )
+{
+alert("Please enter Password")
+document.Login.password.focus()
+return false
+}
+}
+ 
+</script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+
+<?php foreach($this->followupData as $data){?>
+  <tr style="opacity:<?=($data->status==1)?0.5:1?>">
+     <td>
+	  <span id="show_flday_div<?=$data['id']?>">
+									  <?=date("d-m-Y",$data->followup_day)?>
+									<?php if($data->status==0){?>
+									<span onclick="ChangeFolloupDate(<?=$data['id']?>)" style="font-size:15px; margin-left:5px; cursor:pointer;" class="fa fa-edit">  
+									  </span>
+									<?php }?>
+									  </span>
+									  <span id="edit_flday_div<?=$data['id']?>" style="display:none;">
+									   <input readonly class="form-control1 datepicker" style="width:100px;" type="text" name="edit_followup_day<?=$data['id']?>" id="edit_followup_day<?=$data['id']?>" value="<?=date("m/d/Y",$data->followup_day)?>">
+									   <input class="btn btn-info btn-xs" type="button" onclick="SaveFollowupDate(<?=$data['id']?>)" value="Save">
+									  </span>
+	 
+	  </td>
+     <td><?=$data->contact_by?></td>
+     <td><span class="label label-<?=($data->status==1)?'danger':'success'?>"><?=($data->status==1)?'In Active':'Active'?></span></td>
+     </tr>
+<?php }?>
+

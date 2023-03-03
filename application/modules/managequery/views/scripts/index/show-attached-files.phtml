@@ -1,0 +1,25 @@
+<div class="card-body">
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th style="width: 10px">#</th>
+                      <th>Files</th>
+                      <th>Uploaded By</th>
+                      <th>Uploaded Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+				  <?php
+				  foreach($this->commentFiles as $key=>$files)
+				{ $key++;
+				  ?>
+                    <tr>
+                      <td><?=$key?></td>
+                      <td><a href="<?=$files['files_url']?>" download ><i class="fa fa-paperclip"></i> <?=$files['files']?></a></td>
+                      <td><?=$files['uploaded_by']?></td>
+                      <td><?=$files['files_date']?></td>
+                    </tr>
+                 <?php  }  ?>    
+                  </tbody>
+                </table>
+              </div>

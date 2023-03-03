@@ -1,0 +1,133 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        SMS Send/Shedule
+       </h1>
+    </section>
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <!-- left column -->
+        <div class="col-md-12">
+          <!-- general form elements -->
+          <div class="box box-primary">
+             <!-- form start -->
+            <form role="form" action="" method="post" id="meeting_form" name="meeting_form">
+              <div class="box-body">
+                <div class="row form-group">
+				<div class="col-sm-4">
+                  <label for="exampleInputEmail1">Meeting Date<span class="error">*</span></label>
+                  <input name="date" id="date" class="form-control datepicker" placeholder="Meeting Date" onkeypress="RemoveErrors(this.id)" onchange="RemoveErrors(this.id)" />
+                  <div id="dateError" class="error"></div>
+                 </div>
+                  
+             <div class="col-sm-4 bootstrap-timepicker">
+                  <label>Meeting Time</label>
+                    <input name="time" id="time" class="form-control timepicker" onkeypress="RemoveErrors(this.id)" placeholder="Meeting Time" onchange="RemoveErrors(this.id)" />
+                     <div id="timeError" class="error"></div>
+        
+              </div>
+       
+       
+       <div class="col-sm-4">
+       <label for="exampleInputEmail1">User Name<span class="error">*</span></label>
+       <select name="user_id" id="user_id" class="form-control select2" onchange="RemoveErrors(this.id)">
+       <option value="">Select User</option>
+       <?php
+       foreach($this->User as $user)
+	   {
+	   ?>
+       <option value="<?=$user['id'];?>"><?=$user['name'].' ('.$user['mobile_no'].')';?></option>
+       <?php }?>
+       </select>
+        <div id="user_idError" class="error"></div>
+       </div>
+	   </div>
+       
+        <div class="row form-group">
+		<div class="col-sm-4">
+        <label for="exampleInputEmail1">Client Name<span class="error">*</span></label>
+       <select name="client_id" id="client_id" class="form-control select2" onchange="RemoveErrors(this.id)">
+       <option value="">Select Client</option>
+       <?php
+       foreach($this->QueryData as $Query)
+	   {
+	   ?>
+       <option value="<?php echo $Query['id'];?>"><?php echo $Query['name'].' ('.$Query['phone'].')';?></option>
+       <?php }?>
+       </select>
+        <div id="client_idError" class="error"></div>
+       </div>
+         <div class="col-sm-4"></div>    
+<div class="col-sm-4"></div>
+</div>		 
+                   
+				   <div class="row form-group">
+				<div class="col-sm-12">
+				<div class="box-footer">
+                <input type="submit" name="submitBtn" id="submitBtn" class="btn btn-primary" value="submit" onClick="return SubmitForm();" />
+              </div>
+				</div>
+				</div>
+				
+                  </div>
+              <!-- /.box-body -->
+ 
+            </form>
+          </div>
+          <!-- /.box -->
+          </div>
+        <!--/.col (left) -->
+        <!-- right column -->
+         <!--/.col (right) -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+  </div>
+ 
+ <script type="text/javascript">
+function SubmitForm()
+{  
+ var errors="";
+ if($("#date").val()=="")	
+ {
+	$("#dateError").html("Please select meeting date"); 
+	errors=1;
+ }
+ if($("#time").val()=="")	
+ {
+	$("#timeError").html("Please select meeting time"); 
+	errors=1;
+ }
+ 
+ if($("#user_id").val()=="")	
+ {
+	$("#user_idError ").html("Please select user name"); 
+	errors=1;
+ }
+ 
+ if($("#client_id").val()=="")	
+ {
+	$("#client_idError ").html("Please select client name"); 
+	errors=1;
+ }
+ 
+ if(errors==1)
+ {
+	return false; 
+}
+else
+{
+ return true;	
+}
+}
+
+
+function RemoveErrors(id)
+{
+$("#"+id+"Error").html("");
+}
+ 
+</script>

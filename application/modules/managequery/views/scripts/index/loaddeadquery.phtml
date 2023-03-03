@@ -1,0 +1,73 @@
+<?php  $date = new Zend_Date();
+$this->userObj = new Manageuser_Model_Manageuser();
+$statusObj = new Managequery_Model_Status();
+?>
+ <div class="table-responsive">
+              <table id="example1" class="table table-bordered table-striped">
+              <thead>
+                  <tr>
+                  <th><input name=" 2" type="checkbox" onclick="checkAll(document.form1.check,this)" /></th>
+                                 <th>User Name</th>
+                                <th>Client Name</th>
+								 <th>Email ID</th> 
+                                 <th>Website</th> 
+                                <th>Created Date</th> 
+                                <th>Flag Mark</th>
+                                 <th>Status</th>
+                                <th>Action</th>
+  							</tr>
+                       </thead>
+                       <tbody>  
+                            <?php $i=1;
+                          foreach($this->QueryUsers as $Query)
+						  {   
+						  $statusInfo=$statusObj->FetchStatusName($Query['update_status']);
+						  ?>
+                         <tr id="deleteRow_<?php echo $Query['assign_id'];?>">
+                         <td><input id="check" name="checkid[]" type="checkbox" value="<?php echo $Query['assign_id'];?>"  /></td>
+                                  <td><?php echo $Query['user_name'];?></td>
+                                 <td><?php echo $Query['name'];?></td>
+								  <td><?php echo $Query['email_id'];?> 
+                                  <td><?=$Query['website_name']?></td> 
+                                   <td><?php echo   date("d/m/Y",$Query['created_on']);?></td>
+                               
+                                  
+                      <td><?php if($Query['flag_mark']=="on"){ ?> 
+                      <img src="<?=PUBLICURL?>images/flag_mark_red.png" width="24" height="24">
+                      <?php }?>
+                      </td>
+                      
+                      <td><span id="change_status_name<?php echo $Query['assign_id'];?>"><?php echo $statusInfo['status_name'];?></span> </td>
+                                
+                                 <td>
+                                 
+                              <a style="cursor:pointer;" onclick="OpenQueryDetailsPopUp(<?php echo $Query['assign_id'];?>);"><img src="<?=PUBLICURL?>images/view-details.png"></a>
+                                </td>
+								 
+                              
+							</tr>
+                         <?php $i++; }?>
+                 
+                 </tbody>
+              </table>
+              </div>
+ 
+<script>
+  $(function () {
+    
+	  /*$('#filter_date').daterangepicker();*/
+    $("#example1").DataTable();
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": true
+    });
+ 
+ 
+  });
+</script>
+
+ 

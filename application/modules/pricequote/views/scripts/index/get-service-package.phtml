@@ -1,0 +1,157 @@
+<?php
+$uploadFileArr=array();
+if($this->serviceInfo['upload_file'])
+{
+$uploadFileArr=json_decode($this->serviceInfo['upload_file'], true);	
+}
+$extraFile=array();
+if($this->serviceInfo['document_file'])
+{
+$extraFile=json_decode($this->serviceInfo['document_file'], true);	
+}
+?>        
+		  <div class="form-group">
+                  <label class="col-sm-4 control-label">Service Name</label>
+                  <div class="col-sm-8"><?=$this->serviceInfo['service_name']?> 				
+                  </div>
+                </div>
+				<div class="clearfix"></div>
+				 <div class="form-group">
+                  <label class="col-sm-4 control-label">Discount Value</label>
+                  <div class="col-sm-8"><?=$this->serviceInfo['discount_value']?><?=($this->serviceInfo['discount_type']==1)?"%":""?>					
+                  </div>
+                </div>
+				
+				 
+				<div class="clearfix"></div>
+				<div class="form-group">
+                  <label class="col-sm-4 control-label">Coupon Code</label>
+                  <div class="col-sm-8"><?=$this->serviceInfo['coupon_code']?>				
+                  </div>
+                </div>
+				<div class="clearfix"></div>
+				 
+				
+				
+			<?php if(count($extraFile) > 0)
+{ ?>
+<div class="clearfix"></div>
+				<div class="form-group">
+                  <label class="col-sm-4 control-label">CRM Uploaded File</label>
+                  <div class="col-sm-8">
+ <?php foreach($extraFile as $files)
+		{ ?>
+		 <a href="<?=SITEURL?>public/UploadFolder/<?=$files['file_path']?>" download class="label label-default"><?=$files['filename']?> <i class="fa fa-download text-light" aria-hidden="true"></i></a>	
+		<?php } ?>
+                  </div>
+                </div>
+<?php } ?>	
+				
+			 
+				
+				<?php if($this->serviceInfo['payment_website']!="Other"){?>
+				<div class="clearfix"></div>
+				<div class="form-group">
+                  <label class="col-sm-4 control-label">Payment Url</label>
+                  <div class="col-sm-8"><a href="<?=SITEURL?>checkout?id=<?=$this->serviceInfo['id']?>" target="_blank"><?=SITEURL?>checkout?id=<?=$this->serviceInfo['id']?></a>				
+                  </div>
+                </div>
+				<?php } ?>
+				
+				<?php if($this->serviceInfo['expiry_date']){?>
+				<div class="clearfix"></div>
+				<div class="form-group">
+                  <label class="col-sm-4 control-label">Expiry Date</label>
+                  <div class="col-sm-8"> 
+                   <span id="show_expdate_div<?=$this->serviceInfo['id']?>">
+									  <?=date("d M, Y",$this->serviceInfo['expiry_date'])?>
+									   <?php if($this->userInfo->user_type=='Lead Validator' and $this->serviceInfo['status']==0){?>
+									  <span onclick="ChangeExpiryDate(<?=$this->serviceInfo['id']?>)" style="font-size:15px; margin-left: 10px; cursor:pointer;" class="fa fa-edit">
+									  </span>
+									  <?php }?>
+									  </span>
+									  
+									  <span id="edit_expdate_div<?=$this->serviceInfo['id']?>" style="display:none;">
+									   <input class="form-control datepicker edit_expiry_date" name="edit_expiry_date<?=$this->serviceInfo['id']?>" id="edit_expiry_date<?=$this->serviceInfo['id']?>" value="<?=date("m/d/Y",$this->serviceInfo['expiry_date'])?>">
+									   <input class="btn btn-info btn-xs pull-right" type="button" onclick="SaveExpiryDate(<?=$this->serviceInfo['id']?>)" value="Save">
+									  </span>
+
+
+				  			
+                  </div>
+                </div>
+				<?php } ?>
+				
+				
+				<div class="clearfix"></div>
+				<br>
+			  <div class="form-group">
+			  <label class="control-label">Service Packages</label>
+                 <table class="table">
+                <tr>
+                  <th>#</th>
+                  <th>Package Name </th>
+                  <th>Package Price</th>
+                  <th>Package Document</th>
+                </tr>
+				
+				<?php 
+				$i=1;
+				$paymentCount=0;
+				foreach($this->servicePackageData as $packageV){?>
+                <tr class="selectedPackageRow"  style="cursor:pointer;" id="selectedPackageRowSr<?=$packageV['id']?>" onclick="ClickViewMoreServicePackageDetails(<?=$packageV['id']?>)">
+                  <td><strong><?=$i?>.</strong></td>
+                  <td> <?=$packageV['package_name']?></td>
+                  <td> <?=$packageV['package_price']?></td>
+                  <td> <?php
+				  if($packageV['p_file_permission']=="Yes")
+				  {
+				 $FileArray=json_decode($packageV['templateUploadFile'], true);
+				  echo '<a href="'.SITEURL.'public/UploadFolder/'.$FileArray['file_path'].'" download=""><i class="fa fa-download"></i> '.$FileArray['file_title_name'].'</a>';
+				  }
+				  ?></td>
+                  
+                </tr>
+				 
+				<tr class="ServicePackageContentDiv" style="display:none;border:solid 1px;border-color: #d2dadc;" id="ServicePackageDiv<?=$packageV['id']?>">
+											  
+			  <td colspan="4">
+			  <div id="ServicePackageContent<?=$packageV['id']?>">
+			   
+				
+			  </div>
+			  </td>
+			  
+			  </tr>
+				
+				<?php 
+				
+			 
+				$i++; } ?>
+               
+              </table>
+			  
+             <div class="clearfix"></div>
+			 <div id="milestoneStatusUpdateMess<?=$this->serviceInfo['id']?>">
+			 
+			 
+			 
+			 
+			 </div>
+				  
+                </div>
+<script>
+ /*$(function () {
+  $('.edit_work_scope').wysihtml5();
+  
+  <?php if($paymentCount > 0){ ?>
+  $("#mainServiceDeleteDiv<?=$this->serviceInfo['id']?>").hide();
+  <?php }
+  else
+  { ?>
+	$("#mainServiceDeleteDiv<?=$this->serviceInfo['id']?>").show();  
+ <?php }?>
+  
+ });*/
+ 
+</script>				

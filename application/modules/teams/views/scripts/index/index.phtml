@@ -1,0 +1,164 @@
+ <?php $date = new Zend_Date();
+ $this->userObj = new Manageuser_Model_Manageuser();
+ ?>
+ <form name="form1" method="post" action="">
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        Teams
+       </h1>
+       <div class="breadcrumb">
+      <input class="btn btn-primary btn-sm btn-flat" type="button" value="Delete"  onclick="javascript:delRecord();" >
+       <a class="btn btn-primary btn-sm btn-flat" style="text-decoration:none;" href="<?=SITEURL?>teams/index/add">Add Team</a>
+      </div>
+    </section>
+     <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+           <div class="box">
+            <!-- /.box-header -->
+            <div class="box-body">
+              <table id="example1" class="table table-bordered table-striped table-responsive">
+              <thead>
+                 <tr>
+                 <th><input name=" 2" type="checkbox" onclick="checkAll(document.form1.check,this)" /></th>
+ 								<th>Sr. No.</th>
+								<th>Team Name</th>
+								<th>Team Manager</th>
+                                <th>Action</th>
+  							</tr>
+                       </thead>
+                       <tbody>  
+                          <?php $i=1;
+                          foreach($this->teamsArr as $team)
+						  {
+							 $users= $this->userObj->getTeamTeamManagers($team['team_manager']);
+							 
+						  ?>
+                             <tr>
+                             <td><input id="check" name="checkid[]" type="checkbox" value="<?php echo $team['id'];?>"  /></td>
+                             <td><?=$i;?></td>
+							 <td><?php echo $team['team_name'];?></td>
+							 <td><?php 
+							 foreach($users as $user)
+							 {
+								 echo '<span class="label label-primary">'.$user['name'].'</span> &nbsp;';
+							 }
+							  ?></td>
+                             <td>
+                                <a href="<?php echo SITEURL?>teams/index/add/id/<?php echo $team['id'];?>"><img src="<?=PUBLICURL?>images/edit.gif"></a>
+                             </td>
+  							</tr>
+                         <?php $i++; }?>
+                 
+                 </tbody>
+              </table>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+ 
+  </div>
+     </form>
+  <script type="text/javascript">
+
+function checkAll(checkname, exby) {
+  for (i = 0; i < checkname.length; i++)
+  checkname[i].checked = exby.checked? true:false
+ }
+ 
+ 
+function delRecord(int_dogid)
+{    
+    var formobj=document.form1;
+	if(check_mul(formobj))
+	{
+	if(confirm("Are you sure you want to delete record!"))
+	{
+		var formobj=document.form1;
+		formobj.action="?Action=Delete";
+		formobj.submit();
+	} 
+	}
+}
+
+ 
+
+function check_one(formObj)
+{
+	count=0;
+	for (var i=0;i < formObj.length;i++) 
+    {
+		fldObj = formObj.elements[i];
+		if (fldObj.type == 'checkbox')
+		{
+			if(fldObj.checked == true)
+			{
+				count=count+1;
+			}
+		}
+    }
+	if(count>1)
+	{
+		alert("please select only one record");
+		return false;
+	}
+	if(count==0)
+	{
+		alert("Please select a record");
+		return false;
+	}
+	return true;
+}
+
+function check_mul(formObj)
+{
+	count=0;
+	for (var i=0;i < formObj.length;i++) 
+    {
+		fldObj = formObj.elements[i];
+		if (fldObj.type == 'checkbox')
+		{
+			if(fldObj.checked == true)
+			{
+				count=count+1;
+			}
+		}
+    }
+	if(count==0)
+	{
+		alert("Please select a record");
+		return false;
+	}
+	return true;
+}
+
+ 
+ 
+</script>
+
+  <script>
+  $(function () {
+    
+	  $('#filter_date').daterangepicker();
+    $("#example1").DataTable();
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": true
+    });
+ 
+ 
+  });
+</script>

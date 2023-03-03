@@ -1,0 +1,106 @@
+<?php $QueryObject = new Manageuser_Model_Manageuser(); 
+$quoteObj = new Managequote_Model_Managequote();
+?>
+<div class="content-wrapper" style="min-height:600px;">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+          <h1>
+            Dashboard
+           </h1>
+          <!--<ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
+            <li class="active">Here</li>
+          </ol>-->
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+		 
+         
+			<div class="col-md-6">
+              <div class="box box-success box-solid">
+                <div class="box-header with-border">
+                  <h3 class="box-title"> Allocations</h3>
+				  <span style="float:right;"><a href="<?=SITEURL?>consultant/pending-quote" class="btn btn-danger btn-xs">View All</a></span>
+                </div><!-- /.box-header -->
+                <div class="box-body slimScrollDiv" style="overflow:auto; width: auto;height:400px;">
+				 <table width="100%" class="table table-hover table-striped">
+                  <thead>
+                  <tr>
+                    <th>Ref. No.</th>
+					<th>Client Name</th>
+					<th>Service</th>
+					<th>Assign Date</th>
+					<th>Action</th>
+				  </tr>
+				  </thead>
+				  <tbody>
+				  <?php
+				  foreach($this->QuoteAssignPendingData as $TaskData)
+				  {
+				  ?>
+				  <tr>
+                    <td><?=$TaskData['ref_id']?></td>
+					<td><?=$TaskData['client_name']?></td>
+					<td><?=$TaskData['service_name']?></td>
+					<td><?=date("d M Y",$TaskData['assigned_date']);?></td>
+					<td><a href="<?php echo SITEURL?>consultant/index/viewquote/quoteid/<?php echo $TaskData['quote_id'];?>"><i class="fa fa-edit editpen" style="color:#E91E63;font-size:20px;text-align: center;cursor:pointer;"></i></a></td>
+				  </tr>
+				  <?php }?>
+				    
+                  </tbody>
+                </table>
+			
+				 
+				 
+                </div><!-- /.box-body -->
+              </div><!-- /.box -->
+            </div>
+          <!-- Your Page Content Here -->
+		 
+		
+			<div class="col-md-6">
+              <div class="box box-success box-solid">
+                <div class="box-header with-border">
+                  <h3 class="box-title">Submissions</h3>
+				   <span style="float:right;"><a href="<?=SITEURL?>consultant/price-submitted-quote" class="btn btn-danger btn-xs">View All</a></span>
+                </div><!-- /.box-header -->
+               <div class="box-body slimScrollDiv" style="overflow:auto; width: auto;height:400px;">
+				 <table width="100%" class="table table-hover table-striped">
+				
+                <thead>
+                 <tr>
+                          <th>Ref. No.</th>
+                          <th>Client Name</th>
+                          <th>Service</th>
+                          <th>Submitted Date</th>
+						  <th>Action</th>
+  				 </tr>
+                 </thead>
+				<tbody>  
+                          <?php $i=1; 
+						   
+                          foreach($this->assignSubmittedData as $QuoteData)
+						  {
+  						  ?>
+                         <tr> 
+                          <td><?=$QuoteData['ref_id']?> </td> 
+                         
+                          <td><?=$QuoteData['client_name']?></td> 
+                          <td><?=$QuoteData['service_name']?></td>						
+						  <td><?=date("d M, Y",$QuoteData['user_submitted_date'])?></td>
+						  <td> <a href="<?php echo SITEURL?>consultant/index/viewquote/quoteid/<?php echo $QuoteData['quote_id'];?>"><i class="fa fa-edit editpen" style="color: #E91E63;font-size: 20px;text-align: center;cursor: pointer;"></i></a></td>
+                        </tr> 
+                         <?php $i++; }?>
+                  </tbody>
+				</table>
+				
+				
+                </div><!-- /.box-body -->
+              </div><!-- /.box -->
+            </div>
+			 
+		 
+			 
+        </section><!-- /.content -->
+      </div>

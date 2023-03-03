@@ -1,0 +1,149 @@
+<?php
+$this->tag = new Tags_Model_Tags();
+$this->boxQueryObj = new Managequery_Model_Boxquery();
+$QueryFilesData=array();
+if($this->QueryInfo['upload_file'])
+{
+	$QueryFilesData=json_decode($this->QueryInfo['upload_file'], true);
+}
+$arrTag=$this->boxQueryObj->TagNameMatchingId($this->QueryInfo['box_tag']);
+?>
+  
+  <div class="modal-header">
+					<button type="button" class=" close" data-dismiss="modal" aria-label="Close" onclick="CloseMainQueryDetailsPopup()"><span class="btn btn-danger" aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="myModalLabel2">View Box Query Details</h4>
+				</div>
+                
+<div class="modal-body">
+        
+				 <div class="row">
+				  
+				 
+				 <div class="col-md-12">
+				  
+ 				 
+               
+				   
+				
+				<?php if($this->QueryInfo['name']){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Name</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?=$this->QueryInfo['name'];?></div>
+				</div>
+				  <?php }?>
+				  
+				  <?php if($this->QueryInfo['email_id']){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Email</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?=$this->QueryInfo['email_id'];?></div>
+				</div>
+				<?php }?>
+				 
+				<?php if($this->QueryInfo['phone']){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Contact No.</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?=$this->QueryInfo['phone'];?></div>
+				</div>
+				<?php }?>
+				 
+			    
+				 <?php if($this->QueryInfo['website_name']){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Website</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?php if($this->QueryInfo['website_name']=="others"){ echo $this->QueryInfo['other_website'];} else {
+									echo $this->QueryInfo['website_name'];
+								}?></div>
+				</div>
+				 <?php }?>
+                                
+                  
+			   
+			 
+			  
+			 <?php if($this->QueryInfo['box_tag']){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Box Tag</label></div>
+				<div class="col-xs-1"></div>
+				
+				<div class="col-xs-6">
+				<div id="ShowTagDiv" style="word-wrap: break-word;">  
+				<span id="GetTagName">
+				<?php 
+							  $tagsArr=array();
+							  foreach($arrTag as $tags)
+									{
+										$tagsArr[]=$tags['box_tag_name'];
+										echo '<span class="label label-default">'.$tags['box_tag_name'].'</span>&nbsp;';
+									}
+									?>
+			 
+				</span>
+				 </div>
+				</div>
+				</div>
+			 <?php } ?>
+			 
+			 
+			  
+				
+				<div class="row">
+				<div class="col-xs-5"><label>Created Date</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?php echo date("d M, Y H:i",$this->QueryInfo['created_on']);?>
+ 				
+				</div>
+				</div>
+				 
+				
+				<div class="row">
+				<div class="col-xs-5"><label>Website</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6">
+				<select name="website_id" id="website_id" class="form-control">
+                 <option value="">Please Select</option>
+                 <?php
+				 
+                 foreach($this->genericWebsite as $Website)
+				 { ?>
+					<option value="<?php echo $Website['id'];?>"><?php echo $Website['website_name'];?></option> 
+				<?php  }
+				 ?>
+                 </select>
+				</div>
+				</div>
+				
+				
+				 
+			
+            <!-- ////////////////////////////////////////-->
+
+                
+              
+               <?php if($this->userInfo->user_type=='Lead Validator'){
+				   ?>
+				   <p>&nbsp;</p>
+				   <div align="right" id="genclaimBtnLoad">
+				<input type="button" class="btn btn-primary" onclick="claimBoxQueryGeneric(<?=$this->QueryInfo['id']?>)" value="Claim">    
+				</div>
+			<?php
+			   }?>
+		 
+			
+			 
+			
+				</div>
+				 
+				 
+			   </div>
+			   
+ 	
+			   
+			   
+          </div>
+ 
+ 
+ 

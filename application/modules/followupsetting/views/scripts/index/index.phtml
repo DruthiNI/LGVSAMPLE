@@ -1,0 +1,199 @@
+ <?php $date = new Zend_Date();?>
+ <form name="form1" method="post" action="">
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        Follow Up Setting
+       </h1>
+       <div class="breadcrumb">
+      <input class="btn btn-primary btn-sm btn-flat" type="button" value="Delete"  onclick="javascript:delRecord();" >
+       <a class="btn btn-primary btn-sm btn-flat" style="text-decoration:none;" href="<?=SITEURL?>followupsetting/add">Add Priority</a>
+      </div>
+    </section>
+     <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+           <div class="box">
+            <!-- /.box-header -->
+            <div class="box-body">
+              <table id="example1" class="table table-bordered table-striped table-responsive">
+              <thead>
+                 <tr>
+                 <th><input name=" 2" type="checkbox" onclick="checkAll(document.form1.check,this)" /></th>
+ 								<th>Sr. No.</th>
+								<th>Priority</th>
+								<th>Follow Up</th>
+                                <th>Contact By</th>
+                                <th>Action</th>
+  							</tr>
+                       </thead>
+                       <tbody>  
+                          <?php $i=1;
+                          foreach($this->priorityArr as $priority)
+						  {
+						  ?>
+                             <tr>
+                             <td><input id="check" name="checkid[]" type="checkbox" value="<?php echo $priority['id'];?>"  /></td>
+                             <td><?=$i;?></td>
+							 <td><?php echo $priority['priority'];?></td>
+							 <td><?php echo $priority['follow_up_day'];?></td>
+                             <td><?php echo $priority['contact_by'];?></td>
+                             <td>
+                                <a href="<?php echo SITEURL?>followupsetting/index/add/id/<?php echo $priority['id'];?>"><img src="<?=PUBLICURL?>images/edit.gif"></a>
+                             </td>
+  							</tr>
+                         <?php $i++; }?>
+                 
+                 </tbody>
+              </table>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+ 
+  </div>
+     </form>
+  <script type="text/javascript">
+
+function checkAll(checkname, exby) {
+  for (i = 0; i < checkname.length; i++)
+  checkname[i].checked = exby.checked? true:false
+ }
+ 
+function SendMail(int_dogid)
+{    
+       var formobj=document.form1;
+	if(check_mul(formobj))
+	{
+	
+	if($("#template_id").val()!="")
+	{
+	  if(confirm("Are you sure you want to send mail!"))
+	   {
+		var formobj=document.form1;
+		formobj.action="sendmail.php?Action=sendmail";
+		formobj.submit();
+	  }
+	}
+	else
+	{
+	alert("Please select template");
+	document.getElementById("template_id").focus();	
+	return false;
+	}
+	}
+}
+
+function delRecord(int_dogid)
+{    
+    var formobj=document.form1;
+	if(check_mul(formobj))
+	{
+	if(confirm("Are you sure you want to delete record!"))
+	{
+		var formobj=document.form1;
+		formobj.action="?Action=Delete";
+		formobj.submit();
+	} 
+	}
+}
+
+function ExportRecord(int_dogid)
+{    
+    var formobj=document.form1;
+	if(check_mul(formobj))
+	{
+	if(confirm("Are you sure you want to export record!"))
+	{
+		var formobj=document.form1;
+		formobj.action="<?=SITEURL?>manageuser/index/export";
+		formobj.submit();
+	} 
+	}
+}
+
+function check_one(formObj)
+{
+	count=0;
+	for (var i=0;i < formObj.length;i++) 
+    {
+		fldObj = formObj.elements[i];
+		if (fldObj.type == 'checkbox')
+		{
+			if(fldObj.checked == true)
+			{
+				count=count+1;
+			}
+		}
+    }
+	if(count>1)
+	{
+		alert("please select only one record");
+		return false;
+	}
+	if(count==0)
+	{
+		alert("Please select a record");
+		return false;
+	}
+	return true;
+}
+
+function check_mul(formObj)
+{
+	count=0;
+	for (var i=0;i < formObj.length;i++) 
+    {
+		fldObj = formObj.elements[i];
+		if (fldObj.type == 'checkbox')
+		{
+			if(fldObj.checked == true)
+			{
+				count=count+1;
+			}
+		}
+    }
+	if(count==0)
+	{
+		alert("Please select a record");
+		return false;
+	}
+	return true;
+}
+
+ 
+ function ValidateSearch()
+ {
+ if(($("#from_date").val()!="" || $("#to_date").val()!="") && ($("#from_date").val()=="" || $("#to_date").val()=="")) 
+ {
+	alert("Please select both From date and To date.") 
+	return false;
+ }
+ }
+</script>
+
+  <script>
+  $(function () {
+    
+	  $('#filter_date').daterangepicker();
+    $("#example1").DataTable();
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": true
+    });
+ 
+ 
+  });
+</script>

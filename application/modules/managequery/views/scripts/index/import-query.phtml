@@ -1,0 +1,254 @@
+<style>
+.dateFilterClass label {
+    background: #e0e0e0;
+}
+</style>
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1> Add New Query </h1>
+    </section>
+    <!-- Main content -->
+    <section class="content">
+ 
+      <div class="row">
+        <!-- left column -->
+        <div class="col-md-9">
+          <!-- general form elements -->
+          <div class="box box-primary">
+          <div align="center"> <?=$this->errors;?>
+		  <?php if(isset($this->successmessage) and $this->successmessage){ echo $this->successmessage; }?>
+		  
+		  </div>
+             <!-- form start -->
+            
+			<form role="form" action="" method="post" id="query_form" name="query_form" enctype="multipart/form-data" class="pt-3">
+			<input type="hidden" name="entrytype" value="<?=$this->userInfo->category?>">
+			<input type="hidden" name="date" id="date" value="<?=date('m/d/Y')?>" class="form-control tcal" />
+              <div class="box-body">
+			  <div class="row form-group entrytype">
+				 <div class="col-sm-4">
+				 <div class="form-group">
+                  <label for="exampleInputPassword1">Select Team</label>
+                  <select name="team_id" id="team_id" class="form-control select2" onchange="changeTeam()">
+				  <option value="">Select Team</option>
+					 <?php
+					foreach($this->teamsArr as $team)
+					{ 
+					?>
+					<option value="<?php echo $team['id'];?>" <?php if($this->params['team_id']==$team['id']){ ?> selected="selected" <?php }?>><?php echo $team['team_name'];?></option> 	
+					<?php }
+					?>                               
+					</select>
+					<span id="team_idError" class="error"></span>
+                  </div>
+				 </div>
+				 
+                  <div class="col-sm-4">
+				 <label for="exampleInputPassword1">Allocated To</label>
+                <input type="hidden" name="allocated_to_name" id="allocated_to_name" value="" />
+					  <select name="allocated_to" id="allocated_to" class="form-control select2" data-placeholder="Select a User" onchange="changeAllocateUser();">
+				<option value="">Please Select</option>
+				 <?php
+				foreach($this->ActiveUsers as $users)
+				{ ?>
+				<option value="<?php echo $users['id'];?>"><?php echo $users['username'];?></option> 	
+				<?php }
+				?>                               
+				</select>
+				<span id="allocated_toError" class="error"></span>
+				  </div>
+				  
+				  <div class="col-sm-4">
+				 <div class="form-group">
+                  <label for="exampleInputPassword1">Select Profile</label>
+                  <select name="profile_id" id="profile_id" class="form-control" onchange="var arrdataprf = $('#profile_id option:selected').text().split('-'); $('#allocated_to_name').val(arrdataprf[0])">
+				  <option value="">Select Profile</option>
+				  </select>
+				  <span id="profile_idError" class="error"></span>
+					</div>
+				 </div>
+				 
+				    <div class="col-sm-4">
+				   <div class="form-group">
+				  <label for="exampleInputPassword1">Priority</label>
+                 <select name="priority" id="priority" class="form-control select2">
+				 <option value="">Please Select</option>
+						 <?php
+                         foreach($this->priorityArr as $priority)
+                         {
+                         ?>
+                        <option value="<?php echo $priority['priority'].'|'.$priority['follow_up_day'].'|'.$priority['contact_by'];?>" <?=($priority['priority'].'|'.$priority['follow_up_day'].'|'.$priority['contact_by']==$this->params['priority'])?"selected":""?>><?php echo $priority['priority'];?></option> 
+                          <?php }?>
+						  
+						  
+						  
+                                    </select>
+					<span id="priorityError" class="error"></span>				
+				  </div>
+				  </div>
+				  
+				  <div class="col-sm-4">
+				 <label for="exampleInputPassword1">Upload File</label>
+				 <div class="form-group">
+                 <input type="file" class="form-control" name="import_csv_file" id="import_csv_file"/>
+				 <span class="error" id="import_csv_fileError">
+                 </div>
+		 
+ 
+                </div> 
+				  
+				  
+                 </div>
+                 
+                
+                
+                <!-- <div class="row form-group" style="display:none;">
+				 <div class="col-sm-4">
+                 <label for="exampleInputPassword1">Word Count</label>
+                 <input type="text" name="word_count" id="word_count" value="<?php echo $this->params['word_count'];?>" class="form-control" />
+                </div>-->
+                
+               <!-- <div class="col-sm-4" style="display:none;">
+                 <label for="exampleInputPassword1">Deadline</label>
+                 <input type="text" name="deadline" id="deadline" value="<?php echo $this->QueryInfo['deadline'];?>" class="form-control tcal" />
+                </div>-->
+                
+                
+				  
+				 
+                </div>
+				
+                 <div class="row form-group">
+				<!-- <div class="col-sm-4" style="display:none;">
+                 <label for="exampleInputPassword1">Approx Value of Lead</label>
+<select name="approx_value" id="approx_value" class="form-control">
+				<option value="">Please Select</option>
+				<option value="Rs.7500-10000"<?php if($this->params['approx_value']=="Rs.7500-10000"){ ?> selected="selected" <?php }?>>Rs.7500-10000</option>
+				<option value="Rs. 10000-20000"<?php if($this->params['approx_value']=="Rs. 10000-20000"){ ?> selected="selected" <?php }?>>Rs. 10000-20000</option>
+				<option value="Rs. 20000-50000"<?php if($this->params['approx_value']=="Rs. 20000-50000"){ ?> selected="selected" <?php }?>>Rs. 20000-50000</option>
+				<option value="Rs. 60000-80000"<?php if($this->params['approx_value']=="Rs. 60000-80000"){ ?> selected="selected" <?php }?>>Rs. 60000-80000</option>
+				<option value="Rs. 80000-100000"<?php if($this->params['approx_value']=="Rs. 80000-100000"){ ?> selected="selected" <?php }?>>Rs. 80000-100000</option>
+				<option value="Rs. 100000-150000"<?php if($this->params['approx_value']=="Rs. 100000-150000"){ ?> selected="selected" <?php }?>>Rs. 100000-150000</option>
+				</select>
+
+				 </div>-->
+                
+                <!-- <div class="col-sm-4">-->
+                <!-- <label for="remarks">Remarks</label>-->
+                <!-- <textarea name="remarks" id="remarks" class="form-control" ><?php echo $this->params['remarks'];?></textarea>-->
+                <!--</div>-->
+                
+                <!-- <div class="col-sm-8" style="display:none;">
+                 <div class="row">
+				 <div class="col-sm-4"><input type="checkbox" name="flag_mark" id="flag_mark"  />
+				 <label for="flag_mark">Flag Mark</label>
+				 </div>
+				 <div class="col-sm-4"><input type="checkbox" name="sms_notify" id="sms_notify" checked  />
+				 <label for="sms_notify">SMS Notification</label>
+				 </div>
+				 <div class="col-sm-4"><input type="checkbox" name="query_type" id="query_type" value="1"  />
+				 <label for="query_type">Old Query</label>
+				 </div>
+				 
+				 </div>
+                </div>-->
+				
+				 <!--<div class="col-sm-12">-->
+				 <!--<label for="exampleInputPassword1">Upload File</label>-->
+     <!--            <div class="row" id="attachment_file">-->
+				 
+				 <!--<div class="form-group">-->
+     <!--                                       <div class="col-md-10"><input type="file" class="form-control" name="upload_file[]" id="upload_file1"/></div>-->
+     <!--                                       <div class="col-md-2" id="add_more_button">-->
+					<!--						<i style="font-size:20px;padding-top:3px;cursor:pointer;" class="fa fa-plus-circle"></i></div>-->
+              
+
+				 <!--</div>-->
+		 
+				 <!--</div>-->
+ 
+     <!--           </div> -->
+				
+				
+				
+				</div>
+             
+				
+				<div class="row form-group entrytype">
+				<div class="col-sm-12">
+				<div class="box-footer pull-right">
+                 <input type="submit" name="submitBtn" id="submitBtn" class="btn btn-primary" value="Submit" onclick="return ValidateCSV();" />
+				 &nbsp;&nbsp;
+				  <input type="button" class="btn bg-maroon" onClick="parent.location='<?=SITEURL?>managequery/userquery'"  value="Cancel" />
+              </div>
+				</div>
+				</div>
+               
+                 
+              </div>
+              <!-- /.box-body -->
+
+            </form>
+          
+		   <div class="box box-primary" id="showAlraedyExitEmailDiv" style="display:none;">
+		 <div class="table-responsive">
+              <table class="table table-bordered table-striped" id="alraedyExitEmail">
+              
+                       
+					   
+					   </tbody>
+              </table>
+ 		
+		  
+		  
+		  </div>
+		  </div>
+		  </div>
+          <!-- /.box -->
+
+       <div class="col-md-3">
+	   <div class="box box-primary">
+	   <div class="box-header with-border">
+              <h3 class="box-title" style="font-weight:bold;">Today Pending Task for User`s</h3>
+			    </div>
+	    <div class="box-body right_bx">
+		<table class="table table-bordered">
+                <tbody><tr>
+                   <th>User Name</th>
+                  <th>Total Pending</th>
+                 </tr>
+				 <?php 
+		$totalPendingTask=0;
+		foreach($this->todayTask as $user){?>
+                <tr>
+                   <td><?=$user['user_name']?></td>
+                  <td><?=$user['total_pending']?></td>
+                 </tr>
+				 <?php
+     $totalPendingTask=$totalPendingTask+$user['total_pending'];
+		}?>
+           <tr style="font-size:15px;color:red;">
+                   <td>Total Pending Task</td>
+                  <td><?=$totalPendingTask?></td>
+                 </tr>     
+              </tbody></table>
+		 
+ 			 
+ 		</div>
+	   
+	   </div>
+	   </div>
+
+        </div>
+        <!--/.col (left) -->
+        <!-- right column -->
+         
+        <!--/.col (right) -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+  </div>
+<?php include("js/js-addquery.phtml")?>

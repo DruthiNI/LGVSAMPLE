@@ -1,0 +1,57 @@
+ <?php  $date = new Zend_Date();
+$this->userObj = new Manageuser_Model_Manageuser();
+$this->QueryDashboardObj = new Dashboard_Model_Managequery();
+?>
+ 
+ <table id="example1" class="table table-hover table-striped">
+                  <thead>
+                  <tr>
+                     <th><input name=" 2" type="checkbox" onclick="checkAll(document.form1.check,this)" /></th>
+                     <th class="mailbox-name">From Email</th>
+                    <th class="mailbox-subject">Subject</th>
+                     <th class="mailbox-date">Time</th>
+                  </tr>
+				  </thead>
+				  <tbody>
+				  <?php foreach($this->ClientMailExternal as $mails){?>
+                  <tr style="cursor:pointer;" id="Delete<?=$mails['id']?>">
+				   <td><input id="check" name="checkid[]" type="checkbox" value="<?php echo $mails['id'];?>"  /></td>
+                     <td width="20%" class="mailbox-name" onclick="clicktoViewDetails(<?=$mails['id']?>)"> 
+					 
+					 <span class="SubjectDiv<?=$mails['id']?>" style="font-weight:<?=($mails['status']==1)?'normal':'bold'?>;"><?=$mails['FromEmail']?></span>
+				 
+
+					 </td>
+                    <td width="60%" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;" class="mailbox-subject" onclick="clicktoViewDetails(<?=$mails['id']?>)">
+					<span class="SubjectDiv<?=$mails['id']?>" style="font-weight:<?=($mails['status']==1)?'normal':'bold'?>;"><?=substr(strip_tags($mails['Subject']),0,50)?></span>
+					 
+					  
+					
+					-  <?php if($mails['Attachments']){?>&nbsp;<i class="fa fa-paperclip"></i>
+					<?php }?>
+                    </td>
+                     <td  width="20%" class="mailbox-date" onclick="clicktoViewDetails(<?=$mails['id']?>)">
+					 <a href="javascript:void(0)" class="product-title"  data-placement="bottom" data-toggle="tooltip" data-original-title="<?=$mails['Date']?>"><?=$this->QueryDashboardObj->GetdateTimeFormate($mails['created_date'])?></a>
+					 
+					 </td>
+                  </tr>
+                  <?php }?>
+                  
+                   
+                  </tbody>
+                </table>
+               
+ 
+<script>
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+	 $("#example1").DataTable({
+order: [],
+columnDefs: [ { orderable: false, targets: [0] } ]
+});
+ 
+ 
+  });
+</script>
+
+ 

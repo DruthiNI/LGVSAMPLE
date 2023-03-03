@@ -1,0 +1,71 @@
+<?php
+$this->QueryDashboardObj = new Dashboard_Model_Managequery();
+?>
+            
+            <!-- /.box-header -->
+            <div class="box-body no-padding">
+              <div class="mailbox-read-info">
+                <h3><?=$this->mailInfo['Subject']?></h3>
+				<br>
+                <div>From: <strong><?=$this->mailInfo['FromName']?></strong> &lt; <?=$this->mailInfo['FromEmail']?> &gt;<br>
+				To: <?=$this->mailInfo['ToEmail']?><br>
+				Date: <?=$this->mailInfo['Date']?><br>
+                  <span class="mailbox-read-time pull-right"> <?=$this->QueryDashboardObj->GetdateTimeFormate($this->mailInfo['created_date'])?></span></div>
+				  <br>
+				  
+              </div>
+             
+               <div class="mailbox-read-message">
+                <?=$this->mailInfo['TextBody']?>
+				
+				<?php if($this->mailInfo['Attachments']){?>
+				<div class="attachment">
+				
+				 <?php
+						 $filesArr=explode("||",$this->mailInfo['Attachments']);
+						 
+						 
+ 						 
+						 foreach($filesArr as $files)
+						 {
+						$userfile_extn = explode(".", strtolower($files));
+					   $extension = end($userfile_extn);
+
+
+					 ?>
+					  
+					<div><a href="<?=PUBLICURL.'UploadFolder/'.$files?>" download ><i class="fa fa-paperclip"></i> <?=str_replace("public/UploadFolder/","",$files)?></a></div>
+						 <?php }?>
+				</div>
+						 <?php }?>
+				
+              </div>
+			  
+			  <div>
+			  <?php foreach($this->clientExistData as $clients){?>
+ 				<div class="panel box box-success">
+                  <div class="box-header with-border">
+                    <h4 class="box-title">
+                      <a class="collapsed" href="javascript:" onclick="OpenQueryDetailsPopUp(<?=$clients['id']?>)">
+                        <?=$clients['email_id']?>  - <span style="font-weight: bold;text-decoration: underline;">(Ref. Id : <?=$clients['id']?> )</span>
+                      </a>
+					 <div style="margin-top:15px;">Assign To : <?=$clients['user_name']?> <button type="button" class="btn btn-info btn-sm pull-right" onclick="MergeClientsMail(<?=$clients['id']?>,<?=$this->mailInfo['id']?>)"> Merge </button></div>
+					  
+                    </h4>
+                  </div>
+                 
+                </div>
+			  <?php }?>
+			  </div>
+			  
+			  
+              <!-- /.mailbox-read-message -->
+            </div>
+            
+ <script>
+  $(document).ready(function() {
+ 	  $('.ClientTotalUnraed').html(<?=count($this->totalUnraedClientMail)?>);
+   });
+
+</script>   
+          

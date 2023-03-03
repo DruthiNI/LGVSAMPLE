@@ -1,0 +1,191 @@
+ 
+ <?php 
+$subject="";
+ if(count($this->CommentInfo) > 0)
+ {
+                 foreach($this->CommentInfo as $Comments)
+				 { 
+				 
+				 $name=($Comments['comments_sent_type']=='Lead Validator')?$Comments['name']:$Comments['FromName'];
+				 
+				 ?>
+				 
+				 
+				  <!-- chat item -->
+              <div class="item">
+			  
+                 
+                <span class="user-avatar"><?=getnameByFirstCharacter($name)?></span>
+                <p class="message">
+                   
+                    <small class="text-muted pull-right" style="font-size: 12px;"><i class="fa fa-clock-o"></i> <span  data-toggle="tooltip" data-original-title="<?=date("d M Y h:i A",$Comments['date'])?>"><?php echo GetdateTimeFormate($Comments['date']);?></span></small>
+                     <div class="btn-group mailinfoToogle">
+                   <span style="font-weight:bold;color:#3d8dbc"> <?=$name?></span>
+                  <?php if($Comments['subject']){?>
+				   <span class="caret dropdown-toggle" data-toggle="dropdown"></span> 
+                
+                  <ul class="dropdown-menu dropdownmenu" role="menu">
+                    <li>From:	<strong><?php echo $Comments['FromName'];?></strong> &lt; <?php echo $Comments['from_email'];?> &gt   </li>
+                    <li>To:	<span onclick="getCopyContent('#p1')" id="p1"><?php echo $Comments['to_email'];?></span></li>
+					<?php if($Comments['cc_email']){?>
+                    <li>Cc:	<?php echo $Comments['cc_email'];?></li>
+					<?php }?>
+					<?php if($Comments['bcc_email']){?>
+                    <li>Bcc:	<?php echo $Comments['bcc_email'];?></li>
+					<?php }?>
+                     <li>Date: <?=date("M d, Y,  h:i A",$Comments['date'])?> </li>
+                    <li>Subject:	<?php echo $Comments['subject'];?></li>
+                    
+                  </ul>
+				  <?php }?>
+                </div>
+                  
+				  
+                  <div class="custom-comments-message">
+				  <?php echo $Comments['comments'];?>
+			  
+				 <?php if($Comments['email_body']){?>
+				 <div class="custom-message"><label>Email Body</label> :  <?php echo $Comments['email_body'];?>
+				 <?php echo $Comments['signature'];?>
+				 </div>
+				 <?php } ?>
+				 
+				 <?php if($Comments['sms_body']){?>
+				 <div class="custom-message-inner"><label>SMS Message</label> : <?php echo $Comments['sms_body'];?></div>
+				 <?php } ?>
+				 
+				  <?php if($Comments['call_message']){?>
+				 <div class="custom-message-inner"><label>Call Message</label> : <?php echo $Comments['call_message'];?></div>
+				 <?php } ?>
+				 
+				 <?php if($Comments['meeting_message']){?>
+				 <div class="custom-message-inner"><label>Meeting Message</label> : <?php echo $Comments['meeting_message'];?></div>
+				 <?php } ?>
+				  
+				  </div>
+                </p>
+				<?php  if($Comments['comments_file'])
+					   {?>
+                <div class="attachment">
+				
+				 <?php
+						 $filesArr=explode("||",$Comments['comments_file']);
+						 
+						 
+						$filepath=($Comments['comments_sent_type']=='Lead Validator')?SITEURL:SITEURL.'public/UploadFolder/';
+						 
+						 foreach($filesArr as $files)
+						 {
+						$userfile_extn = explode(".", strtolower($files));
+					   $extension = end($userfile_extn);
+
+
+					 ?>
+					  
+					<div><a href="<?=$filepath.$files?>" download ><i class="fa fa-paperclip"></i> <?=str_replace("public/UploadFolder/","",$files)?></a></div>
+					 
+					<?php
+					
+					/* if($extension=='jpg' or $extension=='jpg' or $extension=='jpeg' or $extension=='png' or $extension=='gif')	
+					 {					 
+					 ?>
+					  
+					<p class="filename"> <span class="mailbox-attachment-icon has-img">
+					<a class="example-image-link" href="<?=$filepath.$files?>" data-lightbox="example-set">
+					<img src="<?=$filepath.$files?>" alt="Attachment">
+					</a>
+					</span>
+					 <span style="font-size:11px;line-height:17px;"><?=str_replace("public/UploadFolder/","",$files)?> . <a href="<?=$filepath.$files?>" download>Download</a></span>
+					 </p>
+					 
+					<?php
+					 }
+					else
+					{ ?>
+					 <a href="<?=$filepath.$files?>" download ><i class="fa fa-paperclip"></i> <?=str_replace("public/UploadFolder/","",$files)?></a> 
+					<?php 
+					} */		
+					} 
+				 
+				 
+				 ?>
+				 
+                </div>
+					   <?php }?>
+                <!-- /.attachment -->
+              </div>
+              <!-- /.item -->
+           
+ 
+ 
+ <?php
+ if($Comments['subject'])
+ {
+$subject=$Comments['subject'];
+ }
+ } 
+ } else { ?>
+	  
+	 
+	 
+ <?php }?>
+ 
+<?php
+function getnameByFirstCharacter($string)
+{
+$words = explode(" ", ucwords($string));
+$letters = "";
+foreach ($words as $value) {
+    $letters .= substr($value, 0, 1);
+}
+
+if(strlen($letters)==1)
+{
+$letters = substr(strtoupper($string), 0, 2);	
+}
+return $letters;
+}
+
+function GetdateTimeFormate( $time )
+{
+    $time_difference = time() - $time;
+
+    if( $time_difference < 1 ) { return 'less than 1 second ago'; }
+    $condition = array( 12 * 30 * 24 * 60 * 60 =>  'Year',
+                30 * 24 * 60 * 60       =>  'Month',
+                24 * 60 * 60            =>  'Day',
+                60 * 60                 =>  'Hour',
+                60                      =>  'Min',
+                1                       =>  'Sec'
+    );
+
+    foreach( $condition as $secs => $str )
+    {
+        $d = $time_difference / $secs;
+
+        if( $d >= 1 )
+        {
+            $t = round( $d );
+            return  $t . ' ' . $str . ( $t > 1 ? 's' : '' ) . ' ago';
+        }
+    }
+}
+
+
+?>
+<style>
+.dropdownmenu {
+    width: 500px;
+	border-color: #9E9E9E;
+}
+ 
+.dropdownmenu li {
+    padding: 5px;
+	font-size:17px;
+}
+</style>
+<script>
+$(function () {
+	$('[data-toggle="tooltip"]').tooltip();
+	});
+</script>

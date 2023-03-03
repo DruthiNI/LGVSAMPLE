@@ -1,0 +1,1161 @@
+<?php
+$this->userObj = new Manageuser_Model_Manageuser();
+$this->tag = new Tags_Model_Tags();
+?>
+<link rel="stylesheet" href="<?=PUBLICURL?>plugins/daterangepicker/daterangepicker-bs3.css">
+<link rel="stylesheet" href="<?=PUBLICURL?>plugins/timepicker/bootstrap-timepicker.min.css">
+<link rel="stylesheet" href="<?=PUBLICURL?>plugins/datepicker/datepicker3.css">
+<link rel="stylesheet" href="<?=PUBLICURL?>dist/css/lightbox.min.css">
+ <?php
+$prioritydata=($this->QueryInfo['assign_priority'])?$this->QueryInfo['assign_priority']:$this->QueryInfo['priority'];
+$template_name='';
+$mail_subject='';
+$mail_body='';
+$arrTag=array();
+
+ ?>  
+ <style>
+  @media (min-width: 768px)
+.col-sm-3 {
+    width: unset !important;
+}
+ </style>
+  <div class="modal-header">
+					<button type="button" class=" close" data-dismiss="modal" aria-label="Close" onclick="CloseMainQueryDetailsPopup()"><span class="btn btn-danger" aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="myModalLabel2">View Query Details 
+					<?php if($this->userInfo->user_type=='Lead Validator' and $this->QueryInfo['open_date']!="" and (count($this->CommentInfo)==0 or $this->QueryInfo['open_status']==0)){?>
+					<span style="margin-left:50px;" id="demotime"></span>
+					<?php }?>
+					
+					<?php /*
+					if($this->TatScore['total_rows']){?>
+					<div class="pull-right" style="margin-right: 100px;"><span>Average TAT : <?=$this->userObj->hoursandmins(round(($this->TatScore['total_minute']/$this->TatScore['total_rows']),2))?></span>
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					<span>Average Score : <?=round(($this->TatScore['total_score']/$this->TatScore['total_rows']),2)?></span>
+					</div>
+					<?php }
+					*/
+					?>
+					</h4>
+				</div>
+                
+<div class="modal-body">
+        
+				 <div class="row">
+				 <!--<div class="col-md-12">
+				 <div class="form-group pull-right">
+                   Escalation  Mark <input type="checkbox" <?//=($this->QueryInfo['escalation_mark']==1)?"checked":""?> onclick="checkEscalationMark(this.checked)">
+                </div>
+				
+				 </div>-->
+				 
+				 <div class="col-md-5">
+				  
+ 				 <!-- Custom Tabs -->
+          <div class="box box-primary  nav-tabs-custom">
+            <ul class="nav nav-tabs">
+              <li class="active"><a href="#tab_QueryInfo" data-toggle="tab">Query Information</a></li>
+			  
+			  
+			  
+		
+             
+				<li><a href="#tab_AttachedFiles" data-toggle="tab" onclick="ShowAttachedFiles();ShowCommentsAttachedFiles()">Attached Files</a></li>	 
+				<li><a href="#tab_InternalComments" data-toggle="tab" onclick="ShowInternalComments()">  Internal Comments <span class="label label-warning"><?=count($this->internalCommentData)?></span> </a></li>	
+				
+				 <?php if($this->userInfo->user_type=='admin' &&  $this->QueryInfo['user_id']=='1'){?>
+			  <li><a href="#tab_LeadAssign" data-toggle="tab" id="clickLeadassign"> Lead Assign <span class="label label-warning"><??></span> </a></li>	
+			  <?php
+			  }
+			  ?>
+			  
+             </ul>
+            <div class="tab-content">
+              <div class="tab-pane active" id="tab_QueryInfo">
+            <!-- ////////////////////////////////////////-->
+			
+			
+				 <div class="row">
+				<div class="col-xs-5"><label>Ref. No.</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6">
+				
+			   <a href="javascript:" class="dropdown-toggle" data-toggle="dropdown"  onclick="getActivityHistory()"> <?=$this->QueryInfo['assign_id'];?> <i class="caret"></i></a> 
+                
+                  <ul class="dropdown-menu dropdownmenu" role="menu">
+                    <div class="box-header with-border">
+                    <h2 class="box-title">Earlier Activity </h2>
+                  </div>
+			 <div class="box-body" id="activityHistoryData"></div>
+		        </ul>
+			 
+				  
+				
+				
+				</div>
+				</div>
+				 
+				<div class="row">
+				<div class="col-xs-5"><label>Profile</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6">
+				<div id="ShowProfileDiv">  
+				<span id="GetProfileName"><?=$this->QueryInfo['profile_name'];?></span>
+				<?php if($this->userInfo->user_type=='Lead Validator'){ ?>
+                 <span onclick="SwitchProfileFun()" style="font-size: 20px; margin-left: 10px; cursor:pointer;" class="fa fa-edit"></span>
+				<?php } ?>
+				 </div>
+				 <?php if($this->userInfo->user_type=='Lead Validator'){ ?>
+				 <div style="display: none;" id="EditProfileDiv">
+                  <select name="switch_profile" id="switch_profile" class="form-control switch_profile">
+				  <option value="">Select Profile</option>
+				  <?php foreach($this->profileData as $profile){?>
+                      <option value="<?=$profile['id']?>" <?=($profile['id']==$this->QueryInfo['profile_id'])?"selected":""?>><?=$profile['profile_name']?></option>
+				  <?php } ?>
+                      
+                   </select>
+                    </div>
+				<?php } ?>
+				
+				</div>
+				</div>
+				   
+				
+				<?php if($this->QueryInfo['name']){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Name</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?=$this->QueryInfo['name'];?></div>
+				</div>
+				  <?php }?>
+				  
+				  <?php if($this->QueryInfo['email_id']){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Email</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?=$this->QueryInfo['email_id'];?></div>
+				</div>
+				<?php }?>
+				<?php if($this->QueryInfo['alt_email_id']){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Alternate Email ID</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?=$this->QueryInfo['alt_email_id'];?></div>
+				</div>
+				<?php }?>
+				<?php if($this->QueryInfo['phone']){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Contact No.</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?=$this->QueryInfo['phone'];?></div>
+				</div>
+				<?php }?>
+				<?php if($this->QueryInfo['alt_contact_no']){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Alternate Contact No.</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?=$this->QueryInfo['alt_contact_no'];?></div>
+				</div>
+				<?php }?>
+				<?php if($this->QueryInfo['area_of_study']){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Topic/Area of Study</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?=$this->QueryInfo['area_of_study'];?></div>
+				</div>
+				<?php }?>
+				<?php if($this->QueryInfo['service_name']){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Category</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?php if($this->QueryInfo['service_name']=="Other"){ echo $this->QueryInfo['other_requirement'];} else {
+									echo $this->QueryInfo['service_name'];
+								}?></div>
+				</div>
+				<?php }?>
+				 
+				  
+				 
+				  <?php if($this->QueryInfo['location']){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Location</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"> <?php echo $this->QueryInfo['location'];?></div>
+				</div>
+				  <?php }?>
+				  <?php if($this->QueryInfo['city']){?>
+				<div class="row">
+				<div class="col-xs-5"><label>City</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"> <?php echo $this->QueryInfo['city'];?></div>
+				</div>
+				  <?php }?>
+				  <?php if($this->QueryInfo['complete_address']){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Complete Address</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?php echo $this->QueryInfo['complete_address'];?></div>
+				</div>
+				  <?php }?>
+				  <?php if($this->QueryInfo['company_name']){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Company Name</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?php echo $this->QueryInfo['company_name'];?> </div>
+				</div>
+				  <?php }?>
+				 <?php if($this->QueryInfo['designation']){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Designation</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?php echo $this->QueryInfo['designation'];?></div>
+				</div>
+				 <?php }?>
+				 <?php if($this->QueryInfo['website_name']){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Website</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?php if($this->QueryInfo['website_name']=="others"){ echo $this->QueryInfo['other_website'];} else {
+									echo $this->QueryInfo['website_name'];
+								}?></div>
+				</div>
+				 <?php }?>
+                                
+                <div class="row">
+				<div class="col-xs-5"><label>Allocated To</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?php echo $this->QueryInfo['user_name'];?></div>
+				</div>                
+				<div class="row">
+				<div class="col-xs-5"><label>Priority</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6">
+				<div id="ShowPriorityDiv">  
+				<span id="GetPriorityName"><?=$prioritydata;?></span>
+				<?php if($this->QueryInfo['update_status']!=5){ ?>
+                 <span onclick="SwitchPriorityFun()" style="font-size: 20px; margin-left: 10px; cursor:pointer;" class="fa fa-edit"></span>
+				<?php } ?>
+				 </div>
+				 <?php //if($this->userInfo->user_type=='admin'){ ?>
+				 <div style="display: none;" id="EditPriorityDiv">
+                  <select name="switch_priority" id="switch_priority" class="form-control switch_priority">
+				  <option value="">Select Priority</option>
+				  <?php foreach($this->priorityArr as $priority){?>
+                      
+					<option value="<?php echo $priority['priority'].'|'.$priority['follow_up_day'].'|'.$priority['contact_by'];?>" <?php if($prioritydata==$priority['priority']){ ?> selected="selected" <?php }?>><?php echo $priority['priority'];?></option> 
+					  
+					  
+				  <?php  } ?>
+                      
+                   </select>
+                    </div>
+				<?php //} ?>
+				
+				</div>
+				
+				
+				
+				<!--<div class="col-xs-6"><?php echo $this->QueryInfo['priority'];?></div>-->
+				</div>
+			   <?php if($this->QueryInfo['academic_level']){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Validation Type</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?php echo $this->QueryInfo['academic_level'];?></div>
+				</div>
+			 <?php }?>
+			 
+			 <?php //if($this->QueryInfo['tags']){?>
+				<!--<div class="row">
+				<div class="col-xs-5"><label>Tag</label></div>
+				<div class="col-xs-1"></div>
+				
+				<div class="col-xs-6">
+				<div id="ShowTagDiv" style="word-wrap: break-word;">  
+				<span id="GetTagName">
+				<?php
+				if($this->QueryInfo['tags'] and $this->QueryInfo['tags'] != 'null')
+				{
+				$arrTag=$this->tag->TagNameMatchingId($this->QueryInfo['tags']);
+				//$arrTag=explode(",",$this->QueryInfo['tags']);
+					foreach($arrTag as $tags)
+					{
+						echo '<span class="label label-warning" style="padding:2px;">'.$tags['tag_name'].'</span>&nbsp;';
+					}
+				}
+				
+				?>
+				</span>
+				<?php if($this->userInfo->user_type!='Lead Generator'){ ?>
+                 <span onclick="SwitchTagFun()" style="font-size: 20px; margin-left: 10px; cursor:pointer;" class="fa fa-edit pull-right"></span>
+				<?php } ?>
+				 </div>
+				 <?php if($this->userInfo->user_type!='Lead Generator'){ ?>
+				 <div style="display: none;" id="EditTagDiv">
+                  <select name="switch_tag[]" id="switch_tag" multiple class="form-control select2">
+				  <option value="">Select Tags</option>
+				  <?php foreach($this->tagsArr as $tag){
+					$array= explode(",",$this->QueryInfo['tags']);
+					if(in_array($tag['id'],$array))
+					{
+					 $select='selected';
+					}
+					else
+					{
+					$select='';	
+					}  
+					  
+					  ?>
+                      <option value="<?=$tag['id']?>" <?=$select?>><?=$tag['tag_name']?></option>
+				  <?php } ?>
+                      
+                   </select>
+				   <button type="button" class="btn btn-success btn-sm pull-right" onclick="return SaveTags()">Save</button>
+                    </div>
+				<?php } ?>
+				
+				</div>
+				
+				
+				 
+				</div>-->
+			 <?php //}?>
+			 
+			 <?php if($this->QueryInfo['requirement_type']!=''){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Requirement Type</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?php echo $this->QueryInfo['requirement_type'];?></div>
+				</div>
+			 <?php }?>
+			 
+			  <?php if($this->QueryInfo['line_format']!=''){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Requirement Type Line Format</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?php echo $this->QueryInfo['line_format'];?></div>
+				</div>
+			 <?php }?>
+			 
+			  <?php if($this->QueryInfo['paragraph_format']!=''){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Requirement Type Paragraph Format</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?php echo $this->QueryInfo['paragraph_format'];?></div>
+				</div>
+			 <?php }?>
+			 
+			 <?php if($this->QueryInfo['flag_mark']=='on'){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Flag Mark</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?php if($this->QueryInfo['flag_mark']=="on"){ ?> 
+								<img src="<?=PUBLICURL?>images/flag_mark_red.png" width="24" height="24">
+								<?php }?></div>
+				</div>
+			 <?php }?>
+				<div class="row">
+				<div class="col-xs-5"><label>Follow up Date</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?php echo date("d/m/Y",$this->QueryInfo['assign_follow_up_date']);?></div>
+				</div>
+				
+				<div class="row">
+				<div class="col-xs-5"><label>Query Created Date</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6"><?php echo date("d/m/Y H:i A",$this->QueryInfo['assign_date']);?>
+				<input type="hidden" id="created_date_time" value="<?=($this->QueryInfo['open_date'])?date("m/d/Y H:i:s",$this->QueryInfo['open_date']):"";?>">
+				
+				</div>
+				</div>
+				<?php if(count($this->QueryFilesData) > 0){?>
+				<div class="row">
+				<div class="col-xs-5"><label>Uploaded Files</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6">
+				<?php
+				foreach($this->QueryFilesData as $files)
+				{ ?>
+				 <div><a href="<?=SITEURL?><?=$files['file_path'];?>" download><?=$files['filename'];?></a></div>
+				<?php }
+				?>
+				</div>
+				</div>
+				<?php }?>
+				
+				<div class="row">
+				<div class="col-xs-5"><label>Query Status</label></div>
+				<div class="col-xs-1"></div>
+				<div class="col-xs-6">
+				<?php 
+				if($this->QueryInfo['action_taken']==0 && $this->QueryInfo['update_status']==1 && $this->userInfo->user_type=='admin' || $this->userInfo->user_type=='Lead Generator')
+				{
+					echo '<span class="label label-info">Pending for Allocation</span>';
+				}
+			    else if($this->QueryInfo['update_status']==1)
+				{
+					echo '<span class="label label-info">Pending for Validation</span>';
+				}
+				else if($this->QueryInfo['update_status']==2)
+				{
+					echo '<span class="label label-primary">Contact Made</span>';
+				}
+				else if($this->QueryInfo['update_status']==3)
+				{
+					echo '<span class="label label-warning">Quoted </span>';
+				}
+				else if($this->QueryInfo['update_status']==4)
+				{
+					echo '<span class="label label-default">Negotiating  </span>';
+				}
+				else if($this->QueryInfo['update_status']==5)
+				{
+					echo '<span class="label label-success">Approved   </span>';
+				}
+				else if($this->QueryInfo['update_status']==6)
+				{
+					echo '<span class="label label-danger">Rejected   </span>';
+				}
+				else if($this->QueryInfo['update_status']==7)
+				{
+					echo '<span class="label label-info">Reminder </span>';
+				}
+				else if($this->QueryInfo['update_status']==8)
+				{
+					echo '<span class="label label-danger">Lost deals </span>';
+				}
+				else if($this->QueryInfo['update_status']==9)
+				{
+					echo '<span class="label label-danger">Follow Up </span>';
+				}
+				?>
+				
+				</div>
+				</div>
+				
+			
+            <!-- ////////////////////////////////////////-->
+
+                
+              </div>
+              <!-- /.tab-pane -->
+              <div class="tab-pane" id="tab_AskScope">
+                <?php if($this->userInfo->user_type=='Lead Validator'){
+			   if(count($this->CommentInfo) > 0)
+			   { 
+						include("askforscope/user-ask-quote.phtml");
+			   }
+			    } ?>
+				 <?php if(($this->userInfo->user_type=='sub-admin' or $this->userInfo->user_type=='Lead Generator') and $this->quoteInfo['id']!=""){ 
+				include("askforscope/user-ask-quote.phtml");
+			    } ?>
+				
+				<?php if($this->userInfo->user_type=='admin' and $this->quoteInfo['id']!=""){ 
+				//include("askforscope/admin-ask-quote.phtml");
+				include(APPLICATION_PATH."/modules/dashboard/views/scripts/index/askforscope/admin-ask-quote.phtml");
+			    } ?>
+				
+              </div>
+              <!-- /.tab-pane -->
+              <div class="tab-pane" id="tab_GeneratePrice"> 
+			  
+			  </div>
+			   <div class="tab-pane" id="tab_AttachedFiles"> 
+			   	
+			  </div>
+			  <div class="tab-pane" id="tab_InternalComments"> 
+			  
+			  </div>
+			   <div class="tab-pane" id="tab_LeadAssign">
+			     
+			      <form method="post" id="assignleadfrm">
+			          <input type="hidden" name="ref_id" id="ref_id" value="<?php echo $this->QueryInfo['assign_id'];?>">
+			          <input type="hidden" name="queryid" id="queryid" value="<?php echo $this->QueryInfo['id'];?>">
+			           <input type="hidden" name="allocated_to_user_name" id="allocated_to_user_name" value="">
+			          
+			          <div class="row form-group entrytype">
+			              <div class="col-sm-4">
+				 <div class="form-group">
+                  <label for="exampleInputPassword1">Select Team</label>
+                    <select name="team_id" id="team_id" class="form-control select2" onchange="changeTeams()">
+				  <option value="">Select Team</option>
+					 <?php
+					foreach($this->teamsArr as $team)
+					{ 
+					?>
+					<option value="<?php echo $team['id'];?>" <?php if($this->params['team_id']==$team['id']){ ?> selected="selected" <?php }?>><?php echo $team['team_name'];?></option> 	
+					<?php }
+					?>                               
+					</select>
+					<span id="team_idError" class="error"></span>
+                  </div>
+				 </div>
+				 <div class="col-sm-4">
+				 <label for="exampleInputPassword1">Allocated To</label>
+                <input type="hidden" name="allocated_to_name" id="allocated_to_name" value="" />
+					 <select name="user_id" id="user_id" class="form-control select2" onchange="changeAllocateUser();">
+           <option value="">Select user</option>
+           <?php
+           foreach($this->userArr as $users)
+		   {
+		   ?>
+           <option value="<?php echo $users['id'];?>" <?php if($this->userid==$users['id']){ ?> selected="selected" <?php }?>><?php echo ucwords($users['name']);?></option>
+           <?php }?>
+           </select>
+				<span id="user_idError" class="error"></span>
+				  </div>
+				  <div class="col-sm-4">
+				 <div class="form-group">
+                  <label for="exampleInputPassword1">Select Profile</label>
+                  <select name="profile_id" id="profile_id" class="form-control" onchange="var arrdataprf = $('#profile_id option:selected').text().split('-'); $('#allocated_to_name').val(arrdataprf[0])">
+				  <option value="">Select Profile</option>
+				  </select>
+				  <span id="profile_idError" class="error"></span>
+					</div>
+				 </div>
+			         </div>  
+			         
+			         <div class="row form-group entrytype">
+				<div class="col-sm-12">
+				<div class="box-footer pull-right">
+                 <input type="submit" name="submitBtn" id="submitBtn" class="btn btn-primary" value="Submit" onclick="return Validateleadassign();" />
+				 &nbsp;&nbsp;
+              </div>
+				</div>
+				</div>
+			      </form>
+			      
+			       
+			   </div>
+              <!-- /.tab-pane -->
+            </div>
+            <!-- /.tab-content -->
+          </div>
+          <!-- nav-tabs-custom -->
+			
+			 
+			
+				</div>
+				 
+				<div class="col-md-7  connectedSortable">
+				
+   
+				<!-- Right Section -->
+          <div class="box box-primary  direct-chat direct-chat-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Comments <span class="pull-right"></span></h3>
+			  <div class="box-tools pull-right">
+                <span class="btn btn-primary" onclick="getAutoComments()"><i class="fa fa-fw fa-refresh"></i>Show Conversations</span>
+              </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+			  <!-- Conversations are loaded here -->
+              <div class="direct-chat-messages">
+                <!-- Message. Default to the left -->
+				<?php //if($this->userInfo->id==48){?>
+              <div class="row" id="CommentsTabs"></div>
+				<?php //}?>
+              <!-- Conversations are loaded here -->
+			  <div class="box-body chat" id="appendComments">
+			  <?php //include("getquerycomments.phtml")?>
+			   <?php 
+			   //echo "<br>";
+			   //print_r($this->CommentInfo);
+$subject="";
+$last_comments="";
+if(count($this->CommentInfo) > 0)
+{
+foreach($this->CommentInfo as $Comments)
+{ 
+ if($Comments['subject'])
+ {
+$subject=$Comments['subject'];
+
+ }
+
+}
+}
+
+				 ?>
+				 
+			  </div>
+               
+             
+
+               
+                <!-- /.direct-chat-msg -->
+              </div>
+              <!--/.direct-chat-messages-->
+ 
+			
+			 <!-- Contacts are loaded here -->
+              
+              <!-- /.direct-chat-pane -->
+			
+			</div>
+         
+		 <?php //if($this->userInfo->user_type!='Lead Generator'){ ?>
+		 <div class="box-footer">
+ 		 
+		 
+		 <div class="clearfix"></div>
+             <!--/.direct-chat-messages-->
+<form action="" name="viewDetailsForm" id="viewDetailsForm" method="post" enctype="multipart/form-data" style="width:100%;">
+<input type="hidden" name="in_time" value="<?=$this->QueryInfo['open_date']?>">
+
+
+				<input type="hidden" name="assign_id" id="assign_id" value="<?php echo $this->QueryInfo['assign_id'];?>">
+                <input type="hidden" name="query_id" id="query_id" value="<?php echo $this->QueryInfo['id'];?>">
+             
+				<input type="hidden" name="old_status" id="old_status" value="<?=$this->QueryInfo['update_status']?>">
+				
+				
+				<?php if($this->userInfo->user_type!='Lead Generator'){ ?>
+                 <div class="row">
+				 <div class="col-xs-5"><label>Status</label></div>
+				 <div class="col-xs-3"></div>
+				 <div class="col-xs-4">
+					<select name="update_status1" id="update_status1" class="form-control" onchange="CheckStatusRemainder(this.value)">
+					
+					 
+				  <option value="1" <?php if($this->QueryInfo['update_status']==1){ ?> selected="selected" <?php }?>>Pending for Validation</option>
+                 
+				  <option value="2" <?php if($this->QueryInfo['update_status']==2){ ?> selected="selected" <?php }?>>Contact Made</option>
+				   <option value="6" <?php if($this->QueryInfo['update_status']==6){ ?> selected="selected" <?php }?>>Rejected</option>
+				  <?php if(count($this->CommentInfo) > 0 || count($this->CommentInfo) == 0)
+				 {?>
+				    <!-- <option value="3" <?php if($this->QueryInfo['update_status']==3){ ?> selected="selected" <?php }?>>Quoted</option>
+				   
+				   <option value="4" <?php if($this->QueryInfo['update_status']==4){ ?> selected="selected" <?php }?>>Negotiating</option>-->
+				   <option value="5" <?php if($this->QueryInfo['update_status']==5){ ?> selected="selected" <?php }?>>Approved</option>
+				  
+				     <option value="9" <?php if($this->QueryInfo['update_status']==9){ ?> selected="selected" <?php }?>>Follow Up</option>
+				  
+				 <?php } ?>
+					</select>
+					<div id="remainder_div" style="display:<?=($this->QueryInfo['update_status']!=7)?"none":"block"?>;">
+					<input type="text" name="remainder_date" id="remainder_date" value="<?php if($this->QueryInfo['remainder_date']){ echo date("m/d/Y",$this->QueryInfo['remainder_date']);}?>" class="form-control datepicker"></div>
+					
+					<?php if($this->QueryInfo['update_status_date']){?>
+					<span>Shifted Date : <?php echo date("d M Y",$this->QueryInfo['update_status_date']);?></span>
+					<?php }?>
+					<?php if($this->followupInfo['followup_day']){?>
+					 <div>
+					 Next Followup Date : 
+					 
+					 <span style="font-size:13px;" id="show_flday_div<?=$this->followupInfo['id']?>">
+									  <?php echo date("d M Y",$this->followupInfo['followup_day']);?>
+									<?php //if($this->userInfo->user_type=='Lead Validator'){?>
+									<span onclick="ChangeFolloupDate(<?=$this->followupInfo['id']?>)" style="font-size:15px; margin-left:5px; cursor:pointer;" class="fa fa-edit">  
+									  </span>
+									<?php //}?>
+									  </span>
+									<span id="edit_flday_div<?=$this->followupInfo['id']?>" style="display:none;">
+									   <input readonly class="form-control1 datepicker" style="width:100px;" type="text" name="edit_followup_day<?=$this->followupInfo['id']?>" id="edit_followup_day<?=$this->followupInfo['id']?>" value="<?=date("m/d/Y",$this->followupInfo['followup_day'])?>">
+									   <input class="btn btn-info btn-xs" type="button" onclick="SaveFollowupDate(<?=$this->followupInfo['id']?>)" value="Save">
+									  </span>  
+									  
+					 
+					   
+					 </div>
+					<?php }?>
+					
+					 
+					
+					<!-- /.box-header -->
+         <!-- <div class="box-body">
+             <div class="">
+            <div class="box-header with-border">
+              <h3 class="box-title pull-right"><a href="javascript:" onclick="showFollowupSection()">Follow Up Summary <i class="fa fa-calendar"></i></a></h3>
+            </div>
+             <div class="box-body" id="followUpSection" style="display:none;">
+              <table class="table table-bordered">
+			  <thead>
+                 <tr>
+                   <th>Followup day</th>
+                  <th>Contact Type</th>
+                  <th>Status</th>
+                </tr>
+				</thead>
+                <tbody id="followupSumData">
+             
+			 </tbody></table>
+            </div>
+          </div>
+            </div> -->
+            <!-- /.box-body -->
+					
+				</div>
+				</div>
+				<?php }?>
+				
+				<!--////////////////////Mail and sms script////////////////////////////--->
+				<div class="col-md-12">
+				<div  id="emailCommentsDiv">
+				<?php if($this->userInfo->user_type!='Lead Generator'){ ?>
+				<div class="row">
+                 <div class="form-group">
+                  <div class="checkbox">
+                    <label> 
+					 <?php if($this->QueryInfo['update_status']==1){?>
+					 <input type="checkbox" checked disabled > Email
+					 <input type="hidden" name="send_mail_type[]" id="send_mail_type1" value="Email">
+					 <?php } else { ?>
+						<input type="checkbox" name="send_mail_type[]" id="send_mail_type1" value="Email" onclick="ClickAndCheckMailType(1)"> Email 
+					<?php }?>
+					
+					 </label>
+					 
+                  </div>
+				  
+				  <div id="send_mail_type1Div" style="margin-left:21px; display:<?=($this->QueryInfo['update_status']==1)?'block':'none'?>">
+				  
+				  <div class="btn-group pull-right" style="margin-top:-30px;">
+                   <!--<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                  <span id="toggleMailTemp"> <?//=(count($this->templateInfo) > 0)?'Choose Template':'Mail Template'?>  </span> <span class="caret"></span>
+                  </button>-->
+                  <ul class="dropdown-menu" role="menu">
+				  <?php 
+				  if(count($this->templateInfo) > 0)
+				  {
+				  foreach($this->templateInfo as $emTemp){
+					 $template_name=$emTemp['template_name'];
+					  $mail_subject=$emTemp['mail_subject'];
+					  $mail_body=$emTemp['mail_body'];
+					  ?>
+                    <li><a href="javascript:" onclick="changeMailTemplateContent(<?=$emTemp['id']?>)"><?=$emTemp['template_name']?></a></li>
+				  <?php } } else { echo '<li class="text-center">Template not found.</li>'; }?>
+                  </ul>
+                </div>
+				<br>
+				  
+				  <div id="TempShow1">
+				<div class="form-group">
+                  <label for="inputEmail3" class="col-sm-2 control-label">From:</label>
+                  <div class="col-sm-10">
+                   <input type="text" class="form-control" name="mail_from_email" id="mail_from_email" value="<?=$this->QueryInfo['website_email']?>">
+                  </div>
+                </div>
+				 <div class="clearfix"></div>
+				 
+				 
+				 <div class="form-group">
+                  <label for="inputEmail3" class="col-sm-2 control-label">To:</label>
+				  <div>
+                  <div class="col-sm-8">
+                   <input type="text" style="border:none;" readonly class="form-control" name="mail_to" id="mail_to" value="<?=$this->QueryInfo['email_id']?>">
+				    
+                  </div>
+				  <div class="col-sm-2"> <a href="javascript:" onclick="showEmailCCBCC('cc')">CC</a> &nbsp;&nbsp;<a href="javascript:" onclick="showEmailCCBCC('bcc')">BCC</a></div>
+				  </div>
+                </div>
+				 <div class="clearfix"></div>
+				 <div class="form-group" id="ccMailDiv" style="display:none;">
+                  <label for="inputEmail3" class="col-sm-2 control-label">CC:</label>
+                  <div class="col-sm-10">
+                   <input type="text" class="form-control" name="email_cc" id="email_cc" value="">
+                  </div>
+                </div>
+				 <div class="clearfix"></div>
+				 <div class="form-group" id="bccMailDiv" style="display:none;">
+                  <label for="inputEmail3" class="col-sm-2 control-label">BCC:</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" name="email_bcc" id="email_bcc" value="">
+                  </div>
+                </div>
+				 <div class="clearfix"></div>
+				 
+				 <div class="form-group">
+                  <label for="inputEmail3" class="col-sm-2 control-label">Subject:</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" name="mail_subject" id="mail_subject" value="<?=($subject!="")?$subject:$mail_subject?>">
+                  </div>
+                </div>
+				 <div class="clearfix"></div>
+				 
+ 				 
+ 				 
+				 
+				 
+			 
+				 <label>Email Body : </label>
+				  <textarea class="form-control textarea1" name="email_temp_body" id="temp_body1"></textarea>
+				 
+				   <div class="row" id="attachment_file">
+				  <div class="form-group">
+                                            <div class="col-md-10"><input type="file" class="form-control" name="comments_file[]" id="comments_file1"/></div>
+                                            <div class="col-md-2" id="add_more_button">
+											<i style="font-size:20px;padding-top:3px;cursor:pointer;" class="fa fa-plus-circle"></i></div>
+              
+
+				 </div> 
+				  </div> 
+				   
+				   <div class="clearfix"></div>
+				   
+				  <div class="form-group"> <label>Email Signature : </label><textarea class="form-control mail_signature" name="mail_signature" id="mail_signature" style="height:75px;"><?=$this->QueryInfo['signature']?></textarea></div>
+				  
+				   <div class="form-group"> <label>Schedule Email : </label> &nbsp;<input type="radio" name="schedule_email_option" value="Send Now" checked> Send Now  <label></label>
+						<input type="radio" name="schedule_email_option" value="Send Later"> Send Later
+				   </div>
+				   
+				   <div class="form-group" id="sendlaterdiv" style="display:none"> 
+				    	<div class="col-md-6">
+				    	<label>Date : </label><input type="date" class="form-control" name="schedule_email_date" id="schedule_email_date" value="<?php echo date('Y-m-d');?>" min="<?php echo date('Y-m-d');?>">
+				    	</div>
+				    	<div class="col-md-6">
+				    	<label>Time : </label><input type="time" class="form-control" name="schedule_email_time" id="schedule_email_time">
+				    	</div>
+				    </div>
+				  
+				  <input type="button" class="btn btn-primary pull-right" value="Approve" onclick="ApproveTemplate(1)">
+				  </div>
+				  
+				  <div class="clearfix"></div>
+				  <div id="TempHide1" style="display:none;">
+				  
+				 <span class="label label-success"> <i class="fa fa-check"></i> Approved </span> &nbsp;&nbsp;
+				 <span style="cursor:pointer;" class="label label-info" onclick="EditTemplateContent(1)"> <i class="fa fa-edit"></i> Edit</span> 
+				  <input type="hidden" name="approveStatus1" id="approveStatus1" value="0" >
+				 
+
+				 </div>
+				  
+					</div>
+                  </div>
+				  
+				  
+                 <!--<div class="form-group">
+                  <div class="checkbox">
+                 <label> 
+				  <?php if($this->QueryInfo['location']=='India' and $this->QueryInfo['phone']!=""){?>
+					 <input type="checkbox" name="send_mail_type[]" id="send_mail_type2" value="SMS" onclick="ClickAndCheckMailType(2)"> SMS
+					 <?php } else { ?>
+					 <input type="checkbox" disabled > SMS
+					 <input type="hidden" name="send_mail_type[]" id="send_mail_type2" value="SMS">
+					<?php }?>
+				 
+
+				 </label>
+                  </div>
+				  <div id="send_mail_type2Div" style="margin-left:21px; display:none;">
+				   <div id="TempShow2">
+				  <textarea class="form-control" name="sms_temp_body" id="temp_body2"><?=$this->smstemplateInfo['sms_body']?></textarea>
+				  
+				  <input type="button" class="btn btn-primary pull-right" value="Approve" onclick="ApproveTemplate(2)">
+				  </div>
+				  <div class="clearfix"></div>
+				  <div id="TempHide2" style="display:none;">
+				  <span class="label label-success"> <i class="fa fa-check"></i> Approved </span> &nbsp;&nbsp;
+				 <span style="cursor:pointer;" class="label label-info" onclick="EditTemplateContent(2)"> <i class="fa fa-edit"></i> Edit</span> 
+				  
+				  
+				 <input type="hidden" name="approveStatus2" id="approveStatus2" value="0" ></div>
+				  
+				</div>
+                  </div>-->
+                  
+                <!-- <div class="form-group">
+                  <div class="checkbox">
+                    <label> <input type="checkbox" name="send_mail_type[]" id="send_mail_type3" value="Whatsapp" onclick="ClickAndCheckMailType(3)" > Whatsapp </label>
+                  </div>
+				  <div id="send_mail_type3Div" style="margin-left:21px; display:none;">
+				   <div id="TempShow3">
+				  <textarea class="form-control" name="whatsapp_temp_body" id="temp_body3"></textarea>
+				  
+				  <input type="button" class="btn btn-primary pull-right" value="Approve" onclick="ApproveTemplate(3)">
+				  </div>
+				  <div id="TempHide3" style="color:green;display:none;"><i class="fa fa-check"></i>Approved <input type="hidden" name="approveStatus3" id="approveStatus3" value="0" ></div>
+				  
+				</div>
+               </div>-->
+                 <!--<div class="form-group">
+			    <div class="checkbox">
+                    <label> <input type="checkbox"  name="send_mail_type[]" id="send_mail_type4" value="Call" onclick="ClickAndCheckMailType(4)"> Call </label>
+               </div>
+			    <div id="send_mail_type4Div" style="margin-left:21px; display:none;">
+			    <div id="TempShow4">
+				  <textarea class="form-control" name="call_temp_body" id="temp_body4" placeholder="Enter Minimum 10 words"></textarea>
+				  
+				  <input type="button" class="btn btn-primary pull-right" value="Approve" onclick="ApproveTemplate(4)">
+				  </div>
+				  <div class="clearfix"></div>
+				  <div id="TempHide4" style="display:none;">
+				  <span class="label label-success"> <i class="fa fa-check"></i> Approved </span> &nbsp;&nbsp;
+				 <span style="cursor:pointer;" class="label label-info" onclick="EditTemplateContent(4)"> <i class="fa fa-edit"></i> Edit</span>
+				  
+				  <input type="hidden" name="approveStatus4" id="approveStatus4" value="0" ></div>
+				  
+				</div>
+				  </div>-->
+                 <!--<div class="form-group">
+               <div class="checkbox">
+                    <label> <input type="checkbox" name="send_mail_type[]" id="send_mail_type5" value="Meeting" onclick="ClickAndCheckMailType(5)"> Meeting </label>
+                  </div>
+				<div id="send_mail_type5Div" style="margin-left:21px; display:none;">
+				 <div id="TempShow5">
+				  <textarea class="form-control" name="meeting_temp_body" id="temp_body5" placeholder="Enter Minimum 10 words"></textarea>
+				  
+				  <input type="button" class="btn btn-primary pull-right" value="Approve" onclick="ApproveTemplate(5)">
+				  </div>
+				  <div class="clearfix"></div>
+				  <div id="TempHide5" style="display:none;">
+				  <span class="label label-success"> <i class="fa fa-check"></i> Approved </span> &nbsp;&nbsp;
+				 <span style="cursor:pointer;" class="label label-info" onclick="EditTemplateContent(5)"> <i class="fa fa-edit"></i> Edit</span>
+				  
+				  <input type="hidden" name="approveStatus5" id="approveStatus5" value="0" ></div>
+				  
+				</div>
+			   </div>-->
+				
+				 
+				</div>
+			 
+				 
+ 				
+                 
+                <div class="row">
+				<div class="col-xs-4"></div>
+				<div class="col-xs-6"> </div>
+				 
+                <div class="col-xs-2">
+				<input type="hidden" name="asnqry_transfer_type" id="asnqry_transfer_type" value="<?php echo $this->QueryInfo['transfer_type']?>" />
+				<input type="hidden" name="asnqry_trans_repli_user" id="asnqry_trans_repli_user" value="<?php echo $this->QueryInfo['trans_repli_user']?>" />
+				<input type="hidden" name="totalHours" id="totalHours">
+				<input type="hidden" name="totalMinutes" id="totalMinutes">
+				
+				<?php
+				if($this->QueryInfo['action_taken']==0 && $this->userInfo->user_type=='admin'){?>
+					<input id="submitBtn1" type="submit" name="updateBtn" class="btn btn-primary pull-right" value="Submit" onclick="return UpdateComents();" disabled>
+				<input id="submitBtn2" style="display:none;" type="button" disabled class="btn btn-primary pull-right" value="Please Wait...">
+			<?php
+			}else{?>
+					<input id="submitBtn1" type="submit" name="updateBtn" class="btn btn-primary pull-right" value="Submit" onclick="return UpdateComents();">
+				<input id="submitBtn2" style="display:none;" type="button" disabled class="btn btn-primary pull-right" value="Please Wait...">
+				<?php
+				}?>
+			
+				</div>
+				</div>
+				<?php }?>
+				<?php if($this->userInfo->user_type=='Lead Generator'){ ?>
+				<input type="hidden" name="update_status1" value="<?=$this->QueryInfo['update_status']?>">
+				<?php }?>
+				
+				
+				<div><a href="javascript:" class="label label-primary"  onclick="AddExternalComments()"> Add Comments</a></div>
+				</div>
+				</div>
+				
+				<div class="row" style="display: none;" id="externalCommentsDiv">
+				<div><a href="javascript:" class="label label-primary" onclick="AddExternalComments()"> Hide Comments</a></div>
+ 				<div class="col-xs-12">
+				<div class="form-group">
+				<label>Comments</label>
+				<textarea name="comments" id="comments" class="form-control" style="height:100px;" placeholder="Write a comment..."></textarea>
+				</div>
+				</div>
+				<div class="col-xs-12">
+				<div class="form-group">
+				<label>Upload File</label>
+				<input type="file" id="comments_upload_file" name="comments_upload_file" class="form-control">
+				</div>
+				</div>
+				<div class="col-xs-12">
+				<input type="checkbox" name="shift_to_lead" value="1"> Shift To Lead
+				<div class="form-group">
+			<!-- 	<input id="submitBtnC1" type="button" name="updateBtn" class="btn btn-primary pull-right" value="Submit" onclick="return UpdateOnlyComents();"> -->
+				<input id="submitBtnC1" type="submit" name="updateBtn" class="btn btn-primary pull-right" value="Submit" onclick="return UpdateComents();">
+				
+				<input id="submitBtnC2" style="display:none;" type="button" disabled class="btn btn-primary pull-right" value="Please Wait...">
+				</div>
+				</div>
+				</div>
+				
+				
+				<div class="row">
+                <div class="col-xs-12"><div class="success-message" id="succ_mess"></div></div>
+                </div>
+				
+			
+				
+				</form>
+            
+			
+                <!-- /.direct-chat-msg -->
+            </div>
+				<?php //}?>
+			
+           
+          </div>
+          <!--/.direct-chat -->
+				 
+				
+				</div>
+               
+
+
+			   </div>
+			   
+ 	
+			   
+			   
+          </div>
+<style>
+.direct-chat-messages {
+   max-height: 400px;
+}
+img {
+    max-width: 100%;
+    max-height: 100%;
+}
+.nav-tabs-custom>.nav-tabs>li.active>a, .nav-tabs-custom>.nav-tabs>li.active:hover>a {
+    background-color: #3d8dbc;
+    color: #fff;
+}
+.mailinfoToogle{
+	margin-left:42px;margin-top:-15px;;
+}
+.close {
+  opacity: 1;
+}
+
+.dropdownmenu {
+    width: 500px;
+	border-color: #9E9E9E;
+}
+ 
+.dropdownmenu li {
+    padding: 5px;
+	font-size:17px;
+}
+.nav-tabs-custom>.nav-tabs>li {
+    font-size: 12px;
+	margin-right: 3px;
+}
+.nav>li>a {
+    padding: 10px 10px;
+}
+</style>
+ 
+ <?php include("popjs.phtml")?>
+ <script>
+  function changeTeams()
+{
+    
+var team_id=$("#team_id").val();
+$.ajax({
+    type : 'POST',
+    url : '<?php echo SITEURL?>manageuser/index/teamusers',
+    data : "team_id="+team_id,
+	cache:false,
+	beforeSend: function()
+	{
+    $("#user_id").html('<option value="">Loading...</option>');
+	},
+	success: function(response)
+	{
+	    
+    $("#user_id").html(response);
+
+	}
+  });	
+}
+function changeAllocateUser()
+{
+var user_id=$("#user_id").val();
+//alert(user_id);
+$.ajax({
+    type : 'POST',
+    url : '<?php echo SITEURL?>manageuser/index/getuserprofile',
+    data : "user_id="+user_id,
+	cache:false,
+	beforeSend: function()
+	{
+    $("#profile_id").html('<option value="">Loading...</option>');
+	},
+	success: function(response)
+	{
+		//alert(response);
+	    
+    var allocatedtousername=$("#user_id option:selected").text();
+    var allocatedto = $('#allocated_to_user_name').val(allocatedtousername);
+    
+    $("#profile_id").html(response);
+	<?php if($this->params and  $this->params['profile_id']){?>
+	$("#profile_id").val(<?=$this->params['profile_id']?>);
+	<?php } ?>
+
+	}
+  });	
+}
+   function Validateleadassign()
+  {   
+  var error="";
+ var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+  
+ if($("#team_id").val()=="")
+  {
+	$("#team_idError").html("Please seletct team");
+	document.getElementById("team_id").focus();
+	error=1;
+  }
+   if($("#user_id").val()=="")
+  {
+	$("#user_idError").html("Please seletct allocated to user");
+	document.getElementById("user_id").focus();
+	error=1;
+  }
+  if($("#profile_id").val()=="")
+  {
+	$("#profile_idError").html("Please seletct profile");
+	document.getElementById("profile_id").focus();
+	error=1;
+  }
+  
+ 
+ if(error==1)
+{
+return false;
+}
+else
+{
+    var url = "<?=SITEURL?>/managequery/index/leadassignsubmit"; // the script where you handle the form input.
+     $.ajax({
+           type: "POST",
+           url: url,
+           data: $("#assignleadfrm").serialize(), // serializes the form's elements.
+           success: function(data)
+           {
+			   if(data==1)
+			   {
+ 			   
+			   
+			   $("#succ_mess").html('Lead assigned successfully.');
+            
+			   
+			   }
+			}
+         });
+} 
+  
+ }
+ 
+ 
+</script>
+<script>
+ 	$(document).ready(function() {
+    $("input[name=schedule_email_option]").on( "change", function() {
+
+         var scheduleemailoption = $(this).val();
+        	if(scheduleemailoption == 'Send Later'){
+        			$('#sendlaterdiv').show();
+        	}else{
+				$('#sendlaterdiv').hide();
+        	}
+    });
+});
+</script>
+ <?php //include("js/js-addquery.phtml")?>
+ 

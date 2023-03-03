@@ -1,0 +1,524 @@
+<script type="text/javascript">
+function ValidateAssignUser(int_dogid)
+{    
+       var formobj=document.form1;
+	if(check_mul(formobj))
+	{
+	if($("#team_ids").val()=="")
+	{
+	alert("Please select team");
+	document.getElementById("team_ids").focus();	
+	return false;	
+	}
+	else if($("#assign_user_ids").val()=="")
+	{
+	alert("Please select user");
+	document.getElementById("assign_user_ids").focus();	
+	return false;	
+	}
+	else if($("#profile_ids").val()=="")
+	{
+	alert("Please select user profile");
+	document.getElementById("profile_ids").focus();	
+	return false;	
+	}
+	else
+	{
+	if(confirm("Are you sure you want to transfer query!"))
+	   {
+		var formobj=document.form1;
+		formobj.action="<?=SITEURL?>managequery/index/multipleshiftquery";
+		formobj.submit();
+	  }
+	}
+	}
+}
+
+function ValidateReplicateQueries(int_dogid)
+{
+    var formobj=document.form1;
+	if(check_mul(formobj))
+	{
+	if($("#team_ids").val()=="")
+	{
+	alert("Please select team");
+	document.getElementById("team_ids").focus();	
+	return false;	
+	}
+	else if($("#assign_user_ids").val()=="")
+	{
+	alert("Please select user");
+	document.getElementById("assign_user_ids").focus();	
+	return false;	
+	}
+	else if($("#profile_ids").val()=="")
+	{
+	alert("Please select user profile");
+	document.getElementById("profile_ids").focus();	
+	return false;	
+	}
+	else
+	{
+	if(confirm("Are you sure you want to replicate query!"))
+	   {
+		var formobj=document.form1;
+		formobj.action="<?=SITEURL?>managequery/index/multiplereplicatequery";
+		formobj.submit();
+	  }
+	}
+	}	
+}
+function ValidateShiftQueries(int_dogid)
+{
+    var formobj=document.form1;
+	if(check_mul(formobj))
+	{
+	if($("#team_ids").val()=="")
+	{
+	alert("Please select team");
+	document.getElementById("team_ids").focus();	
+	return false;	
+	}
+	else if($("#assign_user_ids").val()=="")
+	{
+	alert("Please select user");
+	document.getElementById("assign_user_ids").focus();	
+	return false;	
+	}
+	else if($("#profile_ids").val()=="")
+	{
+	alert("Please select user profile");
+	document.getElementById("profile_ids").focus();	
+	return false;	
+	}
+	else
+	{
+	if(confirm("Are you sure you want to shift query!"))
+	   {
+		var formobj=document.form1;
+		formobj.action="<?=SITEURL?>managequery/index/multipleshiftcondidate";
+		formobj.submit();
+	  }
+	}
+	}	
+}
+function checkAll(checkname, exby) {
+  for (i = 0; i < checkname.length; i++)
+  {
+  checkname[i].checked = exby.checked? true:false
+  console.log(exby.checked);
+  }
+ }
+ 
+function SendMail(int_dogid)
+{    
+       var formobj=document.form1;
+	if(check_mul(formobj))
+	{
+	
+	if($("#template_id").val()!="")
+	{
+	  if(confirm("Are you sure you want to send mail!"))
+	   {
+		var formobj=document.form1;
+		formobj.action="sendmail.php?Action=sendmail";
+		formobj.submit();
+	  }
+	}
+	else
+	{
+	alert("Please select template");
+	document.getElementById("template_id").focus();	
+	return false;
+	}
+	}
+}
+
+function delRecord(int_dogid)
+{    
+    var formobj=document.form1;
+	if(check_mul(formobj))
+	{
+	if(confirm("Are you sure you want to delete record!"))
+	{
+		var formobj=document.form1;
+		formobj.action="?Action=Delete";
+		formobj.submit();
+	} 
+	}
+}
+
+function ExportRecord(int_dogid)
+{    
+    var formobj=document.form1;
+	if(check_mul(formobj))
+	{
+	if(confirm("Are you sure you want to export record!"))
+	{
+		var formobj=document.form1;
+		formobj.action="<?=SITEURL?>managequery/index/export";
+		formobj.submit();
+	} 
+	}
+}
+function AssignQueryCampaign()
+{
+			
+    var formobj=document.form1;
+	if(check_mul(formobj))
+	{
+	if($("#campaign_user_id").val()=="")
+	{
+		alert("Please select campaign user");
+		document.getElementById("campaign_user_id").focus();
+		return false;
+	}
+	else
+	{
+	if(confirm("Are you sure you want to assign the query for camp!"))
+	{
+	var values = [].filter.call(document.getElementsByName('checkid[]'), (c) => c.checked).map(c => c.value);
+  if(values.length > 0)
+  {
+	$('#myModal_campaign').modal({
+			backdrop: 'static',
+            keyboard: false
+		});  
+  }
+	
+	} 
+	}
+	}	
+}
+function AssignQueryCampgainForm()
+{
+	var error="";
+	if($("#camp_title").val()=="")
+	{
+	 $("#camp_titleError").html("Please enter campaign title");
+     error=1;	 
+	}
+	if($("#camp_date").val()=="")
+	{
+	 $("#camp_dateError").html("Please enter campaign date");
+     error=1;	 
+	}
+	if($("#camp_website").val()=="")
+	{
+	 $("#camp_websiteError").html("Please select website");
+     error=1;	 
+	}
+	if(error)
+	{
+		return false;
+	}
+	else
+	{
+		var queryIds = [].filter.call(document.getElementsByName('checkid[]'), (c) => c.checked).map(c => c.value);
+		var campaign_user_id=$("#campaign_user_id").val();
+		var camp_title=$("#camp_title").val();
+		var camp_date=$("#camp_date").val();
+		var camp_website=$("#camp_website").val();
+		$.ajax({
+    type : 'POST',
+    url : "<?=SITEURL?>managequery/index/assign-query-campaign",
+    data : {queryIds:queryIds, campaign_user_id:campaign_user_id, camp_title:camp_title, camp_date:camp_date, camp_website:camp_website},
+	cache:false,
+	beforeSend: function()
+	{
+	$("#loadCampaignFormSubmitBtn").html('<input type="button" disabled class="btn btn-primary" value="Please Wait..." />');
+	},
+	success: function(response)
+	{
+    //window.location.reload();
+	window.location.href = "<?=SITEURL?>managequery/camp-history";
+	}
+	
+	
+});
+	}
+}
+function ExportRecordCSV(int_dogid)
+{    
+    var formobj=document.form1;
+	if(check_mul(formobj))
+	{
+	if(confirm("Are you sure you want to export record!"))
+	{
+		var formobj=document.form1;
+		formobj.action="<?=SITEURL?>managequery/index/exportcsv";
+		formobj.submit();
+	} 
+	
+	}
+}
+function check_one(formObj)
+{
+	count=0;
+	for (var i=0;i < formObj.length;i++) 
+    {
+		fldObj = formObj.elements[i];
+		if (fldObj.type == 'checkbox')
+		{
+			if(fldObj.checked == true)
+			{
+				count=count+1;
+			}
+		}
+    }
+	if(count>1)
+	{
+		alert("please select only one record");
+		return false;
+	}
+	if(count==0)
+	{
+		alert("Please select a record");
+		return false;
+	}
+	return true;
+}
+
+function check_mul(formObj)
+{
+	count=0;
+	for (var i=0;i < formObj.length;i++) 
+    {
+		fldObj = formObj.elements[i];
+		if (fldObj.type == 'checkbox')
+		{
+			if(fldObj.checked == true)
+			{
+				count=count+1;
+			}
+		}
+    }
+	if(count==0)
+	{
+		alert("Please select a record");
+		return false;
+	}
+	return true;
+}
+
+ function ValidateSearch()
+ {
+	 
+if($("#fromdate").val()!="" && $("#todate").val()=="")
+	{
+	 alert("Please select to date");
+	 document.getElementById("todate").focus();
+	 return false;	
+	} 
+	else if($("#fromdate").val()=="" && $("#todate").val()!="")
+	{
+	 alert("Please select from date");
+	 document.getElementById("fromdate").focus();
+	 return false;	
+	} 
+	else
+	{
+ 		$.ajax({
+    type : 'POST',
+    url : '<?php echo SITEURL?>managequery/index/loaduserquery',
+    data : $('#form1').serialize() +"&searchBtn=1",
+	cache:false,
+	beforeSend: function()
+	{
+	$("#load_query_history").html('<div style="text-align:center;"> <img style="height:150px;" src="<?=PUBLICURL?>images/pre-loader-new.gif"></div>');
+	},
+	success: function(response)
+	{
+	    //alert(response);
+	setTimeout(function() { $("#Regloader").fadeOut(500); 
+			 $("#load_query_history").html(response);
+			}, 1000);	
+	}
+	
+	
+});
+		
+	}
+ }
+ 
+ 
+function updateTaken(query)
+{   
+$.post("<?php echo SITEURL?>managequery/index/actiontaken/query/"+query, function( data ) {
+	  document.getElementById('taken_'+query).src = "<?=PUBLICURL?>images/"+data+".png";
+    }); 	 
+}
+
+function updateConverted(query,status)
+{   
+$.post("<?php echo SITEURL?>managequery/index/converted/query/"+query+"/statusAction/"+status, function( data ) {
+	if(data==2)
+	 {
+	$("#deleteRow_"+query).remove();	 
+	 }
+	 else
+	 {
+		  $('#converted_'+query).html('<a style="cursor:pointer;" onclick="updateConverted('+query+')"><img  src="<?=PUBLICURL?>images/'+data+'.png"></a>');	  
+ 	 }
+		 
+    }); 	 
+}
+ 
+
+function QueryDataLoad()
+{
+	$.ajax({
+    type : 'POST',
+    url :'<?php echo SITEURL?>managequery/index/loaduserquery',
+    data : $('#form1').serialize(),
+	cache:false,
+	beforeSend: function()
+	{
+	$("#load_query_history").html('<div style="text-align:center;"> <img style="height:150px;" src="<?=PUBLICURL?>images/pre-loader-new.gif"></div>');
+	},
+	success: function(response)
+	{
+	 
+			 $("#load_query_history").html(response);
+ 	}
+	
+	
+});
+	
+}
+
+ $(document).ready(function() {
+    QueryDataLoad();
+	$('#filter_date').daterangepicker(); 
+	$('#camp_date').datepicker();
+});
+ 
+  function OpenViewDetails(assign_id)
+  {
+	$.post("<?php echo SITEURL?>managequery/index/loadviewquerydetails/queryid/"+assign_id, function( data ) {
+		$("#SecondDiv").show();
+		 $("#SecondDiv").html(data);
+	$('html, body').animate({
+	 scrollTop: $(".scroll-div").offset().top
+	 }, 200);
+	 
+    });  
+   }
+  
+  function CloseViewDetails()
+  {
+	$("#SecondDiv").hide();  
+ }
+ function changeTeam()
+{
+var team_id=$("#team_id").val();
+$.ajax({
+    type : 'POST',
+    url : '<?php echo SITEURL?>manageuser/index/teamuser',
+    data : "team_id="+team_id,
+	cache:false,
+	beforeSend: function()
+	{
+    $("#assign_user_id").html('<option value="">Loading...</option>');
+	},
+	success: function(response)
+	{
+    $("#assign_user_id").html(response);
+
+	}
+  });	
+}
+function changeAllocateUser()
+{
+var user_id=$("#assign_user_id").val();
+$.ajax({
+    type : 'POST',
+    url : '<?php echo SITEURL?>manageuser/index/getuserprofile',
+    data : "user_id="+user_id,
+	cache:false,
+	beforeSend: function()
+	{
+    $("#profile_id").html('<option value="">Loading...</option>');
+	},
+	success: function(response)
+	{
+    $("#profile_id").html(response);
+
+	}
+  });	
+}
+function changeTeams()
+{
+var team_id=$("#team_ids").val();
+$.ajax({
+    type : 'POST',
+    url : '<?php echo SITEURL?>manageuser/index/teamuser',
+    data : "team_id="+team_id,
+	cache:false,
+	beforeSend: function()
+	{
+    $("#assign_user_id").html('<option value="">Loading...</option>');
+	},
+	success: function(response)
+	{
+    $("#assign_user_ids").html(response);
+
+	}
+  });	
+}
+function changeAllocateUsers()
+{
+var user_id=$("#assign_user_ids").val();
+$.ajax({
+    type : 'POST',
+    url : '<?php echo SITEURL?>manageuser/index/getuserprofile',
+    data : "user_id="+user_id,
+	cache:false,
+	beforeSend: function()
+	{
+    $("#profile_ids").html('<option value="">Loading...</option>');
+	},
+	success: function(response)
+	{
+		//alert(response);
+    $("#profile_ids").html(response);
+
+	}
+  });	
+}
+
+function ExportAllRecord()
+{
+  var formobj=document.form1;
+	if(confirm("Are you sure you want to export record!"))
+	{
+		var formobj=document.form1;
+		formobj.action="<?=SITEURL?>managequery/index/exportalldata";
+		formobj.submit();
+	} 
+}
+
+function ExportEmailCampaignRecord(camp_id="")
+{
+var formobj=document.form1;
+if($("#campaign_user_id").val()=="")
+	{
+	alert("Please select campaign user");
+	document.getElementById("campaign_user_id").focus();	
+	return false;	
+	}
+	else
+	{
+	if(confirm("Are you sure you want to export record!"))
+	{
+		var formobj=document.form1;
+		formobj.action="<?=SITEURL?>managequery/index/exportemailcampaigndata/camp_id/"+camp_id;
+		formobj.submit();
+	} 
+	}	
+}
+
+
+</script>
+
+ 

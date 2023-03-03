@@ -1,0 +1,99 @@
+ <?php 
+ $this->user = new Manageuser_Model_Manageuser();
+ if(count($this->commentData) > 0)
+ {
+                 foreach($this->commentData as $Comments)
+				 { 
+				 $userInfo=$this->user->getUserId($Comments->user_id);
+				 
+				 ?>
+				 
+				 
+				  <!-- chat item -->
+              <div class="item">
+			  
+                 
+                <span class="user-avatar"><?=getnameByFirstCharacter($userInfo->name)?></span>
+                <p class="message">
+                   
+                    <small class="text-muted pull-right" style="font-size: 12px;"><i class="fa fa-clock-o"></i> <span  data-toggle="tooltip" data-original-title="<?=date("d M Y h:i A",$Comments['dates'])?>"><?php echo GetdateTimeFormate($Comments['dates']);?></span></small>
+                    
+                  <div class="custom-comments-message">
+				  <?php echo $Comments['comments'];?>
+				  </div>
+				  
+                
+                </p>
+				 
+              </div>
+              <!-- /.item -->
+           
+ <?php }
+ }?>
+ 
+ 
+ 
+<?php
+function getnameByFirstCharacter($string)
+{
+$words = explode(" ", ucwords($string));
+$letters = "";
+foreach ($words as $value) {
+    $letters .= substr($value, 0, 1);
+}
+
+if(strlen($letters)==1)
+{
+$letters = substr(strtoupper($string), 0, 2);	
+}
+return $letters;
+}
+
+function GetdateTimeFormate( $time )
+{
+    $time_difference = time() - $time;
+
+    if( $time_difference < 1 ) { return 'less than 1 second ago'; }
+    $condition = array( 12 * 30 * 24 * 60 * 60 =>  'Year',
+                30 * 24 * 60 * 60       =>  'Month',
+                24 * 60 * 60            =>  'Day',
+                60 * 60                 =>  'Hour',
+                60                      =>  'Min',
+                1                       =>  'Sec'
+    );
+
+    foreach( $condition as $secs => $str )
+    {
+        $d = $time_difference / $secs;
+
+        if( $d >= 1 )
+        {
+            $t = round( $d );
+            return  $t . ' ' . $str . ( $t > 1 ? 's' : '' ) . ' ago';
+        }
+    }
+}
+
+
+?>
+<style>
+.dropdownmenu {
+    width: 500px;
+	border-color: #9E9E9E;
+}
+ 
+.dropdownmenu li {
+    padding: 5px;
+	font-size:17px;
+}
+div#tab_CampaginComments {
+    overflow: auto;
+    height: 400px;
+	padding: 10px;
+}
+</style>
+<script>
+$(function () {
+	$('[data-toggle="tooltip"]').tooltip();
+	});
+</script>

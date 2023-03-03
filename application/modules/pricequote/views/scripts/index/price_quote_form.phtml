@@ -1,0 +1,348 @@
+ <?php
+ //echo "<pre>";
+ //print_r($this->QueryInfo);
+ // echo "</pre>";
+ 
+ 
+ ?>
+ <form action="" class="form-horizontal" name="priceQuoteForm" id="priceQuoteForm" method="post">
+				   <input type="hidden" name="ref_id" value="<?=$this->QueryInfo['assign_id'];?>">
+                    <div class="box-body"> 
+					<div class="form-group">
+                  <label for="inputEmail3" class="col-sm-4 control-label">Ref No.</label>
+                  <div class="col-sm-8"><?=$this->QueryInfo['assign_id'];?></div>
+                </div>
+				<div class="clearfix"></div>
+				<div class="form-group">
+                  <label for="inputEmail3" class="col-sm-4 control-label">Client Name</label>
+                  <div class="col-sm-8"><?=$this->QueryInfo['name'];?></div>
+                </div>
+				<div class="clearfix"></div>
+				<div class="form-group">
+                  <label for="inputEmail3" class="col-sm-4 control-label">Email Id</label>
+                  <div class="col-sm-8"><?=$this->QueryInfo['email_id'];?></div>
+                </div>
+				<div class="clearfix"></div>
+				
+				<div class="form-group">
+                  <label class="col-sm-4 control-label">Service</label>
+                  <div class="col-sm-8">
+                    <!--<input class="form-control" name="service_name" id="service_name" placeholder="Please enter service">-->
+					<select name="quote_service_id" id="quote_service_id" class="form-control" onchange="getServiceQuote()">
+					<option value="">Select Service</option>
+					<?php foreach($this->quoteServiceData as $quote){?>
+					<option value="<?=$quote['id']?>"><?=$quote['quote_service_name']?></option>
+					<?php }?>
+					</select>
+              <span id="quote_service_idError" class="error"></span>					
+                  </div>
+                </div>
+				<div class="clearfix"></div>
+				<?php 
+				if($this->QueryInfo['website_id']==8)
+				{ 
+                include("fivevidya_price_form.phtml");
+      			}
+				else {?>
+				<div class="form-group">
+                  <label class="col-sm-4 control-label">Total Price</label>
+                  <div class="col-sm-4">
+                    <input class="form-control" name="total_price" id="total_price" placeholder="Please Total Price">
+              <span id="total_priceError" class="error"></span>					
+                  </div>
+				  <div class="col-sm-4">
+				  <select name="no_of_milestone" id="no_of_milestone" class="form-control" onchange="SelectMilestone()">
+					<option value="" label="No of Milestones">No of Milestones</option>
+					<?php for($i=1; $i<=10;$i++){?>
+					<option value="<?=$i?>" label="<?=$i?>"><?=$i?></option>
+					 <?php }?>
+					</select>
+					<span id="no_of_milestoneError" class="error"></span>
+				  </div>
+ 				  <div class="col-sm-12"  id="milestone_area">
+				  </div>
+                </div>
+				<?php }?>
+				
+				
+				
+				<div class="clearfix"></div>
+				<div class="form-group">
+                  <label class="col-sm-4 control-label">Discount Type</label>
+                  <div class="col-sm-4">
+                   <select name="discount_type" id="discount_type" class="form-control" onchange="changeDiscountType()">
+					  <option value="">Discount Type</option>
+					  <option value="1">Percentage</option>
+					  <option value="2">Fixed</option>
+					  <option value="None">None</option>
+				   </select>
+              <span id="discount_typeError" class="error"></span>					
+                  </div>
+				  <div class="col-sm-4 disCondSec">
+				  <input type="text" name="discount_value" id="discount_value" placeholder="Discount Value" class="form-control">
+                  <span id="discount_valueError" class="error"></span>
+				  </div>
+				  
+				  
+                </div>
+				
+				 
+				
+				<div class="clearfix"></div>
+				<div class="form-group disCondSec">
+                  <label class="col-sm-4 control-label">Coupon Code</label>
+                  <div class="col-sm-8">
+                 <input type="text" name="coupon_code" id="coupon_code" value="" class="form-control">
+                  <span id="coupon_codeError" class="error"></span>					
+                  </div>
+                </div>
+				
+				<div class="clearfix"></div>
+				<div class="form-group">
+                  <label class="col-sm-4 control-label">Payment Website</label>
+                  <div class="col-sm-8">
+                  <select name="payment_website" id="payment_website" class="form-control" onchange="changePaymentWebsite()">
+					  <option value="">Select Payment Website</option>
+					  <!--<option value="Emarketz">Emarketz</option>-->
+					  <?php if($this->QueryInfo['website_id']==8){?>
+					  <option value="Fivevidya">Fivevidya</option>
+					  <?php }
+					  else if($this->QueryInfo['website_id']==4)
+					  {
+					  ?>
+					  <option value="Chankya Research">Chankya Research EBS</option>
+					  <option value="Chankya Instamojo">Chankya Research Instamojo</option>
+					  <?php }?>
+					  <option value="Other">Other</option>
+					  
+					  </select>
+                  <span id="payment_websiteError" class="error"></span>					
+                  </div>
+                </div>
+				
+				<div class="clearfix"></div>
+				<div class="form-group" id="expiryDateDiv" style="display:none;">
+                  <label class="col-sm-4 control-label">Expiry Date</label>
+                  <div class="col-sm-8">
+                 <input type="text" name="expiry_date" id="expiry_date" value="" class="form-control datepicker">
+                  <span id="expiry_dateError" class="error"></span>					
+                  </div>
+                </div>
+				
+				<div class="clearfix"></div>
+				<?php if($this->QueryInfo['website_id']!=8){?>
+				<div class="form-group" id="workScopeId">
+                  <label class="control-label">Work Scope</label>
+                  <div class="col-sm-12">
+                 <textarea type="text" name="order_summary" id="order_summary" class="form-control textarea"></textarea>
+                  <span id="order_summaryError" class="error"></span>					
+                  </div>
+                </div>
+				 
+				<div class="clearfix"></div>
+				<div class="form-group" id="AttachmentQuoteTempFile"></div>
+				<?php }?>  
+				<div class="row form-group">
+				  <div class="col-sm-6">
+                  <label for="file_title_name">File Title Name To Show Client</label>
+				  </div>
+				  
+				  <div class="col-sm-6">
+                  <label for="upload_file1">Attached Document</label>
+			      </div>
+				  
+				</div>
+				
+				<div class="row form-group"  id="attachment_file">
+				  <div class="col-sm-5">
+                  <input type="text" class="form-control" name="extraFiles[file_title_name][]" id="file_title_name" value="">
+				  <div class="error" id="upload_fileError"></div>
+				  </div>
+				  <div class="col-sm-5">
+                  <input type="file" id="upload_file" name="extraFiles[upload_file][]" class="form-control">
+				  <div class="error" id="upload_fileError"></div>
+			      </div>
+				  <div class="col-md-2" id="add_more_button">
+					 <i style="font-size:20px;padding-top:3px;cursor:pointer;" class="fa fa-plus-circle"></i>
+				  </div>
+				</div>
+				
+				 
+				 
+				<div class="clearfix"></div>
+				<?php if(count($this->quoteData) > 0){?>
+				<div class="form-group pull-left">
+				<input type="button" class="btn btn-danger btn-sm" value="Cancel" onclick="HideAddPriceDiv();">
+				</div>
+				<?php }?>
+				
+				
+				<div class="form-group pull-right">
+				<?php
+				if($this->QueryInfo['website_id']==8)
+				{ ?>
+				<input id="PriceQuoteSubmitBtn1" type="submit" class="btn btn-primary" value="Submit" onclick="return SubmitPriceFiveVidyaQuote();">	
+				<?php }
+				else
+				{
+				?>
+				<input id="PriceQuoteSubmitBtn1" type="submit" class="btn btn-primary" value="Submit" onclick="return SubmitPriceQuote();">
+				<?php } ?>
+				<input id="PriceQuoteSubmitBtn2" style="display:none;" type="button" disabled class="btn btn-info" value="Please Wait...">
+				
+				 
+                 </div>	
+					</div>
+                 
+</form>
+<style>
+.spackage{
+	border: solid 1px;
+    border-color: #0a918b;
+    padding: 10px;
+	margin-bottom: 10px;
+}
+</style>				
+<script>
+ $(function () {
+    $('.textarea').wysihtml5();
+	$(".datepicker").datepicker({
+   startDate: new Date(),
+      showInputs: false,
+	  todayHighlight: true
+
+    });
+ });
+ 
+ 
+    $(document).ready(function(){
+	 	
+  var max_fields_limit      = 10; //set limit for maximum input fields
+    var x = 1; //initialize counter for text box
+    $('#add_more_button').click(function(e){ //click event on add more fields button having class add_more_button
+        e.preventDefault();
+        if(x < max_fields_limit){ //check conditions
+            x++; //counter increment
+			var html="";
+			
+			html+='<div class="row form-group">';
+			html+='<div class="col-sm-5">';
+            html+='<input type="text" class="form-control" name="extraFiles[file_title_name][]" id="file_title_name" value="">';
+			html+='<div class="error" id="upload_fileError"></div>';
+			html+='</div>';
+			html+='<div class="col-sm-5">';
+            html+='<input type="file" id="upload_file" name="extraFiles[upload_file][]" class="form-control">';
+			html+='<div class="error" id="upload_fileError"></div>';
+			html+='</div>';
+			html+='<div class="col-md-2" id="remove_field"><i style="font-size:20px;padding-top:3px;cursor:pointer;" class="fa fa-minus-circle"></i></div>';
+			html+='</div>';
+			
+			
+			//html+='<div class="form-group"><div class="col-md-10"><input type="file" class="form-control" name="upload_file[]" id="upload_file'+x+'"/></div>';
+           // html+='<div class="col-md-2" id="remove_field"><i style="font-size:20px;padding-top:3px;cursor:pointer;" class="fa fa-minus-circle"></i></div></div>';
+			
+			
+            $('#attachment_file').append(html); //add input field
+        }
+    });
+
+
+$('#attachment_file').on("click","#remove_field", function(e){ //user click on remove text links
+        e.preventDefault(); $(this).parent('div').remove(); x--;
+    })	
+
+
+//checkFunctionEntryType();
+   
+   })
+ 
+function getServiceQuote()
+{
+var quote_service_id=document.priceQuoteForm.quote_service_id.value;
+$.ajax({
+url: '<?=SITEURL?>template/index/get-service-quote-templateinfo',
+type: 'POST',
+data: "quote_service_id="+quote_service_id,
+dataType: 'JSON',
+beforeSend: function()
+{
+},
+success: function (data) {
+	   <?php if($this->QueryInfo['website_id']==8) { ?>
+		var servicePackage=	JSON.parse(data.service_package); 
+		servicePackage.forEach(function (arrayItem, index) {
+		var i = index+1;
+		$("#package_name"+i).val(arrayItem.package_name);
+		$('#workScopeId'+i+' .wysihtml5-sandbox').contents().find('.wysihtml5-editor').html(arrayItem.service_scope);
+		
+		if(arrayItem.file_path!="" && arrayItem.file_title_name!="")
+	  {
+	 $("#AttachmentQuoteTempFile"+i).html('<div class="col-md-12"><input type="checkbox" name="packageData[file_permission]['+index+']" value="Yes" checked> &nbsp;&nbsp; <a href="<?=SITEURL?>public/UploadFolder/'+arrayItem.file_path+'" download=""><i class="fa fa-download"></i> '+arrayItem.file_title_name+'</a></div>'); 
+   var fileArr=	{file_title_name:arrayItem.file_title_name,file_path:arrayItem.file_path};
+	 $("#templateUploadFile"+i).val(JSON.stringify(fileArr));
+	  }
+	  else
+	  {
+		$("#AttachmentQuoteTempFile"+i).html(''); 
+       $("#templateUploadFile"+i).val('');		
+	  }
+		
+		});
+		
+	  
+	<?php } else {?>
+   $('#workScopeId .wysihtml5-sandbox').contents().find('.wysihtml5-editor').html(data.service_scope);
+   var filesData=data.upload_file
+   console.log(filesData.length);
+   if(filesData.length!==0)
+   {
+	  if(filesData.upload_file!="" && filesData.file_title_name!="")
+	  {
+	 $("#AttachmentQuoteTempFile").html('<div class="col-md-12"><input type="checkbox" name="file_permission" value="Yes" checked> &nbsp;&nbsp; <a href="<?=SITEURL?>public/UploadFolder/'+filesData.upload_file+'" download=""><i class="fa fa-download"></i> '+filesData.file_title_name+'</a></div>');  
+	  }
+   }
+   else
+   {
+	$("#AttachmentQuoteTempFile").html('');   
+   }   
+   
+	<?php }?> 
+   
+} 
+
+});	
+ }
+function SelectPackageMilestone(index)
+{
+	var package_price=$("#package_price"+index).val();
+	if(package_price=="")
+	{
+	alert("Please enter first package price "+index);
+	$("#no_of_milestone"+index).val("");
+	}
+	else{
+		var len = $("#no_of_milestone"+index).val();
+		var milestonePrice=Math.ceil(package_price/len);
+        var mindex=index-1;
+		html="";
+		 for (var i = 1; i <= len; i++) 
+		 {
+	html+='<div class="row" style="border: solid 1px;border-color: #dcd7d7;margin:5px !important;">';
+	html+='<div class="col-sm-6"><input class="form-control" name="packageData[milestoneData]['+mindex+'][milestone_name][]" id="package_milestone_name_'+index+'_'+i+'" value="" placeholder="Milestone Name '+i+'" onchange="removeError(this.id)" onkeypress="removeError(this.id)"><span id="package_milestone_name_'+index+'_'+i+'Error" class="error"></span></div>';
+	html+='<div class="col-sm-6"><input class="form-control" name="packageData[milestoneData]['+mindex+'][milestone_price][]" id="package_milestone_price_'+index+'_'+i+'" value="'+milestonePrice+'" onchange="removeError(this.id)" onkeypress="removeError(this.id)"><span id="package_milestone_price_'+index+'_'+i+'Error" class="error"></span></div>';
+	html+='<div class="clearfix"></div>';
+	html+='<div class="col-sm-6"><input class="form-control datepicker" name="packageData[milestoneData]['+mindex+'][milestone_eta][]" id="package_milestone_eta_'+index+'_'+i+'" value="" placeholder="ETA" onchange="removeError(this.id)" onkeypress="removeError(this.id)"><span id="package_milestone_eta_'+index+'_'+i+'Error" class="error"></span></div>';
+	html+='<div class="col-sm-6"><input class="form-control" name="packageData[milestoneData]['+mindex+'][milestone_remark][]" id="package_milestone_remark_'+index+'_'+i+'" value="" placeholder="Remarks" onchange="removeError(this.id)" onkeypress="removeError(this.id)"><span id="package_milestone_remark_'+index+'_'+i+'Error" class="error"></span></div>';
+	html+='</div>';
+	 
+		 }
+		 
+		$("#milestone_area"+index).html(html);
+		
+		$('body').on('focus',".datepicker", function(){
+    $(this).datepicker({startDate: new Date(),showInputs: false,todayHighlight: true}); 
+    });
+	 }
+	
+}
+</script>

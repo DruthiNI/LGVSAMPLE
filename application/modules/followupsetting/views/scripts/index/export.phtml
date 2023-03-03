@@ -1,0 +1,36 @@
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+							<tr>
+ 								<th>Sr. No.</th>
+								<th>Name</th>
+								<th>Username</th>
+                                <th>Password</th>
+                                <th>Email ID</th>
+                                <th>Mobile No.</th>
+                                <th>Status</th>
+                                <th>Created Date</th>
+   							</tr>
+                         
+                          <?php $i=1;
+                          foreach($this->userArr as $users)
+						  {
+						  ?>
+                                <tr>
+                                <td><?=$i;?></td>
+								<td><?php echo $users['name'];?></td>
+								<td><?php echo $users['username'];?></td>
+                                <td><?php echo $users['password'];?></td>
+                                <td><?php echo $users['email_id'];?></td>
+                                <td><?php echo $users['mobile_no'];?></td>
+ 								<td>
+                                <?php if($users['status']==1){?>
+                              Active
+                                <?php } else {?>
+                              Inactive
+                                <?php }?>
+                                </td>
+ 								<td><?php echo date("M d, Y",$users['created_on']);?></td>
+                                
+                              
+							</tr>
+                         <?php }?>
+  						</table>

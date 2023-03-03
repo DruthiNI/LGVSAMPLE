@@ -1,0 +1,189 @@
+<?php
+$uploadFileArr=array();
+if($this->serviceInfo['upload_file'])
+{
+$uploadFileArr=json_decode($this->serviceInfo['upload_file'], true);	
+}
+$extraFile=array();
+if($this->serviceInfo['document_file'])
+{
+$extraFile=json_decode($this->serviceInfo['document_file'], true);	
+}
+?>        
+		  <div class="form-group">
+                  <label class="col-sm-4 control-label">Package Name</label>
+                  <div class="col-sm-8"><?=$this->servicePackageInfo['package_name']?> 				
+                  </div>
+                </div>
+				 
+				
+				<div class="clearfix"></div>
+				<div class="form-group">
+                  <label class="col-sm-4 control-label">Total Package Amount</label>
+                  <div class="col-sm-8">
+				<span id="show_sr_amount_div<?=$this->servicePackageInfo['id']?>">
+			  <?=$this->servicePackageInfo['package_price']?> 
+			 <?php if($this->userInfo->user_type=='Lead Validator' and $this->servicePackageInfo['is_activated']==0){?>
+			 <!-- <span onclick="ChangeServiceAmount(<?=$this->servicePackageInfo['id']?>)" style="font-size:15px; margin-left: 10px; cursor:pointer;" class="fa fa-edit">
+			  </span>-->
+			 <?php }?>
+			  </span>
+			  <span id="edit_sr_amount_div<?=$this->servicePackageInfo['id']?>" style="display:none;">
+			   <input class="form-control1" style="width:100px;" type="text" name="edit_service_amount<?=$this->servicePackageInfo['id']?>" id="edit_service_amount<?=$this->servicePackageInfo['id']?>" value="<?=$this->servicePackageInfo['package_price']?>">
+			   <input class="btn btn-info btn-xs" type="button" onclick="SaveServiceAmount(<?=$this->servicePackageInfo['id']?>)" value="Save">
+			  </span>
+				
+                				
+                  </div>
+                </div>
+				 
+				<div class="clearfix"></div>
+				<div class="form-group">
+                  <label class="control-label">Work Scope  <?php if($this->userInfo->user_type=='Lead Validator' and $this->servicePackageInfo['is_activated']==0){?>
+									 <!-- <span onclick="ChangeWorkScope(<?=$this->servicePackageInfo['id']?>)" style="font-size:15px; margin-left: 10px; cursor:pointer;" class="fa fa-edit pull-right">
+									  </span>-->
+									  <?php }?></label>
+                  <div class="col-sm-12">
+				  <span id="show_ws_div<?=$this->servicePackageInfo['id']?>">
+									  <?=$this->servicePackageInfo['service_scope']?>
+									  
+									  </span>
+									  
+									  <span id="edit_ws_div<?=$this->servicePackageInfo['id']?>" style="display:none;">
+									   <textarea class="form-control edit_work_scope" name="edit_work_scope<?=$this->servicePackageInfo['id']?>" id="edit_work_scope<?=$this->servicePackageInfo['id']?>"><?=$this->servicePackageInfo['service_scope']?></textarea>
+									   <input class="btn btn-info btn-xs pull-right" type="button" onclick="SaveWorkScope(<?=$this->servicePackageInfo['id']?>)" value="Save">
+									  </span>
+				  
+				  				
+                  </div>
+                </div>
+				
+<?php if($this->servicePackageInfo['p_file_permission']=='Yes' and $uploadFileArr['file_title_name'] and $uploadFileArr['upload_file']!=""){ 
+?>
+<div class="clearfix"></div>
+				<div class="form-group">
+                  <label class="col-sm-4 control-label">Template File</label>
+                  <div class="col-sm-8"> <a href="<?=SITEURL?>public/UploadFolder/<?=$uploadFileArr['upload_file']?>" download class="label label-default"><?=$uploadFileArr['file_title_name']?> <i class="fa fa-download text-light" aria-hidden="true"></i></a>
+                  </div>
+                </div>
+				
+		  
+  
+<?php }?>
+				
+ 
+				<div class="clearfix"></div>
+				<br>
+			  <div class="form-group">
+			  <label class="control-label">Milestone Details</label>
+			  <?php if($this->userInfo->user_type=='Lead Validator' and $this->servicePackageInfo['is_activated']==0){?>
+			 <!-- <div class="pull-right"><span class="btn btn-primary btn-sm" onclick="showAddMilestoneDiv(<?=$this->p_file_permission['id']?>)">Add New Milestone</span></div>-->
+			  <?php }?>
+                 <table class="table">
+                <tr>
+                  <th>#</th>
+                  <th>Milestone Name </th>
+                  <th>Milestone Price</th>
+                  <th>Discounted Price</th>
+                  <th>ETA</th>
+ 				  <?php if($this->userInfo->user_type=='Lead Validator'){?>
+                  <!--<th>Action</th>-->
+				  <?php }?>
+                </tr>
+				
+				<?php 
+				$i=1;
+				$paymentCount=0;
+				foreach($this->servicePackageMilestoneData as $milestones){?>
+                <tr>
+                  <td><strong><?=$i?>.</strong></td>
+                  <td> <?=$milestones['milestone_name']?></td>
+                  <td>
+				   <span id="show_ml_amount_div<?=$milestones['id']?>">
+									  <?=$milestones['milestone_price']?>
+									  
+									<?php if($this->userInfo->user_type=='Lead Validator' and $milestones['status']!=1){?>
+									<!--<span onclick="ChangeMilestoneAmount(<?=$milestones['id']?>)" style="font-size:15px; margin-left:5px; cursor:pointer;" class="fa fa-edit">
+									  </span>-->
+									<?php }?>
+									  </span>
+									  <span id="edit_ml_amount_div<?=$milestones['id']?>" style="display:none;">
+									   <input class="form-control1" style="width:100px;" type="text" name="edit_milestone_amount<?=$milestones['id']?>" id="edit_milestone_amount<?=$milestones['id']?>" value="<?=$milestones['milestone_price']?>">
+									   <input class="btn btn-info btn-xs" type="button" onclick="SaveMilestoneAmount(<?=$milestones['id']?>,<?=$milestones['service_id']?>)" value="Save">
+									  </span>
+				  
+				  
+				  </td>
+				 
+                  <td>
+				  <?php
+				  if($this->serviceInfo['discount_type']==1)
+				 {
+				   echo $milestones['milestone_price']-($milestones['milestone_price']*$this->serviceInfo['discount_value']/100);
+				 }
+				 else if($this->serviceInfo['discount_type']==2)
+				 {
+				   echo $milestones['milestone_price']-($this->serviceInfo['discount_value']/count($this->serviceMilestoneData));	 
+				 }
+				 else
+				 {
+					echo $milestones['milestone_price']; 
+				 }
+				  ?>
+				  
+				 </td>
+				  <td> <?=($milestones['milestone_eta'])?date("d M Y",$milestones['milestone_eta']):""?></td>
+                  
+				  <?php if($this->userInfo->user_type=='Lead Validator'){?>
+				<!--  <td><?php if($milestones['status']==0){?><a href="javascript:" onclick="DeleteMilestone(<?=$milestones['id']?>,<?=$milestones['service_id']?>)"><i class="fa fa-trash-o"></i></a><?php }?></td>-->
+				  <?php }?>
+                </tr>
+				
+				<tr>
+				<td colspan="3"> Remarks : <?=$milestones['milestone_remark']?></td>
+				<td colspan="3"> Status :  <?php if($this->userInfo->user_type=='Lead Validator'){?>
+		     <select style="width:90px;" name="milestone_status" id="milestone_status<?=$milestones['id']?>" onchange="ChangePackageMilestoneStatus(<?=$milestones['service_id']?>,<?=$milestones['package_id']?>,<?=$milestones['id']?>,this.value)" <?=($milestones['status']==1)?"disabled":""?> >
+			 <option value="1" <?=($milestones['status']==1)?"selected":""?>>Paid</option>
+			 <option value="0" <?=($milestones['status']==0)?"selected":""?>>Pending</option>
+			 
+			 </select>
+				  <?php } else {   
+				      if($milestones['status']==1)
+				      {
+					  echo '<span class="label label-success">Paid</span>';
+					  }
+					  else
+						{
+						echo '<span class="label label-warning">Pending</span>'; 
+				        }
+				  }
+				  
+				  
+				      if($milestones['status']==1)
+				      {
+					  $paymentCount=$paymentCount+1;
+					  }
+					  
+				  
+				  
+				  ?></td>
+				</tr>
+				
+				
+				<?php 
+				
+			 
+				$i++; } ?>
+               
+              </table>
+			  
+             <div class="clearfix"></div>
+			 <div id="PackagemilestoneStatusUpdateMess<?=$this->servicePackageInfo['id']?>">
+			 
+			 
+			 
+			 
+			 </div>
+				  
+                </div>
+ 				

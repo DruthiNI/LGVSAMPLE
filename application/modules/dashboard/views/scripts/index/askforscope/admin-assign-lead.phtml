@@ -1,0 +1,285 @@
+<div class="box-body" id="activityHistoryArea">
+              <div class="box-group" id="accordion">
+                <div class="">
+                  <div class="box-header with-border">
+                    <h2 class="box-title">
+                      <a>Ask for Scope</a>
+                    </h2>
+                  </div>
+                  <div id="askforScope">
+				  <?php if(!$this->quoteInfo['id'] and $this->userInfo->user_type=='Lead Validator'){
+					 include("quote_form.phtml"); 
+					  
+				  } else { ?>
+					  <div class="box-body"> 
+					  <div class="form-group">
+                  <label for="inputEmail3" class="col-sm-4 control-label">Ref No.</label>
+                  <div class="col-sm-8"><?=$this->quoteInfo['ref_id'];?></div>
+                </div>
+				<!--<div class="clearfix"></div>
+				<div class="form-group">
+                  <label for="inputEmail3" class="col-sm-4 control-label">Deadline</label>
+                  <div class="col-sm-8"><?=$this->quoteInfo['deadline_date'];?></div>
+                </div>-->
+				<div class="clearfix"></div>
+				<div class="form-group">
+                  <label for="inputEmail3" class="col-sm-4 control-label">Currency</label>
+                  <div class="col-sm-8"><?=$this->quoteInfo['currency'];?></div>
+                </div>
+				<div class="clearfix"></div>
+				<div class="form-group">
+                  <label for="inputEmail3" class="col-sm-4 control-label">Comments</label>
+                  <div class="col-sm-8"><?=$this->quoteInfo['comments'];?></div>
+                </div>
+				<div class="clearfix"></div>
+				<div class="form-group">
+                  <label for="inputEmail3" class="col-sm-4 control-label">Created Date</label>
+                  <div class="col-sm-8"><?=date("d M Y h:i A",$this->quoteInfo['created_date']);?></div>
+                </div>
+				
+				<?php if($this->quoteInfo['relevant_file']){?>
+				<div class="clearfix"></div>
+				<div class="row form-group">
+                  <label for="inputEmail3" class="col-sm-4 control-label">Relevant Files</label>
+                  <div class="col-sm-8">
+				  <?php 
+					  $relevant_fileArr=json_decode($this->quoteInfo['relevant_file']);
+					foreach($relevant_fileArr as $files)
+					{ ?>
+						<a href="<?=PUBLICURL.'QuotationFolder/'.$files->file_path?>" download><?=$files->filename?></a><br>
+				 <?php }
+				   
+					  ?></div>
+                </div>
+				<?php }?>
+				
+				
+				<?php
+				if($this->quoteInfo['status']==0 and !$this->assignQuoteInfo['id'])
+				  {
+				?>
+				<div class="clearfix"></div>
+				<div class="form-group">
+                  <label for="inputEmail3" class="col-sm-4 control-label">Status</label>
+                  <div class="col-sm-8"><?php
+				  
+					  echo "Pending";
+				   
+				  ?></div>
+                </div>
+				  <?php }?>
+				  
+				  <div class="clearfix"></div>
+				<div class="form-group refrencUrl">
+                  <label for="inputEmail3" class="col-sm-4 control-label">Reference Url</label>
+                  <div class="col-sm-8"><a href="<?=SITEURL.'managequote/view-askforscope/'.$this->quoteInfo['ref_id']?>" target="_blank"><?=SITEURL.'managequote/view-askforscope/'.$this->quoteInfo['ref_id']?></a></div>
+                </div>
+				
+				<?php
+				if($this->assignQuoteInfo['id'] and $this->assignQuoteInfo['status']!=2)
+				{ ?>
+			<div class="clearfix"></div>
+			<div class="form-group">
+                  <label for="inputEmail3" class="col-sm-4 control-label">Status</label>
+                  <div class="col-sm-8">Assigned to <?=$this->assignQuoteInfo['name']?></div>
+             </div>
+			 
+			 <div class="clearfix"></div>
+			<div class="form-group">
+                  <label for="inputEmail3" class="col-sm-4 control-label">Assign Date</label>
+                  <div class="col-sm-8"><?=date("d M Y h:i A",$this->assignQuoteInfo['assigned_date'])?></div>
+             </div>
+			<!--<div class="clearfix"></div>
+			<div class="form-group">
+                  <label for="inputEmail3" class="col-sm-4 control-label">Comments</label>
+                  <div class="col-sm-8"><?=$this->assignQuoteInfo['admin_comments']?></div>
+             </div>
+			-->
+			 
+				<?php } ?>
+				<?php
+				if($this->assignQuoteInfo['id'] and $this->assignQuoteInfo['status']==2)
+				{ ?>
+			<div class="clearfix"></div>
+			<div class="form-group">
+                  <label for="inputEmail3" class="col-sm-4 control-label">Status</label>
+                  <div class="col-sm-8">Submitted</div>
+             </div>
+			 
+			 <div class="clearfix"></div>
+			<div class="form-group">
+                  <label for="inputEmail3" class="col-sm-4 control-label">Price</label>
+                  <div class="col-sm-8"><?=$this->quoteInfo['currency']?> <span id="priceDiv"><?=$this->assignQuoteInfo['quote_price']?></span></div>
+             </div>
+			 
+			 <div class="clearfix"></div>
+			<div class="form-group">
+                  <label for="inputEmail3" class="col-sm-4 control-label">Submitted Date</label>
+                  <div class="col-sm-8"><?=date("d M, Y",$this->assignQuoteInfo['user_submitted_date'])?></span></div>
+             </div>
+			 
+			 <div class="clearfix"></div>
+			<div class="form-group">
+                  <label for="inputEmail3" class="col-sm-4 control-label">Comments</label>
+                  <div class="col-sm-8"><?=($this->assignQuoteInfo['user_comments']!="")?$this->assignQuoteInfo['user_comments']:$this->assignQuoteInfo['admin_comments']?></span></div>
+             </div>
+			 
+				
+				<?php } ?>
+				
+				<div class="clearfix"></div>
+				 <?php include("chat-box-area.phtml");?>
+
+					</div>
+					  
+				<?php  } ?>		 
+				 
+				 </div>
+                </div>
+				 
+			 </div>
+            </div>
+			
+<?php if(!$this->quoteInfo['id'])
+{
+?>
+   <script type="text/javascript">
+   $(document).ready(function(){
+	 	
+  var max_fields_limit      = 10; //set limit for maximum input fields
+    var x = 1; //initialize counter for text box
+    $('#add_more_buttonAsk').click(function(e){ //click event on add more fields button having class add_more_button
+        e.preventDefault();
+        if(x < max_fields_limit){ //check conditions
+            x++; //counter increment
+			var html="";
+			 
+			html+='<div class="form-group"><div class="col-md-10"><input type="file" class="form-control" name="quote_upload_file[]" id="quote_upload_file'+x+'"/></div>';
+            html+='<div class="col-md-2" id="remove_field"><i style="font-size:20px;padding-top:3px;cursor:pointer;" class="fa fa-minus-circle"></i></div></div>';
+			
+			
+            $('#attachment_fileAsk').append(html); //add input field
+        }
+    });
+$('#attachment_fileAsk').on("click","#remove_field", function(e){ //user click on remove text links
+        e.preventDefault(); $(this).parent('div').remove(); x--;
+    })	
+	
+	
+	
+ $("input").keypress(function(){
+ var id=this.id;
+ $("#"+id+"Error").html('');
+});
+$("textarea").keypress(function(){
+ var id=this.id;
+ $("#"+id+"Error").html('');
+});
+ $("input").click(function(){
+ var id=this.id;
+ $("#"+id+"Error").html('');
+});
+ $("select").change(function(){
+ var id=this.id;
+ $("#"+id+"Error").html('');
+});	
+	
+	
+   })
+   
+   function SubmitQuote()
+  {   
+  var error="";
+ /* if($("#deadline_date").val()=="")
+  {
+	$("#deadline_dateError").html("Please select deadline date");
+	error=1;
+  }	 */
+   if($("#currency").val()=="")
+  {
+	$("#currencyError").html("Please select currency");
+	document.getElementById("currency").focus();
+	error=1;
+  }
+  if($("#quote_comments").val()=="")
+  {
+	$("#quote_commentsError").html("Please select quote comments");
+	document.getElementById("quote_comments").focus();
+	error=1;
+  }
+ if(error==1)
+{
+return false;
+}
+else
+{
+
+ var url = "<?=SITEURL?>managequote/index/submit-request-quote"; // the script where you handle the form input.
+ $("#reqQuoteForm").submit((function(e) {
+	$("#AsksubmitBtn2").show();
+	$("#AsksubmitBtn1").hide();
+ 		e.preventDefault();
+ 		$.ajax({
+        	url: url,
+			type: "POST",
+			data:  new FormData(this),
+			contentType: false,
+    	    cache: false,
+			processData:false,
+			success: function(data){
+			if(data)
+			   { 
+		   $("#askforScope").html(data);
+            $("#AsksubmitBtn1").show();
+	       $("#AsksubmitBtn2").hide();
+			   
+			   }	 
+		    },
+		  	error: function(){} 	        
+	   });
+	})); 
+
+} 
+  
+ }
+ 
+
+ 
+
+
+</script>  
+ <?php } ?>
+ 
+ 
+<script>
+$(document).ready(function(){
+ $("#sibmitchatforuser").click(function() {
+		 if($("#message").val()=="")
+		 {
+		 $("#message").css("border-color","red");	 
+		 }
+		 else{
+	 	$.ajax({
+		type : 'POST',
+		url : '<?=SITEURL?>managequote/index/submituserchat',
+		data : $('#submitchat').serialize(),
+		cache:false,
+		beforeSend: function()
+		{
+			$("#chatLoadBtn").html('<input type="button" disabled class="btn btn-warning btn-flat" style="margin-top:-10px;" value="Loading...">');
+		},
+		success: function(response)
+		{
+		$("#chat_content").html(response);
+		$("#message").css("border-color","");
+        $("#message").val("");
+		
+		$("#chatLoadBtn").html('<input type="button" name="sibmitchatforuser" id="sibmitchatforuser" value="Send" class="btn btn-warning btn-flat" style="margin-top:-10px;">');
+		
+		}
+	  }); 
+		 }
+	  
+	});
+	  })
+</script>

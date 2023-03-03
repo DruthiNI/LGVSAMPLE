@@ -1,0 +1,300 @@
+<?php 
+$extraFile=array();
+if($this->serviceInfo['document_file'])
+{
+$extraFile=json_decode($this->serviceInfo['document_file'], true);	
+}
+//print_r($extraFile);die;
+ $m_totalPrice=$this->MilestoneInfo['milestone_price']; 
+if($this->serviceInfo['discount_type']==1)
+{
+$DiscountedPrice=($m_totalPrice-($m_totalPrice*$this->serviceInfo['discount_value'])/100);
+}
+else if($this->serviceInfo['discount_type']==2)
+{
+$DiscountedPrice=($m_totalPrice-($this->serviceInfo['discount_value'])/count($this->MilestoneData));	
+}
+else
+{
+$DiscountedPrice=$m_totalPrice;
+}
+
+if($this->serviceInfo['payment_website']=='Fivevidya')
+{
+$logo_url='https://www.fivevidya.com/images/logo.png';	
+$domain='fivevidya.com';
+$action_url="https://www.editingproofreading.in/fivevidya/secured-payment.php";
+}
+else if($this->serviceInfo['payment_website']=='Emarketz')
+{
+$logo_url='https://www.emarketz.net/img/logo.png';		
+$domain='emarketz.net';
+$action_url="";
+}
+else if($this->serviceInfo['payment_website']=='Chankya Research')
+{
+$logo_url=PUBLICURL.'chanakya-research/images/logo.png';
+$domain='chanakyaresearch.com';	
+$action_url="https://www.chanakyaresearch.com/payment/checkout.php";
+}
+else if($this->serviceInfo['payment_website']=='Chankya Instamojo')
+{
+$logo_url=PUBLICURL.'chanakya-research/images/logo.png';
+$domain='chanakyaresearch.com';	
+$action_url="https://www.chanakyaresearch.com/payment/checkout.php";
+}
+
+$uploadFileArr=array();
+if($this->serviceInfo['templateUploadFile'])
+{
+$uploadFileArr=json_decode($this->serviceInfo['templateUploadFile'], true);	
+}
+
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Chanakya Research</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="<?=PUBLICURL?>checkout/chanakya-research/css/bootstrap.min.css" rel="stylesheet" >
+<link href="<?=PUBLICURL?>checkout/chanakya-research/css/style.css" rel="stylesheet" >
+<link href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" rel="stylesheet" >
+
+</head>
+<body class="" style="cursor: auto;">
+<div class=" container mt-5 ">
+    <div class="row justify-content-center ">
+        <div class="col-xl-12">
+            <div class="card shadow-lg ">
+                <div class="row p-2 mt-3 mx-sm-2">
+                    <div class="col-sm-3">
+                        <p class="text-muted space mb-0 shop"></p>
+                       
+                    </div>
+                    <div class="col-sm-6 pl-0 text-center">
+            
+                            <div class="col"> <img class="irc_mi img-fluid cursor-pointer " src="<?=$logo_url?>" > </div>
+                        
+                    </div>
+					 <div class="col-sm-3">
+                       
+                    </div>
+                     </div>
+                 <h2 class="card-title space pt-2"><?=$this->serviceInfo['service_name']?>
+
+
+				  <p class="pt-3 pb-3 col-sm-9 mx-auto">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>
+				 </h2> </div>
+				 </div> </div> </div>
+				 
+				<div class=" container">
+				 <form name="secure_payment" id="secure_payment" method="post" action="<?=SITEURL?>checkout/index/checkoutproccess">
+				    <div class="card">
+                <div class="row p-5">
+                    <div class="col-md-5">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header pb-0">
+                               
+                                <p class="card-text text-muted space">ORDER DETAILS</p>
+                                <hr class="my-0">
+                            </div>
+                            <div class="card-body">
+									<p class="text-justify"><?=$this->serviceInfo['order_summary']?></p>
+       
+<?php if($this->serviceInfo['file_permission']=='Yes' and $uploadFileArr['file_title_name'] and $uploadFileArr['upload_file']!=""){ 
+?>
+		 <a href="<?=SITEURL?>public/UploadFolder/<?=$uploadFileArr['upload_file']?>" download class="download-button pr-2"><?=$uploadFileArr['file_title_name']?> <i class="fa fa-download text-light" aria-hidden="true"></i></a>		  
+				  
+<?php }?>
+
+<?php if(count($extraFile) > 0)
+{
+	foreach($extraFile as $files)
+	{ ?>
+		<a href="<?=SITEURL?>public/UploadFolder/<?=$files['file_path']?>" download class="download-button pr-2"><?=$files['filename']?> <i class="fa fa-download text-light" aria-hidden="true"></i></a>	
+	<?php }
+}	
+?>
+				  
+				  
+				  
+				  
+				  
+	                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="card border-0 ">
+                            <div class="card-header card-2 pt-0">
+                                <p class="card-text text-muted mb-2 space two">PERSONAL DETAILS </p>
+								  <div class="row justify-content-between">
+                                    <div class="col-auto col-md-7 pt-3">
+                                       <p class="mb-0"><b>Order ID </b></p>
+                                    </div>
+                                   
+                                    <div class="col-sm-5 pl-0 pt-3">
+                                        <p class="mb-0"><?=$this->serviceInfo['ref_id']?></p>
+                                    </div>
+                                </div>
+                                <hr class="my-2">
+								  <div class="row justify-content-between">
+                                    <div class="col-auto col-md-7">
+                                       <p class="mb-0"><b>Name </b></p>
+                                    </div>
+                                   
+                                    <div class="col-sm-5 pl-0">
+                                        <p class="mb-0"><?=$this->serviceInfo['name']?></p>
+                                    </div>
+                                </div>
+								<hr class="my-2">
+                              <div class="row justify-content-between">
+                                    <div class="col-auto col-md-7">
+                                       <p class="mb-0"><b>Email id </b></p>
+                                    </div>
+                                   
+                                    <div class="col-sm-5 pl-0">
+                                        <p class="mb-0"><?=$this->serviceInfo['email_id']?></p>
+                                    </div>
+                                </div>
+								<?php if($this->serviceInfo['phone']){?>
+								<hr class="my-2">
+								<div class="row justify-content-between">
+                                    <div class="col-auto col-md-7">
+                                       <p class="mb-0"> <b>Phone No. </b></p>
+                                    </div>
+                                   
+                                    <div class="col-sm-5 pl-0">
+                                        <p class="mb-0"><?=$this->serviceInfo['phone']?></p>
+                                    </div>
+                                </div>
+								<?php }?>
+                            </div>
+                            <div class="card-body pt-0">
+                               <p class="card-text text-muted mb-2 space two">ORDER DETAILS </p>
+                             <div class="row justify-content-between">
+                                    <div class="col-auto col-md-7">
+                                        <div class="media flex-column flex-sm-row">
+                                            <div class="media-body">
+                                                <div class="row ">
+                                                    <div class="col-auto mt-3">
+                                                        <p class="mb-0"><b><?=$this->serviceInfo['service_name']?></b></p>
+                                                    </div>
+                                                </div>
+                                                
+                                              
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                 
+                                    <div class=" pl-0 flex-sm-col col-auto pt-3 ">
+                                        <p class="mb-0"><b><i class="fa fa-inr"></i> <?=$this->serviceInfo['total_price']?></b></p>
+                                    </div>
+                                </div>
+                             <div class="row">
+              <div class="col-sm-12">
+            <table border="1" cellpadding="5" class="mt-2 mb-2" cellspacing="0" style="border: solid 1px;border-color: #cbcbcb;padding: 10px;     width: 100%;font-size:13px " id="milestoneData">
+			<tbody><tr>
+			<th> Description</th>
+			<th> &nbsp; Milestone Price</th>
+			<!--<th> &nbsp; Discounted Price</th>-->
+			<th> &nbsp; Status </th>
+			</tr>
+			
+				<?php $i=1; 
+          
+			foreach($this->MilestoneData as $Milestoneval)
+			{
+			
+			?>
+			<tr>
+			<td> &nbsp; <?=$Milestoneval['milestone_remark']?></td>
+			<td> &nbsp; <?="INR ".$Milestoneval['milestone_price']?></td>
+			<!--<td> &nbsp; INR <?php echo $Milestoneval['milestone_price']-($Milestoneval['milestone_price']*$this->serviceInfo['discount_value']/100);?></td>  -->
+			<td> <?php if($Milestoneval['status']==1){echo "Paid" ;}else{echo "Pending";} ?>
+			</td>
+			</tr>
+			<?php $i++;}?>
+			 
+						</tbody></table></div>
+                                                </div>
+                                <hr class="my-2">
+                                <div class="row ">
+                                    <div class="col">
+                                        <div class="row justify-content-between">
+                                            <div class="col-6">
+                                                <p class="mb-1"><b>Payment for <?=$this->MilestoneInfo['milestone_name']?>
+</b></p>
+                                            </div>
+                                            <div class="flex-sm-col col-auto">
+                                                <p class="mb-1"><b><i class="fa fa-inr"></i> <?=$m_totalPrice?></b></p>
+                                            </div>
+                                        </div>
+                                        <div class="row justify-content-between pt-2  pb-2">
+                                            <div class="col">
+                                                <p class="mb-1"><b>Coupon Discount <span id="apply">(<?=$this->serviceInfo['coupon_code']?> Auto Applied)</span></b></p>
+                                               <!-- <div id="coupon-filed" style="display:none;"><input type="text" class="form-control" value="Enter Coupon Code"></div>-->
+                                            </div>
+                                            <div class="flex-sm-col col-auto">
+                                                <p class="mb-1"><b><i class="fa fa-inr"></i> (-) <?=($m_totalPrice-$DiscountedPrice)?></b></p>
+                                            </div>
+                                        </div>
+										 <hr class="my-0">
+                                       <!-- <div class="row justify-content-between pt-2">
+                                            <div class="col-4">
+                                                <p><b>Total Amount</b></p>
+                                            </div>
+                                            <div class="flex-sm-col col-auto">
+                                                <p class="mb-1"><b><i class="fa fa-inr"></i> 14,500</b></p>
+                                            </div>
+                                        </div>
+                                       <div class="row justify-content-between pb-2">
+                                            <div class="col-4">
+                                                <p class="mb-0"><b>GST @ 18%</b></p>
+                                            </div>
+                                            <div class="flex-sm-col col-auto">
+                                                <p class="mb-0"><b><i class="fa fa-inr"></i> (+) 2,000</b></p>
+                                            </div>
+                                        </div>-->
+										<hr class="my-0">
+										
+										  <div class="row justify-content-between pb-2 pay">
+                                            <div class="col-6">
+                                                <p><b>Total Amount to Pay</b></p>
+                                            </div>
+                                            <div class="flex-sm-col col-auto">
+                                                <p class="mb-1"><b><i class="fa fa-inr"></i> <?php
+					 echo $DiscountedPrice;
+					  ?></b></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-5 mt-0">
+                                    <div class="col-sm-7"><h6><strong style="float: left;">Quote Id<input type="text" name="quote_id" id="quote_id" class="form-control mt-2" placeholder="Enter Quote Id" value="" required style="float:right;
+    width: 63%;
+    margin-top: -1px !important;"></strong></h6>
+</div>
+                                    <div class="col-md-5 float-right text-right">
+									<input type="hidden" name="id" value="<?=$this->serviceInfo['id']?>">
+									<input type="hidden" name="total_price" value="<?=$DiscountedPrice?>">
+									<button type="submit" class="btn btn-block btn-outline-primary btn-lg">Proceed to Pay <i class="fa fa-angle-double-right"></i></button></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+				</div>
+				</div>
+				</form>
+				</div>
+           
+		   </div>
+        </div>
+    </div>
+</div>
+</body></html>

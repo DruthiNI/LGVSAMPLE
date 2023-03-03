@@ -1,0 +1,77 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1></h1>
+    </section>
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <!-- left column -->
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <h2>
+        Add Box Tags
+       </h2>
+          <!-- general form elements -->
+          <div class="box box-primary">
+		  <div align="center">
+		  <?php if(isset($this->successmessage) and $this->successmessage){ echo $this->successmessage; }?>
+		  
+		  </div>
+             <!-- form start -->
+            <form role="form" action="" method="post" id="user_form" name="user_form">
+              <div class="box-body pt-3">
+                <div class="row form-group">
+				
+				<div class="col-sm-12">
+                  <label for="exampleInputEmail1">Box Tag Name<span class="error">*</span></label>
+                  <input type="text" name="box_tag_name" id="box_tag_name" required="required" class="form-control" value="<?php echo $this->tagInfo['box_tag_name'];?>" />
+                 </div>
+				
+				  </div>
+				  
+				  <div class="row form-group">
+				<div class="col-sm-12">
+				<div class="box-footer">
+                <input type="submit" name="submitBtn" id="submitBtn" class="btn btn-primary" value="submit" />
+				
+				&nbsp;&nbsp;
+				  <input type="button" class="btn bg-maroon" onClick="parent.location='<?=SITEURL?>box-tags'"  value="Cancel" />
+              </div>
+				</div>
+				</div>
+				  
+                  </div>
+              <!-- /.box-body -->
+            </form>
+          </div>
+          <!-- /.box -->
+          </div>
+          <div class="col-md-4"></div>
+        <!--/.col (left) -->
+        <!-- right column -->
+         <!--/.col (right) -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <script src="<?=PUBLICURL?>bootstrap/js/jquery.js"></script>
+<script src="<?=PUBLICURL?>bootstrap/js/jquery.validate.js"></script>
+ <script type="text/javascript">
+$(document).ready(function() {
+     var Validator = jQuery('#user_form').validate({
+         rules: {
+ 	        box_tag_name: "required",
+          },
+		  
+ 		messages: {
+ 			box_tag_name: " Please enter tag name",
+             }
+ 
+     });
+  
+ });
+ 
+ 
+</script>

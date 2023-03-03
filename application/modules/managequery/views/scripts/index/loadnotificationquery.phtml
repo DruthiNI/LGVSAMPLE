@@ -1,0 +1,346 @@
+   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<div class="col-md-2 width14prc">
+          <!-- AREA CHART --> 
+           <!-- /.box -->
+           <!-- DONUT CHART -->
+		   
+          <div class="box box-solid box-info">
+            <div class="box-header with-border">
+              <h3 class="box-title">Pending for Validation (<?=$this->LeadsCount?>)</h3>
+             </div>
+            <div class="box-body scrollbar" id="style-1">
+             <ul class="products-list product-list-in-box connectedSortable box-height" id="sortable1">
+             <?php 
+             foreach($this->LeadsData as $leadValue)
+			 {
+			 ?>
+                <li id="<?=$leadValue['assign_id']?>" class="item" onclick="OpenQueryDetailsPopUp(<?=$leadValue['assign_id']?>)">
+                  <div class="product-info">
+                    <a href="javascript:void(0)" class="product-title"><?=$leadValue['name']?>
+                      <span class="label label-warning pull-right"><?=$leadValue['contact_by']?></span></a>
+                        <span class="product-description">
+                          <?=$leadValue['email_id']?>  <br>Follow up Date : 
+						  
+						  <?php
+                          $currentDate=date("m/d/Y",$leadValue['follow_up_date']); 
+                          $Date1 = date("m/d/Y",strtotime($currentDate));
+                          $currentDate= strtotime($Date1. ' - '.(1).' days');
+						  ?>
+						  <?=date("d M Y",$currentDate)?>
+                        </span>
+                  </div>
+                </li>
+                
+              <?php }?> 
+                </ul>
+				<div class="force-overflow"></div>
+             </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+
+        </div>
+        
+        <div class="col-md-2 width14prc">
+          <!-- AREA CHART -->
+           <!-- /.box -->
+           <!-- DONUT CHART -->
+          <div class="box box-solid box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title"> Contact Made (<?=$this->ContactMadeCount?>)</h3>
+             </div>
+            <div class="box-body scrollbar" id="style-2">
+            <ul class="products-list product-list-in-box connectedSortable box-height" id="sortable2">
+            <?php
+             foreach($this->ContactMadeData as $ContactMadeValue)
+			 {
+			 ?>
+                <li id="<?=$ContactMadeValue['assign_id']?>" class="item" onclick="OpenQueryDetailsPopUp(<?=$ContactMadeValue['assign_id']?>)">
+                  <div class="product-info">
+                    <a href="javascript:void(0)" class="product-title"><?=$ContactMadeValue['name']?>
+                      <span class="label label-warning pull-right"><?=$ContactMadeValue['contact_by']?></span></a>
+                        <span class="product-description">
+                          <?=$ContactMadeValue['email_id']?>  <br>	Follow up Date : 
+						   <?php
+                          $currentDate=date("m/d/Y",$ContactMadeValue['follow_up_date']); 
+                          $Date1 = date("m/d/Y",strtotime($currentDate));
+                          $currentDate= strtotime($Date1. ' - '.(1).' days');
+						  ?>
+						  <?=date("d M Y",$currentDate)?>
+                         </span>
+                  </div>
+                </li>
+                
+              <?php }?> 
+              </ul>
+			  <div class="force-overflow"></div>
+             </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+
+        </div>
+        
+        
+        
+        <div class="col-md-2 width14prc">
+          <!-- AREA CHART -->
+           <!-- /.box -->
+           <!-- DONUT CHART -->
+          <div class="box box-solid box-warning">
+            <div class="box-header with-border">
+              <h3 class="box-title"> Quoted (<?=$this->QuotedCount?>)</h3>
+             </div>
+            <div class="box-body scrollbar" id="style-3">
+            <ul class="products-list product-list-in-box connectedSortable box-height" id="sortable3">
+            <?php
+             foreach($this->QuotedData as $QuotedValue)
+			 {
+			 ?>
+                <li id="<?=$QuotedValue['assign_id']?>" class="item" onclick="OpenQueryDetailsPopUp(<?=$QuotedValue['assign_id']?>)">
+                  <div class="product-info">
+                    <a href="javascript:void(0)" class="product-title"><?=$QuotedValue['name']?>
+                      <span class="label label-warning pull-right"><?=$QuotedValue['contact_by']?></span></a>
+                        <span class="product-description">
+                          <?=$QuotedValue['email_id']?>  <br>	Follow up Date : 
+						  <?php
+                          $currentDate=date("m/d/Y",$QuotedValue['follow_up_date']); 
+                          $Date1 = date("m/d/Y",strtotime($currentDate));
+                          $currentDate= strtotime($Date1. ' - '.(1).' days');
+						  ?>
+						  <?=date("d M Y",$currentDate)?>
+                          
+                         </span>
+                  </div>
+                </li>
+                
+              <?php }?>
+              </ul>
+			  <div class="force-overflow"></div>
+             </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+
+        </div>
+        
+        <div class="col-md-2 width14prc">
+          <!-- AREA CHART -->
+           <!-- /.box -->
+           <!-- DONUT CHART -->
+          <div class="box box-solid box-default">
+            <div class="box-header with-border">
+              <h3 class="box-title"> Negotiating (<?=$this->NegotiatingCount?>)</h3>
+             </div>
+            <div class="box-body scrollbar" id="style-4">
+            <ul class="products-list product-list-in-box connectedSortable box-height" id="sortable4">
+            <?php
+             foreach($this->NegotiatingData as $NegotiatingValue)
+			 {
+			 ?>
+                <li id="<?=$NegotiatingValue['assign_id']?>" class="item" onclick="OpenQueryDetailsPopUp(<?=$NegotiatingValue['assign_id']?>)">
+                  <div class="product-info">
+                    <a href="javascript:void(0)" class="product-title"><?=$NegotiatingValue['name']?>
+                      <span class="label label-warning pull-right"><?=$NegotiatingValue['contact_by']?></span></a>
+                        <span class="product-description">
+                          <?=$NegotiatingValue['email_id']?>  <br>	Follow up Date : 
+						  
+						  <?php
+                          $currentDate=date("m/d/Y",$NegotiatingValue['follow_up_date']); 
+                          $Date1 = date("m/d/Y",strtotime($currentDate));
+                          $currentDate= strtotime($Date1. ' - '.(1).' days');
+						  ?>
+						  <?=date("d M Y",$currentDate)?>
+                          
+                         </span>
+                  </div>
+                </li>
+              
+              <?php }?>
+              </ul>
+			  <div class="force-overflow"></div>
+             </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+
+        </div>
+        
+        <div class="col-md-2 width14prc">
+          <!-- AREA CHART -->
+           <!-- /.box -->
+           <!-- DONUT CHART -->
+          <div class="box box-solid box-success">
+            <div class="box-header with-border">
+              <h3 class="box-title"> Converted (<?=$this->ConvertedCount?>)</h3>
+             </div>
+            <div class="box-body scrollbar" id="style-5">
+            <ul class="products-list product-list-in-box connectedSortable box-height" id="sortable5">
+                <?php
+             foreach($this->ConvertedData as $ConvertedValue)
+			 {
+			 ?>
+                <li id="<?=$ConvertedValue['assign_id']?>" class="item" onclick="OpenQueryDetailsPopUp(<?=$ConvertedValue['assign_id']?>)">
+                  <div class="product-info">
+                    <a href="javascript:void(0)" class="product-title"><?=$ConvertedValue['name']?>
+                      <span class="label label-warning pull-right"><?=$ConvertedValue['contact_by']?></span></a>
+                        <span class="product-description">
+                          <?=$ConvertedValue['email_id']?>  <br>	Follow up Date : 
+						  
+                          <?php
+                          $currentDate=date("m/d/Y",$ConvertedValue['follow_up_date']); 
+                          $Date1 = date("m/d/Y",strtotime($currentDate));
+                          $currentDate= strtotime($Date1. ' - '.(1).' days');
+						  ?>
+						  <?=date("d M Y",$currentDate)?>
+                          
+                          </span>
+                  </div>
+                </li>
+                
+              <?php }?>
+                </ul>
+				<div class="force-overflow"></div>
+             </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+
+        </div>
+		
+		
+		
+		   <div class="col-md-2 width14prc">
+          <!-- AREA CHART -->
+           <!-- /.box -->
+           <!-- DONUT CHART -->
+          <div class="box box-solid box-info">
+            <div class="box-header with-border">
+              <h3 class="box-title">Reminder (<?=$this->DelayCount?>)</h3>
+             </div>
+            <div class="box-body scrollbar" id="style-7">
+             <ul class="products-list product-list-in-box connectedSortable box-height" id="sortable7">
+               <?php
+             foreach($this->DelayData as $DelayValue)
+			 {
+			 ?>
+                <li id="<?=$DelayValue['assign_id']?>" class="item" onclick="OpenQueryDetailsPopUp(<?=$DelayValue['assign_id']?>)">
+                  <div class="product-info">
+                    <a href="javascript:void(0)" class="product-title"><?=$DelayValue['name']?>
+                      <span class="label label-warning pull-right"><?=$DelayValue['contact_by']?></span></a>
+                        <span class="product-description">
+                          <?=$DelayValue['email_id']?>  <br>	Follow up Date : <?php echo date("d M Y",$DelayValue['follow_up_date']);
+						  ?>
+                        </span>
+                  </div>
+                </li>
+                
+              <?php }?>
+                </ul>
+				<div class="force-overflow"></div>
+             </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+
+        </div>
+		
+		
+		
+        
+        
+        <div class="col-md-2 width14prc">
+          <!-- AREA CHART -->
+           <!-- /.box -->
+           <!-- DONUT CHART -->
+          <div class="box box-solid  box-danger">
+            <div class="box-header with-border">
+              <h3 class="box-title">Client Not Interested (<?=$this->NotInterestedCount?>)</h3>
+             </div>
+            <div class="box-body scrollbar" id="style-6">
+            <ul class="products-list product-list-in-box connectedSortable box-height" id="sortable6">
+               <?php
+             foreach($this->NotInterestedData as $NotInterestedValue)
+			 {
+			 ?>
+                <li id="<?=$NotInterestedValue['assign_id']?>" class="item" onclick="OpenQueryDetailsPopUp(<?=$NotInterestedValue['assign_id']?>)">
+                  <div class="product-info">
+                    <a href="javascript:void(0)" class="product-title"><?=$NotInterestedValue['name']?>
+                      <span class="label label-warning pull-right"><?=$NotInterestedValue['contact_by']?></span></a>
+                        <span class="product-description">
+                          <?=$NotInterestedValue['email_id']?>  <br>	Follow up Date : 
+						  
+                           <?php
+                          $currentDate=date("m/d/Y",$NotInterestedValue['follow_up_date']); 
+                          $Date1 = date("m/d/Y",strtotime($currentDate));
+                          $currentDate= strtotime($Date1. ' - '.(1).' days');
+						  ?>
+						  <?=date("d M Y",$currentDate)?>
+                          
+                         </span>
+                  </div>
+                </li>
+                
+              <?php }?>
+                </ul>
+				<div class="force-overflow"></div>
+             </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+
+        </div>
+        
+        
+  <script>
+   $(document).ready(function() {
+    //////////////////////////////////////////////////////
+    $( "#sortable1, #sortable2, #sortable3, #sortable4, #sortable5, #sortable6, #sortable7" ).sortable({
+      connectWith: ".connectedSortable",
+	  receive: function(event,ui){
+                // console.log("old ui id = "+ui.sender.attr("id")+" new ul id = "+this.id+" li id "+$(ui.item).attr("id"));                   
+                 if(ui.sender.attr("id") != this.id)
+                 {  
+				 var sender_status=ui.sender.attr("id");
+				 var receiver_status=this.id;
+				 var query_id=$(ui.item).attr("id");
+                    //Your ajax call will come here
+					     //alert(ui.sender.attr("id"));
+                        // alert(this.id);
+						 //alert($(ui.item).attr("id"));
+
+                            $.ajax({
+                    type: "POST",
+                    url: "<?=SITEURL?>dashboard/index/updatequerystatus", 
+         // Write you //php mysql logic here you'll get all your data in logic.php file 
+                  data: { sender_status: sender_status, receiver_status: receiver_status, query_id: query_id }
+                }).done(function( msg ) {
+					//$('#myModal2').modal('show');
+					
+					$("#PopViewQuery").html(msg);
+                              //alert( "Data Saved: " + msg );
+                            });
+                 }
+             }
+    }).disableSelection();
+ 	//////////////////////////////////////////////////////
+});
+
+function OpenQueryDetailsPopUp(query_id)
+{
+$.ajax({
+    type : 'POST',
+    url : '<?php echo SITEURL?>dashboard/index/updatequerystatus',
+    data :"query_id="+query_id,
+	cache:false,
+	beforeSend: function()
+	{
+ 	},
+	success: function(response)
+	{
+		$('#myModal2').modal('show');
+	 $("#PopViewQuery").html(response);
+	}
+  });
+}
+  </script>
