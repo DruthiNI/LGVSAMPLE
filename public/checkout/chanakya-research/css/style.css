@@ -1,0 +1,186 @@
+body {
+    background: linear-gradient(
+110deg, #f58634 60%, #000 60%);
+}
+.shop {
+    font-size: 18px;
+    font-weight: bold;
+    color: #000 !important;
+}
+.space {
+    letter-spacing: 0.8px !important;
+    font-weight: 500;
+    font-size: 20px;
+    padding: 0PX !IMPORTANT;
+}
+
+.second a:hover {
+    color: rgb(92, 92, 92)
+}
+
+.active-2 {
+    color: rgb(92, 92, 92)
+}
+
+.breadcrumb>li+li:before {
+    content: "" !important
+}
+
+.breadcrumb {
+    padding: 0px;
+    font-size: 10px;
+    color: #aaa !important
+}
+
+.first {
+    background-color: white
+}
+
+a {
+    text-decoration: none !important;
+    color: #aaa
+}
+
+.btn-lg,
+.form-control-sm:focus,
+.form-control-sm:active,
+a:focus,
+a:active {
+    outline: none !important;
+    box-shadow: none !important
+}
+
+.form-control-sm:focus {
+    border: 1.5px solid #4bb8a9
+}
+
+.btn-group-lg>.btn,
+.btn-lg {
+    padding: .5rem 0.1rem;
+    font-size: 1rem;
+    border-radius: 0;
+    color: white !important;
+    background-color: #4bb8a9;
+    height: 2.8rem !important;
+    border-radius: 0.2rem !important
+}
+
+.btn-group-lg>.btn:hover,
+.btn-lg:hover {
+    background-color: #26A69A
+}
+
+.btn-outline-primary {
+    background-color: #f58634 !important;
+    color: #FFF !important;
+    border-radius: 0.2rem !important;
+    border: none !important;
+}
+
+.btn-outline-primary:hover {
+    background-color: #d65902 !important;
+    color: #fff !important;
+    border: 1px solid #4bb8a9;
+}
+
+.card-2 {
+    /* margin-top: 40px !important */
+}
+
+.card-header {
+    background-color: #fff;
+    border-bottom: 0px solid #aaaa !important
+}
+
+p {
+    font-size: 13px
+}
+
+.small {
+    font-size: 9px !important
+}
+
+.form-control-sm {
+    height: calc(2.2em + .5rem + 2px);
+    font-size: .875rem;
+    line-height: 1.5;
+    border-radius: 0
+}
+
+.cursor-pointer {
+    cursor: pointer
+}
+
+.boxed {
+    padding: 0px 8px 0 8px;
+    background-color: #4bb8a9;
+    color: white
+}
+
+.boxed-1 {
+    padding: 0px 8px 0 8px;
+    color: black !important;
+    border: 1px solid #aaaa
+}
+
+.bell {
+    opacity: 0.5;
+    cursor: pointer
+}
+
+@media (max-width: 767px) {
+    .breadcrumb-item+.breadcrumb-item {
+        padding-left: 0
+    }
+}
+
+h2.card-title.space {
+    background: #bbbbbb1c;
+    padding: 10px;
+    font-size: 36px;
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 10px !important;
+}span.number {
+    background: orange;
+    border-radius: 50px;
+    width: 25px;
+    height: 25px;
+    text-align: center;
+    line-height: 25px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-right: 10px;
+}.pay p {
+    font-size: 17px !important;
+    color: #ff8000;
+}a.download-button {
+    background: #ff8000;
+    font-size: 11px;
+    padding: 4px;
+    border-radius: 4px;
+    color: #FFF !important;
+    cursor: pointer;
+    padding-right: 0px;
+    padding-left: 6px;
+}.space.two {
+    background: #cccccc26;
+    margin-bottom: -9px !important;
+    padding: 5px !important;
+    font-size: 15px;
+    color: darkorange !important;
+}.card {
+    border: none;
+    margin-top: -5px;
+}  
+
+div#coupon-filed input {
+    width: 50%;
+    margin: 10px;
+    margin-left: 0px;
+}input.form-control {
+    font-size: 13px;
+    height: 30px;
+}h6 {
+    font-size: 13px;
+}

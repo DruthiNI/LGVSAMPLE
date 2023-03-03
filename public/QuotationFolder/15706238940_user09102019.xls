@@ -1,0 +1,51 @@
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+							<tr>
+ 								<th>Sr. No.</th>
+								<th>Name</th>
+								<th>Username</th>
+                                <th>Password</th>
+                                <th>Email ID</th>
+                                <th>Mobile No.</th>
+                                <th>Status</th>
+                                <th>Created Date</th>
+   							</tr>
+                         
+                                                          <tr>
+                                <td>1</td>
+								<td>admin2</td>
+								<td>admin2</td>
+                                <td>Sh-5E3u=ZExyDHkK</td>
+                                <td>nancy.gautam@dissertationindia.net</td>
+                                <td>9910964340</td>
+ 								<td>
+                                                              Active
+                                                                </td>
+ 								<td>Dec 17, 2015</td>
+                                 </tr>
+                                                         <tr>
+                                <td>2</td>
+								<td>admin1</td>
+								<td>admin1</td>
+                                <td>bt+-D3f!fWV_9Tkb</td>
+                                <td>shailendra.singh@emarketzindia.com</td>
+                                <td>9599063445</td>
+ 								<td>
+                                                              Active
+                                                                </td>
+ 								<td>Dec 17, 2015</td>
+                                 </tr>
+                                                         <tr>
+                                <td>3</td>
+								<td>Sub admin</td>
+								<td>nancy</td>
+                                <td>nancy#123</td>
+                                <td>nancy.gautam@dissertationindia.net</td>
+                                <td>9910964340</td>
+ 								<td>
+                                                              Inactive
+                                                                </td>
+ 								<td>Dec 04, 2015</td>
+                                 </tr>
+                           						</table><script>
+var SITEURL='http://localhost/query-panel/';
+</script>
