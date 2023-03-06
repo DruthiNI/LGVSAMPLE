@@ -11,6 +11,6 @@ jobs:
     - name: 📂 Sync files
       uses: SamKirkland/FTP-Deploy-Action@4.3.3
       with:
-        server: ftp.regentapps.com
-        username: lgvsample@lgv.regentapps.com
+        server: ftp.360emarketz.com
+        username: github@360emarketz.com
         password: ${{ secrets.FTP_PASSWORD }}
