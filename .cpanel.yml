@@ -1,0 +1,5 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/emket360z/public_html/sumit/git_test2/
+    - /bin/cp * $DEPLOYPATH
